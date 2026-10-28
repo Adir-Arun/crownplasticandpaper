@@ -13,5 +13,7 @@ wget --mirror --page-requisites --adjust-extension --convert-links --no-parent \
   https://$SITE/ 2>&1 | tail -n 5 || true
 cd ..
 if [ -d mirror/$SITE ]; then mv mirror/$SITE site; else mv mirror/crownplasticandpaper.com site; fi
+echo "Localizing remaining live-site assets..."
+(command -v python3 >/dev/null 2>&1 || dnf install -y python3 >/dev/null 2>&1) && python3 localize.py || echo "localize step failed (copy still works, some assets load from live site)"
 echo "files: $(find site -type f | wc -l)  size: $(du -sh site | cut -f1)"
 test -f site/index.html
