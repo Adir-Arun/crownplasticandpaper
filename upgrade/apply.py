@@ -158,6 +158,19 @@ def upgrade_html(path, snippets, search_items):
     if 'id="content"' not in s:
         s = re.sub(r'<div data-elementor-type="(?!header|footer|popup)([^"]+)"',
                    r'<div id="content" role="main" tabindex="-1" data-elementor-type="\1"', s, count=1)
+    # Slider pages repeat <h1> per slide; keep the first, the rest become <h2>
+    # (sizes come from Elementor classes, so they look the same).
+    h1s = [m.start() for m in re.finditer(r'<h1[\s>]', s)]
+    if len(h1s) > 1:
+        out, last = [], 0
+        for n, pos in enumerate(h1s):
+            if n == 0:
+                continue
+            end = s.find('</h1>', pos)
+            if end < 0:
+                continue
+            out.append(s[last:pos]); out.append('<h2' + s[pos + 3:end] + '</h2>'); last = end + 5
+        out.append(s[last:]); s = ''.join(out)
     # Every page gets exactly one H1 (category and contact pages had none).
     if not re.search(r'<h1[\s>]', s):
         title = re.search(r'<title>([^<]*)</title>', s)
