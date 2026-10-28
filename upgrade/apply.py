@@ -39,7 +39,7 @@ PLACEHOLDER_TARGETS = {
     'bulk': 'get-your-quote/',
 }
 PLACEHOLDER_RE = re.compile(
-    r'href="((?:\.\./)*)products/product_cat-aluminum-products-or-[^"]*?\{\{data\.gallery_thumbnail_src\}\}\.html#?"')
+    r'href="((?:\.\./)*)products/product_cat-aluminum-products-or-[^"]*?\{\{data\.gallery_thumbnail_src\}\}\.html(#[^"]*)?"')
 SEARCH_ACTION_RE = re.compile(
     r'action="((?:\.\./)*)products/product_cat-aluminum-products-or-[^"]*?\{\{data\.gallery_thumbnail_src\}\}\.html"')
 
@@ -65,6 +65,9 @@ def page_url(path):
 def fix_placeholders(s):
     def repl(m):
         prefix = m.group(1)
+        frag = m.group(2) or ''
+        if len(frag) > 1:  # a real in-page anchor such as the skip link's #content
+            return 'href="%s"' % frag
         tail = s[m.end():m.end() + 900]
         text = strip_tags(tail.split('</a>', 1)[0].split('>', 1)[-1]).lower()
         if 'catalog' in text:
