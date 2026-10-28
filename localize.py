@@ -62,9 +62,12 @@ def elementor_chunks():
         ('wp-content/plugins/elementor-pro/assets/js/webpack-pro.runtime.min.js', '/wp-content/plugins/elementor-pro/assets/js/'),
     ):
         f = os.path.join(ROOT, runtime)
-        if not os.path.exists(f):
+        d = os.path.dirname(f)
+        cands = [f] + ([os.path.join(d, n) for n in os.listdir(d) if n.startswith(os.path.basename(f) + '@')] if os.path.isdir(d) else [])
+        cands = [c for c in cands if os.path.exists(c)]
+        if not cands:
             continue
-        s = open(f, encoding='utf-8', errors='ignore').read()
+        s = open(cands[0], encoding='utf-8', errors='ignore').read()
         for name in set(re.findall(r'"([a-z0-9-]+\.[0-9a-f]{20}\.bundle\.min\.js)"', s)):
             out.add(base + name)
     return out
@@ -95,7 +98,12 @@ def main():
             download(p, seen)
 
     # drop junk saved from HTML-escaped URLs (e.g. 'img.png&quot;,&quot;srcset...') by earlier runs
-    for d, _, fs in os.walk(ROOT):
+    import shutil
+    for d, dirs, fs in os.walk(ROOT, topdown=True):
+        for name in list(dirs):
+            if '&quot;' in name or '&#' in name or '&amp;' in name:
+                shutil.rmtree(os.path.join(d, name), ignore_errors=True)
+                dirs.remove(name)
         for name in fs:
             if '&quot;' in name or '&#' in name or '&amp;' in name:
                 os.remove(os.path.join(d, name))

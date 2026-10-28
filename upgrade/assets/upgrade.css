@@ -1,0 +1,131 @@
+/* Crown Plastic & Paper: site upgrade layer.
+   Keeps the existing Elementor design; fixes accessibility, touch targets,
+   small text and adds the shipping map, mobile quick-contact bar and search.
+   Brand tokens come from the site's own Elementor kit. */
+:root {
+  --cpp-navy: #011425;      /* e-global primary */
+  --cpp-teal: #1F4959;      /* e-global secondary */
+  --cpp-slate: #64748B;     /* e-global text muted */
+  --cpp-ice: #EEF5F8;       /* e-global light section */
+  --cpp-cream: #F5F3ED;     /* e-global accent */
+  --cpp-focus: #3A8BB0;     /* 3:1+ on both white and navy */
+  --cpp-gold: #F2B544;      /* map routes only */
+  --cpp-ease: cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+/* ---------- accessibility ---------- */
+.cpp-sr-only { position: absolute !important; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+:where(a, button, input, select, textarea, summary, [tabindex]):focus-visible {
+  outline: 3px solid var(--cpp-focus) !important;
+  outline-offset: 3px !important;
+  border-radius: 4px;
+}
+#content:focus { outline: none; }
+::selection { background: var(--cpp-teal); color: #fff; }
+html { scroll-padding-top: 96px; }
+@media (prefers-reduced-motion: no-preference) { html { scroll-behavior: smooth; } }
+a, button, [role="button"], .e-n-tab-title, summary { touch-action: manipulation; }
+h1, h2, h3, .elementor-heading-title { text-wrap: balance; }
+p { text-wrap: pretty; }
+
+/* ---------- touch targets (hit area grows, visuals stay) ---------- */
+.mega-menu-toggle .mega-toggle-animated { padding: 14px 10px !important; margin: -14px -10px !important; box-sizing: content-box; }
+.elementor-post-info__terms-list-item,
+.elementor-widget-post-info a,
+.elementor-widget-icon-box .elementor-icon-box-title a { display: inline-block; padding-block: 6px; }
+.elementor-swiper-button, .elementor-swiper-button-prev, .elementor-swiper-button-next { min-width: 44px; min-height: 44px; display: inline-flex !important; align-items: center; justify-content: center; }
+.elementor-custom-embed-play { padding: 12px; }
+@media (max-width: 767px) {
+  .elementor-button.elementor-size-sm { min-height: 44px; display: inline-flex; align-items: center; }
+  .elementor-widget-nav-menu .elementor-item,
+  .elementor-widget-text-editor a,
+  .elementor-widget-icon-list a { display: inline-block; padding-block: 8px; }
+  .elementor-widget-icon-box a.elementor-icon { min-width: 44px; min-height: 44px; display: inline-flex; align-items: center; justify-content: center; }
+}
+
+/* ---------- readable text on phones (min 13-14px) ---------- */
+@media (max-width: 767px) {
+  .e-n-tab-title-text, .e-n-accordion-item-title-text { font-size: 15px !important; }
+  .elementor-button .elementor-button-text { font-size: 14px !important; }
+  .elementor-post-info__terms-list-item, .elementor-widget-post-info a { font-size: 12px !important; }
+  .elementor-widget-author-box p, .elementor-widget-theme-post-excerpt,
+  .elementor-widget-text-editor, .elementor-widget-nav-menu .elementor-item { font-size: max(14px, 1em) !important; }
+  .elementor-widget-text-editor a { font-size: 13px !important; }
+}
+
+/* ---------- shipping map section (homepage) ---------- */
+.cpp-map { background: var(--cpp-navy); color: #fff; padding: clamp(64px, 8vw, 104px) 0; overflow: hidden; font-family: inherit; }
+.cpp-map * { box-sizing: border-box; }
+.cpp-map__wrap { max-width: 1170px; margin: 0 auto; padding-inline: max(20px, env(safe-area-inset-left, 0px)); display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: clamp(32px, 4vw, 64px); align-items: center; }
+.cpp-map h2 { margin: 0; color: #fff; font-size: clamp(28px, 3.2vw, 40px); line-height: 1.12; font-weight: 700; letter-spacing: -0.01em; }
+.cpp-map__lead { margin: 16px 0 24px; font-size: 17px; line-height: 1.6; color: #C7D3DE; max-width: 44ch; }
+.cpp-map ul { list-style: none; margin: 0 0 28px; padding: 0; }
+.cpp-map li { display: flex; gap: 14px; align-items: flex-start; padding: 14px 0; border-top: 1px solid #1d3a52; font-size: 16px; line-height: 1.5; color: #C7D3DE; }
+.cpp-map li:last-child { border-bottom: 1px solid #1d3a52; }
+.cpp-map li b { display: block; color: #fff; font-weight: 700; margin-bottom: 2px; }
+.cpp-map li a { color: #fff; text-underline-offset: 3px; }
+.cpp-map li svg { width: 22px; height: 22px; flex: none; margin-top: 2px; stroke: var(--cpp-gold); fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.cpp-map__cta { display: inline-flex; align-items: center; gap: 10px; min-height: 50px; padding: 0 26px; border-radius: 8px; background: #fff; color: var(--cpp-navy) !important; font-weight: 700; font-size: 16px; text-decoration: none; transition: transform 160ms var(--cpp-ease), background-color 160ms ease; }
+.cpp-map__cta svg { width: 18px; height: 18px; stroke: currentColor; fill: none; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; transition: transform 200ms var(--cpp-ease); }
+.cpp-map__cta:active { transform: scale(0.97); }
+@media (hover: hover) and (pointer: fine) { .cpp-map__cta:hover { background: var(--cpp-ice); } .cpp-map__cta:hover svg { transform: translateX(3px); } }
+.cpp-map__fig { position: relative; margin: 0; }
+.cpp-map__svg { display: block; width: 100%; height: auto; }
+.cpp-map .arm-states path { fill: #0f2a42; stroke: #1F4959; stroke-width: .8; stroke-linejoin: round; }
+.cpp-map .arm-states .arm-tx { fill: var(--cpp-teal); }
+.cpp-map .arm-border { fill: none; stroke: #2a5671; stroke-width: 1.3; }
+.cpp-map .arm-routes path { fill: none; stroke: var(--cpp-gold); stroke-width: 1.8; stroke-linecap: round; stroke-opacity: .85; stroke-dasharray: 1; stroke-dashoffset: 0; }
+.cpp-map .arm-dots circle { fill: var(--cpp-gold); transform-box: fill-box; transform-origin: center; }
+.cpp-map .arm-core { fill: #fff; stroke: var(--cpp-gold); stroke-width: 3; }
+.cpp-map .arm-ring { fill: none; stroke: var(--cpp-gold); stroke-width: 2; transform-box: fill-box; transform-origin: center; opacity: 0; animation: cpp-ping 2.6s var(--cpp-ease) infinite; }
+.cpp-map .arm-ring2 { animation-delay: 1.3s; }
+@keyframes cpp-ping { 0% { transform: scale(.6); opacity: .9; } 100% { transform: scale(2.6); opacity: 0; } }
+.cpp-map__pin { position: absolute; left: 55.79%; top: 80.42%; transform: translate(16px, -150%); background: #fff; color: var(--cpp-navy); font-weight: 700; font-size: 13px; line-height: 1; padding: 8px 11px; border-radius: 6px; white-space: nowrap; box-shadow: 0 8px 20px rgba(0,0,0,.28); pointer-events: none; }
+.cpp-map.is-pre .arm-routes path { stroke-dashoffset: 1; }
+.cpp-map.is-pre .arm-dots circle { opacity: 0; transform: scale(.4); }
+.cpp-map.is-go .arm-routes path { stroke-dashoffset: 0; transition: stroke-dashoffset 1100ms var(--cpp-ease); transition-delay: calc(var(--i) * 70ms); }
+.cpp-map.is-go .arm-dots circle { opacity: 1; transform: none; transition: opacity 300ms ease, transform 400ms var(--cpp-ease); transition-delay: calc(var(--i) * 70ms + 700ms); }
+@media (max-width: 900px) { .cpp-map__wrap { grid-template-columns: 1fr; } .cpp-map__fig { order: -1; } }
+@media (max-width: 560px) { .cpp-map__pin { font-size: 11px; padding: 6px 8px; } }
+
+/* ---------- mobile quick-contact bar ---------- */
+.cpp-bar { display: none; }
+@media (max-width: 767px) {
+  .cpp-bar { display: grid; grid-template-columns: 1fr 1.6fr; gap: 10px; position: fixed; left: 0; right: 0; bottom: 0; z-index: 9990;
+    padding: 10px max(16px, env(safe-area-inset-right, 0px)) calc(10px + env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px));
+    background: rgba(255,255,255,.97); border-top: 1px solid #dfe7ee; box-shadow: 0 -6px 20px rgba(1,20,37,.08);
+    transform: translateY(0); transition: transform 260ms var(--cpp-ease); }
+  .cpp-bar.is-hidden { transform: translateY(110%); }
+  .cpp-bar a { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 48px; border-radius: 8px; font-weight: 700; font-size: 16px; text-decoration: none; font-family: inherit; transition: transform 140ms var(--cpp-ease); }
+  .cpp-bar a:active { transform: scale(0.97); }
+  .cpp-bar svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+  .cpp-bar__call { color: var(--cpp-navy) !important; box-shadow: inset 0 0 0 1.5px var(--cpp-navy); }
+  .cpp-bar__quote { background: var(--cpp-teal); color: #fff !important; }
+  body { padding-bottom: calc(68px + env(safe-area-inset-bottom, 0px)); }
+}
+
+/* ---------- product search ---------- */
+.cpp-search { position: relative; }
+.cpp-results { position: absolute; z-index: 9995; top: calc(100% + 6px); left: 0; right: 0; min-width: min(420px, 92vw); max-height: min(70vh, 460px); overflow: auto;
+  background: #fff; border: 1px solid #dfe7ee; border-radius: 10px; box-shadow: 0 16px 40px rgba(1,20,37,.16); padding: 6px; text-align: left;
+  transform-origin: top center; animation: cpp-pop 160ms var(--cpp-ease); }
+@keyframes cpp-pop { from { opacity: 0; transform: translateY(-4px) scale(.98); } to { opacity: 1; transform: none; } }
+.cpp-results[hidden] { display: none; }
+.cpp-results a { display: grid; grid-template-columns: 44px minmax(0, 1fr); gap: 12px; align-items: center; padding: 8px 10px; border-radius: 8px; color: var(--cpp-navy) !important; text-decoration: none; min-height: 52px; }
+.cpp-results a[aria-selected="true"], .cpp-results a:hover { background: var(--cpp-ice); }
+.cpp-results img { width: 44px; height: 44px; object-fit: contain; background: #f6f8fa; border-radius: 6px; }
+.cpp-results b { display: block; font-size: 15px; font-weight: 700; line-height: 1.25; }
+.cpp-results small { display: block; font-size: 12px; color: var(--cpp-slate); margin-top: 2px; }
+.cpp-results .cpp-empty { padding: 14px 12px; font-size: 14px; color: var(--cpp-slate); }
+.cpp-results .cpp-empty a { display: inline; padding: 0; min-height: 0; text-decoration: underline; }
+
+/* ---------- form status (static site fallback) ---------- */
+.cpp-form-note { margin-top: 12px; padding: 12px 14px; border-radius: 8px; background: var(--cpp-ice); color: var(--cpp-navy); font-size: 14px; line-height: 1.5; }
+.cpp-form-note a { color: var(--cpp-teal); font-weight: 700; }
+
+@media (prefers-reduced-motion: reduce) {
+  .cpp-map .arm-ring { display: none; }
+  .cpp-map.is-pre .arm-routes path { stroke-dashoffset: 0; }
+  .cpp-map.is-pre .arm-dots circle { opacity: 1; transform: none; }
+  .cpp-bar, .cpp-results { transition: none; animation: none; }
+}

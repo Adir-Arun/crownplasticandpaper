@@ -1,6 +1,11 @@
 name: Snapshot live site
 on:
   workflow_dispatch:
+    inputs:
+      target:
+        description: "Branch to commit the snapshot to"
+        default: main
+        required: true
 permissions:
   contents: write
 jobs:
@@ -9,13 +14,13 @@ jobs:
     timeout-minutes: 60
     steps:
       - uses: actions/checkout@v4
-      - name: Mirror and localize
-        run: bash build.sh
-      - name: Commit snapshot to site-source branch
+      - name: Mirror, localize and optimize images
+        run: bash snapshot.sh
+      - name: Commit snapshot
         run: |
           git config user.name "site-snapshot-bot"
           git config user.email "actions@users.noreply.github.com"
-          git checkout -B site-source
-          git add -f site
+          git checkout -B "${{ inputs.target }}"
+          git add -A site
           git commit -q -m "Snapshot of www.crownplasticandpaper.com ($(date -u +%Y-%m-%d))" || echo "no changes"
-          git push -f origin site-source
+          git push -f origin "HEAD:${{ inputs.target }}"

@@ -1,4 +1,4 @@
 mirror/
-site/
 node_modules/
 .vercel/
+__pycache__/
