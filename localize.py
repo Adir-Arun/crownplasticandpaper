@@ -54,8 +54,28 @@ def download(url_path, seen):
         print('  ! ' + clean + ' (' + str(e) + ')')
 
 
+def elementor_chunks():
+    """Elementor loads widget scripts on demand from webpack chunks that no page links to."""
+    out = set()
+    for runtime, base in (
+        ('wp-content/plugins/elementor/assets/js/webpack.runtime.min.js', '/wp-content/plugins/elementor/assets/js/'),
+        ('wp-content/plugins/elementor-pro/assets/js/webpack-pro.runtime.min.js', '/wp-content/plugins/elementor-pro/assets/js/'),
+    ):
+        f = os.path.join(ROOT, runtime)
+        if not os.path.exists(f):
+            continue
+        s = open(f, encoding='utf-8', errors='ignore').read()
+        for name in set(re.findall(r'"([a-z0-9-]+\.[0-9a-f]{20}\.bundle\.min\.js)"', s)):
+            out.add(base + name)
+    return out
+
+
 def main():
     seen = set()
+    chunks = elementor_chunks()
+    print('elementor chunks: %d' % len(chunks))
+    for p in sorted(chunks):
+        download(p, seen)
     for rnd in range(3):
         found = set()
         for f in text_files():
