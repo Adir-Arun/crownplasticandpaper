@@ -17,7 +17,7 @@ HOSTS = ('www.crownplasticandpaper.com', 'crownplasticandpaper.com')
 TEXT_EXT = ('.html', '.htm', '.css', '.js', '.json', '.xml', '.svg', '.txt')
 ASSET_HINT = re.compile(r'^/(wp-content|wp-includes)/')
 # plain and JSON-escaped (https:\/\/www.crownplasticandpaper.com\/...) forms
-URL_RE = re.compile(r'https?:(?:\\?/){2}(?:www\.)?crownplasticandpaper\.com((?:\\?/)[^\s"\'<>()\\]*(?:\\/[^\s"\'<>()\\]*)*)')
+URL_RE = re.compile(r'https?:(?:\\?/){2}(?:www\.)?crownplasticandpaper\.com((?:\\?/)[^\s"\'<>()\\&]*(?:\\/[^\s"\'<>()\\&]*)*)')
 UA = {'User-Agent': 'Mozilla/5.0 (compatible; site-copy)'}
 
 
@@ -93,6 +93,12 @@ def main():
             break
         for p in sorted(new):
             download(p, seen)
+
+    # drop junk saved from HTML-escaped URLs (e.g. 'img.png&quot;,&quot;srcset...') by earlier runs
+    for d, _, fs in os.walk(ROOT):
+        for name in fs:
+            if '&quot;' in name or '&#' in name or '&amp;' in name:
+                os.remove(os.path.join(d, name))
 
     # rewrite absolute links to root-relative (both plain and JSON-escaped forms)
     changed = 0
