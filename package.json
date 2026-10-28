@@ -1,0 +1,5 @@
+{
+  "name": "crownplasticandpaper-static",
+  "private": true,
+  "scripts": { "build": "bash build.sh" }
+}

@@ -1,0 +1,4 @@
+mirror/
+site/
+node_modules/
+.vercel/
