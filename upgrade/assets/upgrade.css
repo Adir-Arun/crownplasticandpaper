@@ -122,6 +122,9 @@ p { text-wrap: pretty; }
 /* ---------- form status (static site fallback) ---------- */
 .cpp-form-note { margin-top: 12px; padding: 12px 14px; border-radius: 8px; background: var(--cpp-ice); color: var(--cpp-navy); font-size: 14px; line-height: 1.5; }
 .cpp-form-note a { color: var(--cpp-teal); font-weight: 700; }
+.cpp-form-note.is-error { background: #FDF1F0; color: #7A1D17; }
+.cpp-form-note.is-error a { color: #7A1D17; }
+.elementor-form [type="submit"][aria-busy="true"] { opacity: .7; cursor: progress; }
 
 @media (prefers-reduced-motion: reduce) {
   .cpp-map .arm-ring { display: none; }

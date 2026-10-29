@@ -44,6 +44,30 @@ SEARCH_ACTION_RE = re.compile(
     r'action="((?:\.\./)*)products/product_cat-aluminum-products-or-[^"]*?\{\{data\.gallery_thumbnail_src\}\}\.html"')
 
 
+BRAND_OLD = 'AR Unlimited Supply'
+BRAND_NEW = 'Crown Plastic & Paper'
+LDJSON_RE = re.compile(r'(<script[^>]*application/ld\+json[^>]*>)(.*?)(</script>)', re.S)
+
+
+def rebrand(s):
+    """This is Crown's site: replace the AR Unlimited Supply name (titles, Google data, text)."""
+    if BRAND_OLD not in s:
+        return s
+    # JSON-LD is JSON, not HTML: a literal "&" there.
+    s = LDJSON_RE.sub(lambda m: m.group(1) + m.group(2).replace(BRAND_OLD, BRAND_NEW) + m.group(3), s)
+    return s.replace(BRAND_OLD, html.escape(BRAND_NEW))
+
+
+def fix_ldjson(s):
+    """Google structured data: remove /* comments */ (invalid JSON, the aluminum product
+    pages had them) and turn root-relative URLs back into absolute ones."""
+    def fix(m):
+        body = re.sub(r'/\*.*?\*/', '', m.group(2), flags=re.S)
+        body = re.sub(r'((?:[:\[,])\s*)"/(?!/)', r'\1"' + ORIGIN + '/', body)
+        return m.group(1) + body + m.group(3)
+    return LDJSON_RE.sub(fix, s)
+
+
 def strip_tags(s):
     return re.sub(r'\s+', ' ', re.sub(r'<[^>]+>', ' ', s)).strip()
 
@@ -142,6 +166,9 @@ def upgrade_html(path, snippets, search_items):
     s = re.sub(r'href="tell?:[^"]*?844[^"]*?900[^"]*?(?:0084|8801|8804)"', 'href="%s"' % PHONE_TEL, s)
     s = re.sub(r'844-900-(?:0084|8801)', '844-900-8804', s)  # plain text and schema.org "telephone"
     s = re.sub(r'Sales@www\.crownplasticandpaper\.com', EMAIL, s, flags=re.I)
+    s = re.sub(r'sales@arunlimitedsupply\.com', EMAIL, s, flags=re.I)  # header link went to AR's inbox
+    s = rebrand(s)
+    s = fix_ldjson(s)
     s = s.replace('@www.crownplasticandpaper.com', '@crownplasticandpaper.com')
     s = s.replace('Copyright © 2025 AR Unlimited Supply', 'Copyright © %s Crown Plastic &#038; Paper' % YEAR)
     s = re.sub(r'Copyright © 2025 Crown', 'Copyright © %s Crown' % YEAR, s)
@@ -151,7 +178,8 @@ def upgrade_html(path, snippets, search_items):
     # --- broken links ----------------------------------------------------------
     s = fix_placeholders(s)
     s = re.sub(r'href="([^"#?:]*?)index\.html(#[^"]*)?"',
-               lambda m: 'href="%s%s"' % (m.group(1) or './', m.group(2) or ''), s)
+               lambda m: 'href="%s"' % m.group(2) if not m.group(1) and m.group(2) and len(m.group(2)) > 1
+               else 'href="%s%s"' % (m.group(1) or './', m.group(2) or ''), s)
     canonical = ORIGIN + url
     s = re.sub(r'<link rel="canonical" href="[^"]*"', '<link rel="canonical" href="%s"' % canonical, s)
     s = re.sub(r'<meta property="og:url" content="[^"]*"', '<meta property="og:url" content="%s"' % canonical, s)
@@ -180,7 +208,6 @@ def upgrade_html(path, snippets, search_items):
     if not re.search(r'<h1[\s>]', s):
         title = re.search(r'<title>([^<]*)</title>', s)
         t = html.unescape(title.group(1)).split('|')[0].strip() if title else ''
-        t = t.replace('AR Unlimited Supply', 'Crown Plastic & Paper')
         cat = re.match(r'^/products/product_cat-([a-z-]+)/$', url)
         if cat and '-or-' not in url:
             t = 'Wholesale ' + cat.group(1).replace('-', ' ').title()

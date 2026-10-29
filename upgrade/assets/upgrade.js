@@ -121,41 +121,101 @@
     document.querySelectorAll('form.e-search-form, form[role="search"], form.search-form, form.elementor-search-form').forEach(enhanceSearch);
   }
 
-  /* ---------- forms: WordPress can't receive them here, so hand off to email ---------- */
+  /* ---------- forms: delivered by FormSubmit (formsubmit.co) to the sales inbox ---------- */
+  var FORM_ENDPOINT = 'https://formsubmit.co/ajax/' + EMAIL;
   function fieldLabel(el) {
     var id = el.id && document.querySelector('label[for="' + el.id + '"]');
-    var t = (id && id.textContent) || el.getAttribute('aria-label') || el.placeholder || el.name || '';
+    var t = (id && id.textContent) || el.getAttribute('aria-label') || el.placeholder || el.name || 'Field';
     return t.replace(/\*/g, '').trim();
   }
-  function note(form, htmlText) {
+  function note(form, htmlText, isError) {
     var n = form.querySelector('.cpp-form-note');
-    if (!n) { n = document.createElement('div'); n.className = 'cpp-form-note'; n.setAttribute('role', 'status'); form.appendChild(n); }
+    if (!n) { n = document.createElement('div'); n.className = 'cpp-form-note'; form.appendChild(n); }
+    n.setAttribute('role', isError ? 'alert' : 'status');
+    n.classList.toggle('is-error', !!isError);
     n.innerHTML = htmlText;
   }
   document.addEventListener('submit', function (e) {
     var form = e.target;
     if (!form.matches || !form.matches('form.elementor-form')) return;
     e.preventDefault(); e.stopImmediatePropagation();
+    if (form.dataset.cppSending) return;
     if (form.checkValidity && !form.checkValidity()) { form.reportValidity(); return; }
-    var lines = [], email = '';
+
+    var data = {}, lines = [], email = '', spam = false;
     form.querySelectorAll('input, textarea, select').forEach(function (el) {
-      if (['hidden', 'submit', 'button'].indexOf(el.type) >= 0 || !el.value) return;
+      if (['submit', 'button'].indexOf(el.type) >= 0) return;
+      if (/honey/i.test(el.name || '')) { if (el.value) spam = true; return; }
+      if (el.type === 'hidden' || !el.value) return;
       if ((el.type === 'checkbox' || el.type === 'radio') && !el.checked) return;
       if (el.type === 'email') email = el.value;
-      lines.push(fieldLabel(el) + ': ' + el.value);
+      var label = fieldLabel(el), key = label, i = 2;
+      while (data[key] !== undefined) key = label + ' ' + i++;
+      data[key] = el.value; lines.push(label + ': ' + el.value);
     });
     var name = (form.getAttribute('name') || '').toLowerCase();
-    var isNewsletter = lines.length <= 1 && email;
+    var isNewsletter = lines.length <= 1 && !!email;
     var subject = isNewsletter ? 'Newsletter signup' : (/quote/.test(name + location.pathname) ? 'Quote request' : 'Website inquiry');
-    var body = lines.join('\n') + '\n\nSent from ' + location.href;
-    var href = 'mailto:' + EMAIL + '?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body);
-    note(form, 'Opening your email app with your message to <a href="mailto:' + EMAIL + '">' + EMAIL + '</a>. ' +
-      'Nothing opened? Email us directly or call <a href="tel:+18449008804">' + PHONE + '</a>.');
-    window.location.href = href;
+    var page = document.title.split('|')[0].trim();
+    data._subject = subject + ' - crownplasticandpaper.com';
+    data._template = 'table';
+    data._captcha = 'false';
+    if (email) data._replyto = email;
+    data['Sent from'] = location.href.split('#')[0];
+
+    var btn = form.querySelector('[type="submit"]');
+    var btnText = btn && btn.querySelector('.elementor-button-text');
+    var original = btnText ? btnText.textContent : (btn && btn.textContent);
+    function setBusy(on) {
+      if (on) form.dataset.cppSending = '1'; else delete form.dataset.cppSending;
+      if (!btn) return;
+      btn.disabled = on; btn.setAttribute('aria-busy', on ? 'true' : 'false');
+      if (btnText) btnText.textContent = on ? 'Sending…' : original;
+    }
+    function fallback(reason) {
+      var href = 'mailto:' + EMAIL + '?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(lines.join('\n') + '\n\nSent from ' + location.href);
+      note(form, reason + ' Please <a href="' + href + '">email your message</a> instead, or call <a href="tel:+18449008804">' + PHONE + '</a>.', true);
+    }
+    if (spam) { form.reset(); note(form, 'Thanks, your message was sent.'); return; }
+
+    setBusy(true);
+    var ctrl = 'AbortController' in window ? new AbortController() : null;
+    var timer = setTimeout(function () { if (ctrl) ctrl.abort(); }, 15000);
+    fetch(FORM_ENDPOINT, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      body: JSON.stringify(data),
+      signal: ctrl ? ctrl.signal : undefined
+    }).then(function (r) { return r.json().catch(function () { return {}; }); })
+      .then(function (res) {
+        clearTimeout(timer); setBusy(false);
+        if (res && (res.success === true || res.success === 'true')) {
+          form.reset();
+          note(form, isNewsletter ? 'Thanks for subscribing. We\u2019ll send product and inventory updates to ' + email + '.'
+            : 'Thanks, your message was sent. Our team will get back to you soon.');
+        } else {
+          fallback('We couldn\u2019t send your message right now.');
+        }
+      })
+      .catch(function () { clearTimeout(timer); setBusy(false); fallback('We couldn\u2019t reach our message service.'); });
   }, true);
 
+  /* ---------- form fields: right keyboard and autofill ---------- */
+  function enhanceFields() {
+    document.querySelectorAll('form.elementor-form input, form.elementor-form textarea').forEach(function (el) {
+      var hint = ((el.placeholder || '') + ' ' + fieldLabel(el) + ' ' + (el.name || '')).toLowerCase();
+      if (/phone|tel/.test(hint)) {
+        if (el.type === 'number') el.type = 'tel';
+        el.setAttribute('inputmode', 'tel'); el.setAttribute('autocomplete', 'tel');
+      } else if (el.type === 'email') el.setAttribute('autocomplete', 'email');
+      else if (/company|business/.test(hint)) el.setAttribute('autocomplete', 'organization');
+      else if (/full name|your name|^\s*name|\[name\]/.test(hint)) el.setAttribute('autocomplete', 'name');
+      if (!el.getAttribute('aria-label') && el.placeholder && !(el.id && document.querySelector('label[for="' + el.id + '"]'))) el.setAttribute('aria-label', el.placeholder);
+    });
+  }
+
   /* ---------- init ---------- */
-  function init() { enhanceAllSearch(); }
+  function init() { enhanceAllSearch(); enhanceFields(); }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init); else init();
   // Elementor renders some widgets late; pick up search forms that appear afterwards.
   window.addEventListener('load', function () { setTimeout(enhanceAllSearch, 400); });
