@@ -28,6 +28,12 @@ PALETTE_RE = re.compile(r'#(%s)\b' % '|'.join(PALETTE), re.I) if PALETTE else No
 FORM_ICON_RE = re.compile(r'icn_crown_form_(full-name|company-name|email|phone|message)\.svg')
 
 
+ICON_LINKS = ('<link rel="icon" href="/favicon.ico" sizes="48x48">'
+              '<link rel="icon" href="/favicon.svg" type="image/svg+xml">'
+              '<link rel="icon" href="/icon-192.png" type="image/png" sizes="192x192">'
+              '<link rel="apple-touch-icon" href="/apple-touch-icon.png">')
+
+
 def recolor(s):
     return PALETTE_RE.sub(lambda m: '#' + PALETTE[m.group(1).upper()], s) if PALETTE_RE else s
 
@@ -170,7 +176,88 @@ def seo(s, url):
     # One description per page (some pages had two from different plugins).
     seen = []
     s = re.sub(r'<meta name="description"[^>]*>\s*', lambda m: '' if seen else (seen.append(1) or m.group(0)), s)
+    s = fix_product_ld(s, url)
+    if url == '/faqs/':
+        s = faq_ld(s)
     return drop_ratings(s)
+
+
+def fix_product_ld(s, url):
+    """Product data for Google: drop blocks copied from another product (the PET Cups page
+    described an aluminum item), and drop placeholder prices ($59.99, $1.00): Crown quotes
+    wholesale prices on request, so no price is published."""
+    if not url.startswith('/product/'):
+        return s
+    slug = url.split('/')[2]
+
+    def foreign(it):
+        o = it.get('offers') or {}
+        if isinstance(o, list):
+            o = o[0] if o else {}
+        for u in (it.get('url') or '', o.get('url') or ''):
+            if '/product/' in u and '/product/%s/' % slug not in u:
+                return True
+            if 'aluminum-packaging' in u:
+                return True
+        return False
+
+    title = re.search(r'<h1[^>]*class="[^"]*product_title[^"]*"[^>]*>(.*?)</h1>', s, re.S)
+    title = html.unescape(strip_tags(title.group(1))) if title else ''
+
+    def clean(it):
+        it.pop('offers', None)
+        if title:
+            it['name'] = title  # some entries carried the category name
+        it['url'] = ORIGIN + url
+        return it
+
+    def fix(m):
+        if '"Product"' not in m.group(2):
+            return m.group(0)
+        try:
+            data = json.loads(m.group(2))
+        except ValueError:
+            return m.group(0)
+        if isinstance(data, dict) and '@graph' in data:
+            data['@graph'] = [clean(it) if it.get('@type') == 'Product' else it
+                              for it in data['@graph'] if not (it.get('@type') == 'Product' and foreign(it))]
+        elif isinstance(data, dict) and data.get('@type') == 'Product':
+            if foreign(data):
+                return ''
+            clean(data)
+        return m.group(1) + json.dumps(data, ensure_ascii=False) + m.group(3)
+    s = LDJSON_RE.sub(fix, s)
+    if '"@type": "Product"' not in s and '"@type":"Product"' not in s:
+        # this page's only product data described another product: describe this one
+        name = re.search(r'<h1[^>]*class="[^"]*product_title[^"]*"[^>]*>(.*?)</h1>', s, re.S)
+        img = re.search(r'<meta property="og:image" content="([^"]*)"', s)
+        desc = re.search(r'<meta name="description" content="([^"]*)"', s)
+        if name:
+            ld = {'@context': 'https://schema.org', '@type': 'Product', 'name': html.unescape(strip_tags(name.group(1))),
+                  'url': ORIGIN + url, 'brand': {'@type': 'Brand', 'name': 'Crown Plastic & Paper'},
+                  'manufacturer': {'@id': ORIGIN + '/#business'}}
+            if img:
+                ld['image'] = img.group(1)
+            if desc:
+                ld['description'] = html.unescape(desc.group(1))
+            s = s.replace('</head>', '<script type="application/ld+json">%s</script>\n</head>' % json.dumps(ld, ensure_ascii=False), 1)
+    return s
+
+
+def faq_ld(s):
+    """FAQPage data from the FAQ accordion, so search and AI answers can quote it."""
+    items = []
+    for m in re.finditer(r'<details[^>]*class="e-n-accordion-item"[^>]*>(.*?)</details>', s, re.S):
+        q = re.search(r'e-n-accordion-item-title-text">(.*?)</div>', m.group(1), re.S)
+        a = m.group(1).split('</summary>', 1)[-1]
+        q, a = strip_tags(q.group(1)) if q else '', strip_tags(a)
+        if q and a and q not in [i['name'] for i in items]:
+            items.append({'@type': 'Question', 'name': html.unescape(q),
+                          'acceptedAnswer': {'@type': 'Answer', 'text': html.unescape(a)}})
+    if not items:
+        return s
+    ld = {'@context': 'https://schema.org', '@type': 'FAQPage', 'mainEntity': items}
+    return s.replace('</head>', '<script type="application/ld+json">%s</script>\n</head>' % json.dumps(ld, ensure_ascii=False), 1)
 
 
 def indexable(s, url):
@@ -347,7 +434,7 @@ def upgrade_html(path, snippets, search_items, sitemap):
     s = re.sub(r'<li[^>]*>\s*<a[^>]*page_id=66[^>]*>\s*Home old\s*</a>\s*</li>', '', s)
 
     # --- About Us video still showed an AR Unlimited Supply truck: use the Crown warehouse photo
-    s = s.replace('img_arus_about_bg.png', 'img_crown_Your-One-Stop-Supply-Partner.png')
+    s = s.replace('img_arus_about_bg.png', 'img_crown_Your-One-Stop-Supply-Partner.png.webp')  # 36KB, not 368KB
     s = FORM_ICON_RE.sub(r'icn_crown_form_\1-line.svg', s)
 
     # --- testimonial titles mixed straight and curly quotes: use curly everywhere
@@ -449,6 +536,11 @@ def upgrade_html(path, snippets, search_items, sitemap):
     s = s.replace('<div class="elementor-shortcode">[dppq_bulk_products]</div>',
                   '<div class="elementor-shortcode">%s</div>' % snippets['quote'])
 
+    # --- browser tab icon: the crown mark alone, transparent, white in dark tabs
+    s = re.sub(r'<link rel="(?:icon|apple-touch-icon)"[^>]*>\s*', '', s)
+    s = re.sub(r'<meta name="msapplication-TileImage"[^>]*>\s*', '', s)
+    s = s.replace('</head>', ICON_LINKS + '\n</head>', 1)
+
     # --- brand colour for mobile browser chrome, and business details for Google --------
     if 'name="theme-color"' not in s:
         s = s.replace('</head>', '<meta name="theme-color" content="#011425">\n</head>', 1)
@@ -462,6 +554,7 @@ def upgrade_html(path, snippets, search_items, sitemap):
     s = s.replace('</head>', head + '</head>', 1)
     tail = snippets['bar'] + '<script src="/upgrade/upgrade.js" defer></script>'
     s = s.replace('</body>', tail + '</body>', 1)
+    s = re.sub(r'href="(?:\.\./)*/?login/"', 'href="/contact-us/"', s)  # hidden old Login button: no such page
     open(path, 'w', encoding='utf-8').write(s)
     if os.path.basename(path) == 'index.html' and indexable(s, url):
         mod = re.search(r'<meta property="article:modified_time" content="([^"]{10})', s)
@@ -546,6 +639,8 @@ def main():
     with open(os.path.join(SITE, 'robots.txt'), 'w', encoding='utf-8') as f:
         f.write('User-agent: *\nAllow: /\nDisallow: /upgrade/search-index.json\n\nSitemap: %s/sitemap.xml\n' % ORIGIN)
     print('sitemap: %d urls' % len(urls))
+    for name in os.listdir(os.path.join(ASSETS, 'icons')):
+        shutil.copy(os.path.join(ASSETS, 'icons', name), os.path.join(SITE, name))
     icon_dir = os.path.join(SITE, 'wp-content', 'uploads', '2026', '03')
     if os.path.isdir(icon_dir):
         for name in os.listdir(os.path.join(ASSETS, 'form-icons')):
