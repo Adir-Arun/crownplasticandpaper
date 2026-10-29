@@ -18,6 +18,16 @@ SITE = sys.argv[1] if len(sys.argv) > 1 else 'site'
 HERE = os.path.dirname(os.path.abspath(__file__))
 ASSETS = os.path.join(HERE, 'assets')
 MARK = 'data-cpp-upgrade'
+# Brand palette refresh (chosen Oct 2026): the pale blue-grey and grey-teal become a warm
+# stone and a deep blue that sit better with the navy and cream. Set to {} to switch off.
+PALETTE = {'EEF5F8': 'F3F1EC', '1F4959': '163A5C'}
+PALETTE_RE = re.compile(r'#(%s)\b' % '|'.join(PALETTE), re.I) if PALETTE else None
+
+
+def recolor(s):
+    return PALETTE_RE.sub(lambda m: '#' + PALETTE[m.group(1).upper()], s) if PALETTE_RE else s
+
+
 POLISH = True  # visual polish layer (upgrade/assets/polish.css); set False to switch it off
 ORIGIN = 'https://www.crownplasticandpaper.com'
 
@@ -185,6 +195,7 @@ def upgrade_html(path, snippets, search_items):
     s = re.sub(r'Sales@www\.crownplasticandpaper\.com', EMAIL, s, flags=re.I)
     s = re.sub(r'sales@arunlimitedsupply\.com', EMAIL, s, flags=re.I)  # header link went to AR's inbox
     s = rebrand(s)
+    s = recolor(s)
     s = fix_ldjson(s)
     s = s.replace('@www.crownplasticandpaper.com', '@crownplasticandpaper.com')
     s = s.replace('Copyright © 2025 AR Unlimited Supply', 'Copyright © %s Crown Plastic &#038; Paper' % YEAR)
@@ -291,7 +302,7 @@ def upgrade_html(path, snippets, search_items):
 
 def upgrade_css(path):
     s = open(path, encoding='utf-8', errors='ignore').read()
-    t = webp_swap(s, os.path.dirname(path))
+    t = recolor(webp_swap(s, os.path.dirname(path)))
     if t != s:
         open(path, 'w', encoding='utf-8').write(t)
         return True
@@ -310,7 +321,8 @@ def main():
     out = os.path.join(SITE, 'upgrade')
     os.makedirs(out, exist_ok=True)
     for name in ('upgrade.css', 'upgrade.js', 'polish.css'):
-        shutil.copy(os.path.join(ASSETS, name), os.path.join(out, name))
+        src = open(os.path.join(ASSETS, name), encoding='utf-8').read()
+        open(os.path.join(out, name), 'w', encoding='utf-8').write(recolor(src))
 
     pages = css = 0
     items = []
@@ -330,7 +342,8 @@ def main():
             uniq.append(it)
     json.dump(uniq, open(os.path.join(out, 'search-index.json'), 'w'), ensure_ascii=False, separators=(',', ':'))
     # Branded "page not found" (Vercel serves /404.html for unknown paths).
-    shutil.copy(os.path.join(ASSETS, '404.html'), os.path.join(SITE, '404.html'))
+    open(os.path.join(SITE, '404.html'), 'w', encoding='utf-8').write(
+        recolor(open(os.path.join(ASSETS, '404.html'), encoding='utf-8').read()))
     print('upgraded %d pages, %d stylesheets, %d search entries' % (pages, css, len(uniq)))
     return 0
 
