@@ -354,6 +354,24 @@ def upgrade_html(path, snippets, search_items, sitemap):
         if i > 0 and k > 0:
             s = s[:k] + snippets['map'] + s[k:]
 
+    # --- industrial additions (POLISH layer): trust strip under the homepage hero, quote band before the footer
+    if POLISH:
+        if url == '/':
+            i = s.find('About Us</h2>')
+            j = s.rfind('e-parent', 0, i)
+            k = s.rfind('<div', 0, j)
+            if i > 0 and k > 0:
+                s = s[:k] + snippets['trust'] + s[k:]
+        if url not in ('/get-your-quote/', '/contact-us/') and 'cpp-pre' not in s:
+            foot = s.find('<footer data-elementor-type="footer"')
+            i = s.find('Join Our Newsletter')
+            # the homepage has its newsletter band just above the footer: go above that
+            k = s.rfind('<div', 0, s.rfind('e-parent', 0, i)) if 0 < i < foot else -1
+            if k < 0:
+                k = foot
+            if k > 0:
+                s = s[:k] + snippets['pre'] + s[k:]
+
     # --- quote page: the bulk-quote plugin shortcode never rendered; use our quote builder
     s = s.replace('<div class="elementor-shortcode">[dppq_bulk_products]</div>',
                   '<div class="elementor-shortcode">%s</div>' % snippets['quote'])
@@ -419,6 +437,8 @@ def main():
         'map': open(os.path.join(ASSETS, 'map-section.html'), encoding='utf-8').read(),
         'bar': open(os.path.join(ASSETS, 'action-bar.html'), encoding='utf-8').read(),
         'quote': open(os.path.join(ASSETS, 'quote-form.html'), encoding='utf-8').read(),
+        'trust': open(os.path.join(ASSETS, 'trust-strip.html'), encoding='utf-8').read(),
+        'pre': open(os.path.join(ASSETS, 'prefooter.html'), encoding='utf-8').read(),
     }
     out = os.path.join(SITE, 'upgrade')
     os.makedirs(out, exist_ok=True)
