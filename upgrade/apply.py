@@ -24,6 +24,10 @@ PALETTE = {'EEF5F8': 'F3F1EC', '1F4959': '163A5C'}
 PALETTE_RE = re.compile(r'#(%s)\b' % '|'.join(PALETTE), re.I) if PALETTE else None
 
 
+# Contact form field icons: filled two-tone icons become thin line icons that match the site.
+FORM_ICON_RE = re.compile(r'icn_crown_form_(full-name|company-name|email|phone|message)\.svg')
+
+
 def recolor(s):
     return PALETTE_RE.sub(lambda m: '#' + PALETTE[m.group(1).upper()], s) if PALETTE_RE else s
 
@@ -338,6 +342,10 @@ def upgrade_html(path, snippets, search_items, sitemap):
     s = s.replace('View 2025 Catalog', 'View 2026 Catalog')
     s = re.sub(r'<li[^>]*>\s*<a[^>]*page_id=66[^>]*>\s*Home old\s*</a>\s*</li>', '', s)
 
+    # --- About Us video still showed an AR Unlimited Supply truck: use the Crown warehouse photo
+    s = s.replace('img_arus_about_bg.png', 'img_crown_Your-One-Stop-Supply-Partner.png')
+    s = FORM_ICON_RE.sub(r'icn_crown_form_\1-line.svg', s)
+
     # --- testimonial titles mixed straight and curly quotes: use curly everywhere
     s = re.sub(r'(<h5 class="elementor-heading-title elementor-size-default">)"([^"<]{3,120})"(</h5>)', '\\1\u201c\\2\u201d\\3', s)
 
@@ -408,7 +416,7 @@ def upgrade_html(path, snippets, search_items, sitemap):
             k = s.rfind('<div', 0, j)
             if i > 0 and k > 0:
                 s = s[:k] + snippets['trust'] + s[k:]
-        if url not in ('/get-your-quote/', '/contact-us/') and 'cpp-pre' not in s:
+        if url not in ('/', '/get-your-quote/', '/contact-us/') and 'cpp-pre' not in s:
             foot = s.find('<footer data-elementor-type="footer"')
             i = s.find('Join Our Newsletter')
             # the homepage has its newsletter band just above the footer: go above that
@@ -468,7 +476,7 @@ def upgrade_html(path, snippets, search_items, sitemap):
 
 def upgrade_css(path):
     s = open(path, encoding='utf-8', errors='ignore').read()
-    t = recolor(webp_swap(s, os.path.dirname(path)))
+    t = FORM_ICON_RE.sub(r'icn_crown_form_\1-line.svg', recolor(webp_swap(s, os.path.dirname(path))))
     if t != s:
         open(path, 'w', encoding='utf-8').write(t)
         return True
@@ -519,6 +527,11 @@ def main():
     with open(os.path.join(SITE, 'robots.txt'), 'w', encoding='utf-8') as f:
         f.write('User-agent: *\nAllow: /\nDisallow: /upgrade/search-index.json\n\nSitemap: %s/sitemap.xml\n' % ORIGIN)
     print('sitemap: %d urls' % len(urls))
+    icon_dir = os.path.join(SITE, 'wp-content', 'uploads', '2026', '03')
+    if os.path.isdir(icon_dir):
+        for name in os.listdir(os.path.join(ASSETS, 'form-icons')):
+            shutil.copy(os.path.join(ASSETS, 'form-icons', name),
+                        os.path.join(icon_dir, 'icn_crown_form_%s-line.svg' % name[:-4]))
     # Branded "page not found" (Vercel serves /404.html for unknown paths).
     open(os.path.join(SITE, '404.html'), 'w', encoding='utf-8').write(
         recolor(open(os.path.join(ASSETS, '404.html'), encoding='utf-8').read()))
