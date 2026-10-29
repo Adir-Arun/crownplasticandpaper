@@ -211,6 +211,40 @@ def page_url(path):
     return '/' + rel
 
 
+# Links that were left as "#" in WordPress (blog keywords, a hidden old footer): give them
+# real destinations. Internal links from articles to products also help search engines.
+DEAD_LINKS = {
+    'disposable napkins': '/products/product_cat-paper-napkins/',
+    'wholesale food packaging': '/products/',
+    'takeout bags for restaurants': '/product/paper-bags/',
+    'disposable tableware': '/product/round-plates/',
+    'food storage bags for restaurants': '/product/poly-bags/',
+    'wholesale distribution': '/business-partnership/',
+    'disposable portion cups': '/product/portion-cups/',
+    'food delivery packaging': '/products/product_cat-food-service-supplies/',
+    'international sourcing': '/about-us/',
+    'tamper evident food packaging': '/product/deli-containers/',
+    'contact us': '/contact-us/',
+    'request a quote': '/get-your-quote/',
+    'browse products': '/products/',
+    'products': '/products/',
+    'privacy policy': '/privacy-policy/',
+    'terms &amp; conditions': '/terms-conditions/',
+    'accessibility statement': '/accessibility-statement/',
+    'do not sell my personal information': '/do-not-sell-my-personal-information/',
+}
+
+
+def fix_dead_links(s):
+    def repl(m):
+        text = re.sub(r'<[^>]+>|\s+', ' ', m.group(3)).strip().lower()
+        target = DEAD_LINKS.get(text)
+        return m.group(1) + target + m.group(2) + m.group(3) + '</a>' if target else m.group(0)
+    s = re.sub(r'(<a [^>]*href=")#("[^>]*>)(.{1,2500}?)</a>', repl, s, flags=re.S)
+    # the header logo linked to "#" on many pages: it goes home
+    return re.sub(r'(data-widget_type="theme-site-logo\.default">\s*<a href=")#(")', r'\1/\2', s)
+
+
 def fix_placeholders(s):
     def repl(m):
         prefix = m.group(1)
@@ -221,6 +255,8 @@ def fix_placeholders(s):
         text = strip_tags(tail.split('</a>', 1)[0].split('>', 1)[-1]).lower()
         if 'catalog' in text:
             return 'href="%s" target="_blank" rel="noopener"' % CATALOG
+        if text == 'home':  # product-page breadcrumb
+            return 'href="/"'
         for key, target in PLACEHOLDER_TARGETS.items():
             if text.startswith(key):
                 return 'href="%s%s"' % (prefix, target)
@@ -302,8 +338,15 @@ def upgrade_html(path, snippets, search_items, sitemap):
     s = s.replace('View 2025 Catalog', 'View 2026 Catalog')
     s = re.sub(r'<li[^>]*>\s*<a[^>]*page_id=66[^>]*>\s*Home old\s*</a>\s*</li>', '', s)
 
+    # --- category bar: "New Arrivals" (it only linked to the shop page) becomes Disposable Gloves
+    gloves = '/products/product_cat-gloves/'
+    active = url == gloves
+    s = re.sub(r'(menu-item-4234"><a href=")[^"]*(" class="elementor-item)("[^>]*>)New Arrivals</a>',
+               lambda m: m.group(1) + gloves + m.group(2) + (' elementor-item-active" aria-current="page' if active else '') + m.group(3) + 'Disposable Gloves</a>', s)
+
     # --- broken links ----------------------------------------------------------
     s = fix_placeholders(s)
+    s = fix_dead_links(s)
     s = re.sub(r'href="([^"#?:]*?)index\.html(#[^"]*)?"',
                lambda m: 'href="%s"' % m.group(2) if not m.group(1) and m.group(2) and len(m.group(2)) > 1
                else 'href="%s%s"' % (m.group(1) or './', m.group(2) or ''), s)
