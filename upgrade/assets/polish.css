@@ -232,3 +232,11 @@ img[src*="element_arus_hero"], img[data-lazy-src*="element_arus_hero"] { visibil
 .wvg-gallery-thumbnail-image:not(.current-thumbnail) { opacity: .8; }
 .wvg-gallery-thumbnail-image.current-thumbnail { opacity: 1; box-shadow: inset 0 0 0 2px var(--cpp-teal); }
 @media (hover: hover) and (pointer: fine) { .wvg-gallery-thumbnail-image:hover { opacity: 1; } }
+
+/* =========================================================================
+   Homepage details
+   ========================================================================= */
+/* blog cards: every photo the same shape, so titles line up */
+.home-new-latest-insights .elementor-element-05bc7ce img { width: 100% !important; height: auto !important; aspect-ratio: 16 / 10; object-fit: cover; }
+/* "Get In Contact" used a one-off teal; match the other section titles */
+.elementor-element-395f09e .elementor-heading-title { color: var(--cpp-navy) !important; }

@@ -338,6 +338,9 @@ def upgrade_html(path, snippets, search_items, sitemap):
     s = s.replace('View 2025 Catalog', 'View 2026 Catalog')
     s = re.sub(r'<li[^>]*>\s*<a[^>]*page_id=66[^>]*>\s*Home old\s*</a>\s*</li>', '', s)
 
+    # --- testimonial titles mixed straight and curly quotes: use curly everywhere
+    s = re.sub(r'(<h5 class="elementor-heading-title elementor-size-default">)"([^"<]{3,120})"(</h5>)', '\\1\u201c\\2\u201d\\3', s)
+
     # --- category bar: "New Arrivals" (it only linked to the shop page) becomes Disposable Gloves
     gloves = '/products/product_cat-gloves/'
     active = url == gloves
