@@ -76,6 +76,104 @@ BUSINESS_LD = {
 }
 
 
+# ---------------------------------------------------------------------------------------
+# SEO audit fixes (Oct 2026 crawl of the live site)
+CATEGORY_NAMES = {
+    'aluminum-products': 'Aluminum Foil Products', 'food-service-supplies': 'Food Service Supplies',
+    'gloves': 'Disposable Gloves', 'miscellaneous': 'Janitorial & Miscellaneous Supplies',
+    'paper-napkins': 'Paper Napkins', 'paper-supply': 'Paper Supplies', 'toilet-tissue': 'Toilet Tissue',
+}
+# Near-copies of the AR Unlimited Supply legal pages: keep them out of Google, keep links followed.
+NOINDEX_PAGES = {'/terms-conditions/', '/privacy-policy/', '/accessibility-statement/',
+                 '/do-not-sell-my-personal-information/', '/category/uncategorized/'}
+# Real articles that WordPress had set to noindex.
+INDEX_PAGES = {'/choosing-the-right-food-packaging-for-your-business/',
+               '/why-bulk-purchasing-saves-money-for-food-businesses/'}
+# Two products shared one title; the latex page carried the nitrile copy.
+FIX_TITLES = {
+    '/product/latex-gloves/': ('Disposable Latex Gloves | Wholesale Bulk Supply USA',
+                               'Disposable latex gloves in bulk cases for food handling, janitorial and commercial use. '
+                               'Wholesale pricing from Crown Plastic & Paper in Houston, TX.'),
+}
+DEFAULT_OG_IMAGE = ORIGIN + '/wp-content/uploads/2026/01/img_crown_The_Trusted_Choice_of_Distributors.png'
+INDEX_ROBOTS = 'follow, index, max-snippet:-1, max-video-preview:-1, max-image-preview:large'
+SITEMAP_SKIP = re.compile(r'^/product/single-fold-napkins/|^/(?:\d{4}/|category/[^/]+/page/|products/page/|blog/page/|feed/)|-or-|-[23]/$')
+
+
+def set_robots(s, value):
+    s, n = re.subn(r"<meta name=[\"']robots[\"'] content=[\"'][^\"']*[\"']\s*/?>", '<meta name="robots" content="%s">' % value, s)
+    if not n:
+        s = s.replace('</head>', '<meta name="robots" content="%s">\n</head>' % value, 1)
+    return s
+
+
+def set_title(s, title, desc=None):
+    t = html.escape(title, quote=True)
+    s = re.sub(r'<title>[^<]*</title>', lambda m: '<title>%s</title>' % t, s, count=1)
+    s = re.sub(r'(<meta (?:property|name)="(?:og:title|twitter:title)" content=")[^"]*', lambda m: m.group(1) + t, s)
+    if desc:
+        d = html.escape(desc, quote=True)
+        if re.search(r'<meta name="description"', s):
+            s = re.sub(r'(<meta name="description" content=")[^"]*', lambda m: m.group(1) + d, s)
+        else:
+            s = s.replace('</head>', '<meta name="description" content="%s">\n</head>' % d, 1)
+        s = re.sub(r'(<meta (?:property|name)="(?:og:description|twitter:description)" content=")[^"]*', lambda m: m.group(1) + d, s)
+    return s
+
+
+def drop_ratings(s):
+    """No reviews are shown on the site, so star ratings in Google data are not allowed."""
+    def clean(o):
+        if isinstance(o, dict):
+            return {k: clean(v) for k, v in o.items() if k not in ('aggregateRating', 'review')}
+        if isinstance(o, list):
+            return [clean(v) for v in o]
+        return o
+
+    def fix(m):
+        if 'aggregateRating' not in m.group(2):
+            return m.group(0)
+        try:
+            data = json.loads(m.group(2))
+        except ValueError:
+            return m.group(0)
+        return m.group(1) + json.dumps(clean(data), ensure_ascii=False) + m.group(3)
+    return LDJSON_RE.sub(fix, s)
+
+
+def seo(s, url):
+    cat = re.match(r'^/products/product_cat-([a-z-]+)/$', url)
+    if cat and '-or-' not in url:
+        slug = cat.group(1)
+        name = CATEGORY_NAMES.get(slug, slug.replace('-', ' ').title())
+        s = set_robots(s, INDEX_ROBOTS)
+        s = set_title(s, 'Wholesale %s | Crown Plastic & Paper' % name,
+                      'Buy %s wholesale from Crown Plastic & Paper in Houston, TX. Bulk cases and pallets for '
+                      'distributors, restaurants and food service businesses. Request a quote.' % name.lower())
+    blogcat = re.match(r'^/category/([a-z-]+)/$', url)
+    if blogcat and url not in NOINDEX_PAGES and not re.search(r'<meta name="description"', s):
+        name = blogcat.group(1).replace('-', ' ')
+        s = set_title(s, '%s Articles | Crown Plastic & Paper' % name.title(),
+                      'Guides and articles on %s for food service and wholesale buyers, from Crown Plastic & Paper.' % name)
+    if url in FIX_TITLES:
+        s = set_title(s, *FIX_TITLES[url])
+    if url in NOINDEX_PAGES:
+        s = set_robots(s, 'noindex, follow')
+    if url in INDEX_PAGES:
+        s = set_robots(s, INDEX_ROBOTS)
+    if 'og:image' not in s:
+        s = s.replace('</head>', '<meta property="og:image" content="%s">\n<meta name="twitter:card" content="summary_large_image">\n</head>' % DEFAULT_OG_IMAGE, 1)
+    # One description per page (some pages had two from different plugins).
+    seen = []
+    s = re.sub(r'<meta name="description"[^>]*>\s*', lambda m: '' if seen else (seen.append(1) or m.group(0)), s)
+    return drop_ratings(s)
+
+
+def indexable(s, url):
+    r = re.search(r"<meta name=[\"']robots[\"'] content=[\"']([^\"']*)", s)
+    return not (r and 'noindex' in r.group(1)) and not SITEMAP_SKIP.search(url)
+
+
 def rebrand(s):
     """This is Crown's site: replace the AR Unlimited Supply name (titles, Google data, text)."""
     if BRAND_OLD not in s:
@@ -179,7 +277,7 @@ def webp_swap(s, page_dir):
     return s
 
 
-def upgrade_html(path, snippets, search_items):
+def upgrade_html(path, snippets, search_items, sitemap):
     s = open(path, encoding='utf-8', errors='ignore').read()
     if MARK in s:
         return False
@@ -197,6 +295,7 @@ def upgrade_html(path, snippets, search_items):
     s = rebrand(s)
     s = recolor(s)
     s = fix_ldjson(s)
+    s = seo(s, url)
     s = s.replace('@www.crownplasticandpaper.com', '@crownplasticandpaper.com')
     s = s.replace('Copyright © 2025 AR Unlimited Supply', 'Copyright © %s Crown Plastic &#038; Paper' % YEAR)
     s = re.sub(r'Copyright © 2025 Crown', 'Copyright © %s Crown' % YEAR, s)
@@ -273,6 +372,9 @@ def upgrade_html(path, snippets, search_items):
     tail = snippets['bar'] + '<script src="/upgrade/upgrade.js" defer></script>'
     s = s.replace('</body>', tail + '</body>', 1)
     open(path, 'w', encoding='utf-8').write(s)
+    if os.path.basename(path) == 'index.html' and indexable(s, url):
+        mod = re.search(r'<meta property="article:modified_time" content="([^"]{10})', s)
+        sitemap.append((url, mod.group(1) if mod else None))
 
     # --- search index -------------------------------------------------------------
     kind = None
@@ -325,14 +427,14 @@ def main():
         open(os.path.join(out, name), 'w', encoding='utf-8').write(recolor(src))
 
     pages = css = 0
-    items = []
+    items, sitemap = [], []
     for d, dirs, files in os.walk(SITE):
         if os.path.abspath(d).startswith(os.path.abspath(out)):
             continue
         for f in files:
             p = os.path.join(d, f)
             if f.endswith('.html'):
-                pages += upgrade_html(p, snippets, items)
+                pages += upgrade_html(p, snippets, items, sitemap)
             elif f.endswith('.css') or '.css@' in f:
                 css += upgrade_css(p)
     seen, uniq = set(), []
@@ -341,6 +443,16 @@ def main():
             seen.add(it['u'])
             uniq.append(it)
     json.dump(uniq, open(os.path.join(out, 'search-index.json'), 'w'), ensure_ascii=False, separators=(',', ':'))
+    # sitemap.xml and robots.txt (WordPress's were not part of the copy)
+    urls = sorted(sitemap, key=lambda x: (x[0] != '/', x[0].count('/'), x[0]))
+    with open(os.path.join(SITE, 'sitemap.xml'), 'w', encoding='utf-8') as f:
+        f.write('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n')
+        for u, mod in urls:
+            f.write('  <url><loc>%s%s</loc>%s</url>\n' % (ORIGIN, html.escape(u), '<lastmod>%s</lastmod>' % mod if mod else ''))
+        f.write('</urlset>\n')
+    with open(os.path.join(SITE, 'robots.txt'), 'w', encoding='utf-8') as f:
+        f.write('User-agent: *\nAllow: /\nDisallow: /upgrade/search-index.json\n\nSitemap: %s/sitemap.xml\n' % ORIGIN)
+    print('sitemap: %d urls' % len(urls))
     # Branded "page not found" (Vercel serves /404.html for unknown paths).
     open(os.path.join(SITE, '404.html'), 'w', encoding='utf-8').write(
         recolor(open(os.path.join(ASSETS, '404.html'), encoding='utf-8').read()))
