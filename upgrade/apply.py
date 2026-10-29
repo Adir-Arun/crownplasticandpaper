@@ -473,7 +473,7 @@ def upgrade_html(path, snippets, search_items, sitemap):
     s = re.sub(r'<li[^>]*>\s*<a[^>]*page_id=66[^>]*>\s*Home old\s*</a>\s*</li>', '', s)
 
     # --- About Us video still showed an AR Unlimited Supply truck: use the Crown warehouse photo
-    s = s.replace('img_arus_about_bg.png', 'img_crown_Your-One-Stop-Supply-Partner.png.webp')  # 36KB, not 368KB
+    s = s.replace('/wp-content/uploads/2026/01/img_arus_about_bg.png', '/wp-content/uploads/2026/10/crown-warehouse-floor-1086.webp')  # real Crown warehouse photo
     s = FORM_ICON_RE.sub(r'icn_crown_form_\1-line.svg', s)
 
     # --- testimonial titles mixed straight and curly quotes: use curly everywhere
@@ -722,6 +722,10 @@ def main():
     print('sitemap: %d urls' % len(urls))
     for name in os.listdir(os.path.join(ASSETS, 'icons')):
         shutil.copy(os.path.join(ASSETS, 'icons', name), os.path.join(SITE, name))
+    photo_dir = os.path.join(SITE, 'wp-content', 'uploads', '2026', '10')
+    os.makedirs(photo_dir, exist_ok=True)
+    for name in os.listdir(os.path.join(ASSETS, 'photos')):
+        shutil.copy(os.path.join(ASSETS, 'photos', name), os.path.join(photo_dir, name))
     icon_dir = os.path.join(SITE, 'wp-content', 'uploads', '2026', '03')
     if os.path.isdir(icon_dir):
         for name in os.listdir(os.path.join(ASSETS, 'form-icons')):
