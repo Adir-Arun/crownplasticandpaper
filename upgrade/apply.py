@@ -20,8 +20,8 @@ ASSETS = os.path.join(HERE, 'assets')
 MARK = 'data-cpp-upgrade'
 ORIGIN = 'https://www.crownplasticandpaper.com'
 
-PHONE_TEXT = '(844) 900-8801'
-PHONE_TEL = 'tel:+18449008801'
+PHONE_TEXT = '(844) 900-8804'
+PHONE_TEL = 'tel:+18449008804'
 EMAIL = 'info@crownplasticandpaper.com'
 CATALOG = 'https://heyzine.com/flip-book/0ee04dad9c.html#page/13'
 YEAR = '2026'
@@ -136,9 +136,11 @@ def upgrade_html(path, snippets, search_items):
     url = page_url(path)
 
     # --- content consistency -------------------------------------------------
-    s = s.replace('(844) 900-0084', PHONE_TEXT)
-    s = re.sub(r'tel:[^"]*900(?:%20|[-. ])?0084', PHONE_TEL, s)
-    s = re.sub(r'tel:\(844\)%20900-8801|tel:844%20900%208801', PHONE_TEL, s)
+    # The WordPress site shows two wrong numbers (900-0084 and 900-8801); the real one is 900-8804.
+    s = re.sub(r'\(844\) 900-(?:0084|8801)', PHONE_TEXT, s)
+    s = re.sub(r'tel:[^"]*?844[^"]*?900(?:%20|[-. ])?(?:0084|8801|8804)', PHONE_TEL, s)
+    s = re.sub(r'href="tell?:[^"]*?844[^"]*?900[^"]*?(?:0084|8801|8804)"', 'href="%s"' % PHONE_TEL, s)
+    s = re.sub(r'844-900-(?:0084|8801)', '844-900-8804', s)  # plain text and schema.org "telephone"
     s = re.sub(r'Sales@www\.crownplasticandpaper\.com', EMAIL, s, flags=re.I)
     s = s.replace('@www.crownplasticandpaper.com', '@crownplasticandpaper.com')
     s = s.replace('Copyright © 2025 AR Unlimited Supply', 'Copyright © %s Crown Plastic &#038; Paper' % YEAR)

@@ -2,7 +2,7 @@
 (function () {
   'use strict';
   var EMAIL = 'info@crownplasticandpaper.com';
-  var PHONE = '(844) 900-8801';
+  var PHONE = '(844) 900-8804';
   var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   /* ---------- shipping map: draw routes when it scrolls into view ---------- */
@@ -84,7 +84,7 @@
         return '<a role="option" id="' + id + '-' + i + '" aria-selected="false" href="' + esc(it.u) + '">' +
           (it.i ? '<img src="' + esc(it.i) + '" alt="" loading="lazy" decoding="async">' : '<span></span>') +
           '<span><b>' + esc(it.n) + '</b><small>' + esc(it.k) + '</small></span></a>';
-      }).join('') : '<div class="cpp-empty">No products match “' + esc(q) + '”. Try another word, or call <a href="tel:+18449008801">' + PHONE + '</a>.</div>';
+      }).join('') : '<div class="cpp-empty">No products match “' + esc(q) + '”. Try another word, or call <a href="tel:+18449008804">' + PHONE + '</a>.</div>';
       list.hidden = false; input.setAttribute('aria-expanded', 'true');
     }
     function move(d) {
@@ -150,7 +150,7 @@
     var body = lines.join('\n') + '\n\nSent from ' + location.href;
     var href = 'mailto:' + EMAIL + '?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body);
     note(form, 'Opening your email app with your message to <a href="mailto:' + EMAIL + '">' + EMAIL + '</a>. ' +
-      'Nothing opened? Email us directly or call <a href="tel:+18449008801">' + PHONE + '</a>.');
+      'Nothing opened? Email us directly or call <a href="tel:+18449008804">' + PHONE + '</a>.');
     window.location.href = href;
   }, true);
 
