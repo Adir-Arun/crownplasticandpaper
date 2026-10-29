@@ -132,3 +132,90 @@ p { text-wrap: pretty; }
   .cpp-map.is-pre .arm-dots circle { opacity: 1; transform: none; }
   .cpp-bar, .cpp-results { transition: none; animation: none; }
 }
+
+/* ---------- quote builder (replaces the broken bulk-quote shortcode) ---------- */
+.cpp-quote-form { font-family: inherit; color: var(--cpp-navy); text-align: left; display: grid; gap: 28px; }
+.cpp-quote-form fieldset { border: 0; margin: 0; padding: 0; min-width: 0; }
+.cpp-quote-form legend { font-size: 20px; font-weight: 700; letter-spacing: -0.01em; padding: 0; margin-bottom: 6px; }
+.cpp-q-help { margin: 0 0 16px; color: #475569; font-size: 15px; }
+.cpp-quote-form label { display: block; font-size: 14px; font-weight: 600; margin-bottom: 6px; color: var(--cpp-navy); }
+.cpp-quote-form label span { color: #B42318; }
+.cpp-quote-form input, .cpp-quote-form select, .cpp-quote-form textarea {
+  width: 100%; font: inherit; font-size: 16px; color: var(--cpp-navy); background: #fff;
+  border: 1px solid #CBD5E1; border-radius: 8px; min-height: 48px; padding: 10px 14px;
+  transition: border-color 160ms ease, box-shadow 160ms ease;
+}
+.cpp-quote-form textarea { min-height: 112px; resize: vertical; }
+.cpp-quote-form select { appearance: none; -webkit-appearance: none; padding-right: 40px;
+  background: #fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%231F4959' stroke-width='2' stroke-linecap='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E") no-repeat right 12px center / 18px; }
+.cpp-quote-form input:focus, .cpp-quote-form select:focus, .cpp-quote-form textarea:focus { border-color: var(--cpp-teal); box-shadow: 0 0 0 3px rgba(31, 73, 89, .14); outline: none; }
+.cpp-quote-form :user-invalid { border-color: #B42318; }
+.cpp-lines { display: grid; gap: 12px; }
+.cpp-line { display: grid; grid-template-columns: minmax(0, 2.2fr) minmax(0, 1.6fr) minmax(0, .8fr) minmax(0, 1fr) 44px; gap: 12px; align-items: end;
+  background: var(--cpp-ice); border-radius: 12px; padding: 16px; }
+.cpp-line-remove { width: 44px; height: 48px; border: 0; border-radius: 8px; background: transparent; color: var(--cpp-slate); cursor: pointer; display: grid; place-items: center; transition: background-color 160ms ease, color 160ms ease; }
+.cpp-line-remove[hidden] { display: grid; visibility: hidden; }
+.cpp-line-remove:hover { background: #fff; color: #B42318; }
+.cpp-quote-form svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.cpp-add-line { margin-top: 12px; display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 16px; font: inherit; font-weight: 700; font-size: 15px;
+  color: var(--cpp-teal); background: #fff; border: 1.5px dashed #9FB7C3; border-radius: 8px; cursor: pointer; transition: border-color 160ms ease, background-color 160ms ease, transform 140ms var(--cpp-ease); }
+.cpp-add-line:hover { border-color: var(--cpp-teal); background: var(--cpp-ice); }
+.cpp-add-line:active, .cpp-line-remove:active { transform: scale(0.97); }
+.cpp-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.cpp-f--wide { grid-column: 1 / -1; }
+.cpp-hp { position: absolute !important; left: -9999px !important; width: 1px; height: 1px; opacity: 0; }
+.cpp-q-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 20px; }
+.cpp-quote-form .cpp-q-submit { border: 0; cursor: pointer; min-height: 52px; padding: 0 28px; font: inherit; font-weight: 700; font-size: 16px; border-radius: 8px;
+  background: var(--cpp-navy); color: #fff; }
+.cpp-quote-form .cpp-q-submit:hover { background: var(--cpp-teal); }
+.cpp-q-fine { margin: 0; font-size: 14px; color: #475569; }
+.cpp-q-fine a { color: var(--cpp-teal); font-weight: 600; }
+.cpp-quote-form .cpp-form-note { grid-column: 1 / -1; }
+@media (max-width: 767px) {
+  .cpp-line { grid-template-columns: 1fr 1fr; padding: 14px; }
+  .cpp-f--product, .cpp-f--details { grid-column: 1 / -1; }
+  .cpp-line-remove { grid-column: 1 / -1; width: 100%; height: 40px; }
+  .cpp-line-remove[hidden] { display: none; }
+  .cpp-grid { grid-template-columns: 1fr; }
+  .cpp-quote-form .cpp-q-submit { width: 100%; }
+}
+
+/* ---------- product page: print spec sheet button ---------- */
+.cpp-has-print { display: flex !important; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.cpp-print { display: inline-flex; align-items: center; gap: 8px; min-height: 40px; padding: 0 14px; font: inherit; font-size: 14px; font-weight: 600;
+  color: var(--cpp-teal); background: #fff; border: 1px solid #CBD5E1; border-radius: 8px; cursor: pointer; transition: border-color 160ms ease, transform 140ms var(--cpp-ease); }
+.cpp-print:hover { border-color: var(--cpp-teal); }
+.cpp-print:active { transform: scale(0.97); }
+.cpp-print svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.cpp-print-head { display: none; }
+
+/* ---------- back to top ---------- */
+.cpp-totop { position: fixed; right: 20px; bottom: 24px; z-index: 9980; width: 48px; height: 48px; border-radius: 50%; border: 0; cursor: pointer;
+  background: var(--cpp-navy); color: #fff; display: grid; place-items: center; box-shadow: 0 8px 20px -6px rgba(1, 20, 37, .45);
+  opacity: 0; transform: translateY(12px) scale(.9); pointer-events: none; transition: opacity 200ms ease, transform 220ms var(--cpp-ease), background-color 160ms ease; }
+.cpp-totop.is-on { opacity: 1; transform: none; pointer-events: auto; }
+.cpp-totop:hover { background: var(--cpp-teal); }
+.cpp-totop svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+@media (max-width: 767px) { .cpp-totop { bottom: 92px; right: 16px; width: 44px; height: 44px; } }
+
+/* ---------- blog posts: reading progress and time ---------- */
+.cpp-progress { position: fixed; top: 0; left: 0; right: 0; height: 3px; z-index: 10000; background: var(--cpp-teal); transform-origin: 0 50%; transform: scaleX(0); pointer-events: none; }
+.cpp-readtime svg { fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; }
+
+@media (prefers-reduced-motion: reduce) {
+  .cpp-totop, .cpp-add-line, .cpp-print { transition: none; }
+}
+
+/* ---------- print: clean spec sheet / page printout ---------- */
+@media print {
+  [data-elementor-type="header"], [data-elementor-type="footer"], [data-elementor-type="popup"], .cpp-bar, .cpp-totop, .cpp-print,
+  .cpp-progress, .cpp-results, #product-detail-quote, .elementor-location-popup, .related, .up-sells { display: none !important; }
+  .cpp-print-head { display: flex; justify-content: space-between; align-items: baseline; border-bottom: 2px solid #011425; padding: 0 0 8px; margin-bottom: 16px; font: 12px/1.4 "Satoshi", system-ui, sans-serif; color: #011425; }
+  .cpp-print-head strong { font-size: 16px; }
+  body { background: #fff !important; }
+  * { box-shadow: none !important; animation: none !important; transition: none !important; }
+  a[href^="http"]::after { content: none; }
+}
+
+/* reCAPTCHA is keyed to the WordPress domain and shows an error box here; forms use FormSubmit instead */
+.grecaptcha-badge { display: none !important; }

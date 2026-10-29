@@ -50,6 +50,22 @@ BRAND_NEW = 'Crown Plastic & Paper'
 LDJSON_RE = re.compile(r'(<script[^>]*application/ld\+json[^>]*>)(.*?)(</script>)', re.S)
 
 
+BUSINESS_LD = {
+    '@context': 'https://schema.org',
+    '@type': 'WholesaleStore',
+    '@id': ORIGIN + '/#business',
+    'name': 'Crown Plastic & Paper',
+    'url': ORIGIN + '/',
+    'logo': ORIGIN + '/wp-content/uploads/2026/01/icn_crown_logo.svg',
+    'telephone': '+1-844-900-8804',
+    'email': EMAIL,
+    'address': {'@type': 'PostalAddress', 'streetAddress': '7350 Langfield Rd', 'addressLocality': 'Houston',
+                'addressRegion': 'TX', 'postalCode': '77092', 'addressCountry': 'US'},
+    'areaServed': 'US',
+    'description': 'Wholesale disposable food service packaging: cups, containers, foil, paper and gloves, shipped from Houston, Texas.',
+}
+
+
 def rebrand(s):
     """This is Crown's site: replace the AR Unlimited Supply name (titles, Google data, text)."""
     if BRAND_OLD not in s:
@@ -228,6 +244,16 @@ def upgrade_html(path, snippets, search_items):
         if i > 0 and k > 0:
             s = s[:k] + snippets['map'] + s[k:]
 
+    # --- quote page: the bulk-quote plugin shortcode never rendered; use our quote builder
+    s = s.replace('<div class="elementor-shortcode">[dppq_bulk_products]</div>',
+                  '<div class="elementor-shortcode">%s</div>' % snippets['quote'])
+
+    # --- brand colour for mobile browser chrome, and business details for Google --------
+    if 'name="theme-color"' not in s:
+        s = s.replace('</head>', '<meta name="theme-color" content="#011425">\n</head>', 1)
+    if url in ('/', '/contact-us/'):
+        s = s.replace('</head>', '<script type="application/ld+json">%s</script>\n</head>' % json.dumps(BUSINESS_LD), 1)
+
     # --- injected layer ---------------------------------------------------------
     head = ('<link rel="stylesheet" href="/upgrade/upgrade.css" %s>' % MARK)
     if POLISH:
@@ -279,6 +305,7 @@ def main():
     snippets = {
         'map': open(os.path.join(ASSETS, 'map-section.html'), encoding='utf-8').read(),
         'bar': open(os.path.join(ASSETS, 'action-bar.html'), encoding='utf-8').read(),
+        'quote': open(os.path.join(ASSETS, 'quote-form.html'), encoding='utf-8').read(),
     }
     out = os.path.join(SITE, 'upgrade')
     os.makedirs(out, exist_ok=True)
@@ -302,6 +329,8 @@ def main():
             seen.add(it['u'])
             uniq.append(it)
     json.dump(uniq, open(os.path.join(out, 'search-index.json'), 'w'), ensure_ascii=False, separators=(',', ':'))
+    # Branded "page not found" (Vercel serves /404.html for unknown paths).
+    shutil.copy(os.path.join(ASSETS, '404.html'), os.path.join(SITE, '404.html'))
     print('upgraded %d pages, %d stylesheets, %d search entries' % (pages, css, len(uniq)))
     return 0
 

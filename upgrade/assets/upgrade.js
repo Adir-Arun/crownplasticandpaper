@@ -137,14 +137,25 @@
   }
   document.addEventListener('submit', function (e) {
     var form = e.target;
-    if (!form.matches || !form.matches('form.elementor-form')) return;
+    if (!form.matches || !form.matches('form.elementor-form, form.cpp-quote-form')) return;
+    var isQuote = form.classList.contains('cpp-quote-form');
     e.preventDefault(); e.stopImmediatePropagation();
     if (form.dataset.cppSending) return;
     if (form.checkValidity && !form.checkValidity()) { form.reportValidity(); return; }
 
     var data = {}, lines = [], email = '', spam = false;
+    if (isQuote) {
+      form.querySelectorAll('.cpp-line').forEach(function (row, n) {
+        var v = function (sel) { var el = row.querySelector(sel); return el ? el.value.trim() : ''; };
+        var product = v('select'), details = v('[name="details"]'), qty = v('[name="qty"]'), unit = v('[name="unit"]');
+        if (!product) return;
+        var line = product + (details ? ', ' + details : '') + (qty ? ', ' + qty + ' ' + unit.toLowerCase() : '');
+        data['Product ' + (n + 1)] = line; lines.push('Product ' + (n + 1) + ': ' + line);
+      });
+    }
     form.querySelectorAll('input, textarea, select').forEach(function (el) {
       if (['submit', 'button'].indexOf(el.type) >= 0) return;
+      if (isQuote && el.closest('.cpp-line')) return;
       if (/honey/i.test(el.name || '')) { if (el.value) spam = true; return; }
       if (el.type === 'hidden' || !el.value) return;
       if ((el.type === 'checkbox' || el.type === 'radio') && !el.checked) return;
@@ -155,7 +166,8 @@
     });
     var name = (form.getAttribute('name') || '').toLowerCase();
     var isNewsletter = lines.length <= 1 && !!email;
-    var subject = isNewsletter ? 'Newsletter signup' : (/quote/.test(name + location.pathname) ? 'Quote request' : 'Website inquiry');
+    var subject = isQuote ? 'Quote request' : isNewsletter ? 'Newsletter signup' : (/quote/.test(name + location.pathname) ? 'Quote request' : 'Website inquiry');
+    if (isQuote && data['Company']) subject += ' from ' + data['Company'];
     var page = document.title.split('|')[0].trim();
     data._subject = subject + ' - crownplasticandpaper.com';
     data._template = 'table';
@@ -177,6 +189,7 @@
       note(form, reason + ' Please <a href="' + href + '">email your message</a> instead, or call <a href="tel:+18449008804">' + PHONE + '</a>.', true);
     }
     if (spam) { form.reset(); note(form, 'Thanks, your message was sent.'); return; }
+    if (isQuote && !lines.length) { note(form, 'Please choose at least one product.', true); return; }
 
     setBusy(true);
     var ctrl = 'AbortController' in window ? new AbortController() : null;
@@ -191,6 +204,7 @@
         clearTimeout(timer); setBusy(false);
         if (res && (res.success === true || res.success === 'true')) {
           form.reset();
+          if (isQuote) { resetQuoteLines(form); note(form, '<strong>Thanks, your quote request was sent.</strong> Our sales team will reply to ' + email + ' with pricing.'); return; }
           note(form, isNewsletter ? 'Thanks for subscribing. We\u2019ll send product and inventory updates to ' + email + '.'
             : 'Thanks, your message was sent. Our team will get back to you soon.');
         } else {
@@ -226,8 +240,165 @@
     });
   }
 
+  /* ---------- quote builder (Get Your Quote page) ---------- */
+  function resetQuoteLines(form) {
+    form.querySelectorAll('.cpp-line').forEach(function (row, i) { if (i) row.remove(); });
+    syncLines(form);
+  }
+  function syncLines(form) {
+    var rows = form.querySelectorAll('.cpp-line');
+    rows.forEach(function (row, i) {
+      var n = i + 1;
+      row.querySelectorAll('[id^="cpp-q-"]').forEach(function (el) {
+        var base = el.id.replace(/-\d+$/, '');
+        var lab = row.querySelector('label[for="' + el.id + '"]');
+        el.id = base + '-' + n; if (lab) lab.setAttribute('for', el.id);
+      });
+      var rm = row.querySelector('.cpp-line-remove');
+      rm.hidden = rows.length < 2;
+      rm.setAttribute('aria-label', 'Remove product ' + n);
+    });
+  }
+  function fillProducts(select, items) {
+    if (select.dataset.cppFilled) return;
+    select.dataset.cppFilled = '1';
+    items.forEach(function (it) { var o = document.createElement('option'); o.textContent = it.n; select.appendChild(o); });
+    var other = document.createElement('option'); other.textContent = 'Something else (describe in details)'; select.appendChild(other);
+  }
+  function choose(select, name) {
+    if (!name) return;
+    var want = name.toLowerCase().trim(), hit = null;
+    Array.prototype.forEach.call(select.options, function (o) { if (!hit && o.value.toLowerCase() === want) hit = o; });
+    if (!hit) { hit = document.createElement('option'); hit.textContent = name; select.insertBefore(hit, select.options[1] || null); }
+    select.value = hit.value;
+  }
+  function initQuote() {
+    var form = document.querySelector('form.cpp-quote-form');
+    if (!form) return;
+    var tpl = form.querySelector('.cpp-line').cloneNode(true);
+    var params = new URLSearchParams(location.search);
+    loadIndex().then(function (all) {
+      var items = all.filter(function (x) { return x.k === 'Product'; });
+      if (!items.length) throw new Error('no products');
+      form._cppItems = items;
+      form.querySelectorAll('select[data-cpp-products]').forEach(function (sel) { fillProducts(sel, items); });
+      var first = form.querySelector('.cpp-line');
+      choose(first.querySelector('select'), params.get('product'));
+      if (params.get('details')) first.querySelector('[name="details"]').value = params.get('details');
+    }).catch(function () {
+      // No product list: let people type the product instead.
+      form.querySelectorAll('select[data-cpp-products]').forEach(function (sel) {
+        var inp = document.createElement('input'); inp.type = 'text'; inp.id = sel.id; inp.name = 'product'; inp.required = true;
+        inp.value = params.get('product') || ''; sel.replaceWith(inp);
+      });
+    });
+    form.querySelector('.cpp-add-line').addEventListener('click', function () {
+      var row = tpl.cloneNode(true);
+      row.querySelectorAll('input').forEach(function (i) { i.value = ''; });
+      var sel = row.querySelector('select[data-cpp-products]');
+      sel.removeAttribute('data-cpp-filled'); sel.required = false;
+      if (form._cppItems) fillProducts(sel, form._cppItems);
+      form.querySelector('.cpp-lines').appendChild(row);
+      syncLines(form);
+      sel.focus();
+    });
+    form.addEventListener('click', function (e) {
+      var rm = e.target.closest('.cpp-line-remove');
+      if (!rm) return;
+      var row = rm.closest('.cpp-line'), prev = row.previousElementSibling || row.nextElementSibling;
+      row.remove(); syncLines(form);
+      if (prev) prev.querySelector('select, input').focus();
+    });
+  }
+
+  /* ---------- product page: "Price Upon Request" opens the quote form for this product ---------- */
+  document.addEventListener('click', function (e) {
+    var btn = e.target.closest && e.target.closest('#product-detail-quote');
+    if (!btn) return;
+    e.preventDefault();
+    var title = document.querySelector('h1.product_title, .product_title, h1');
+    var details = [];
+    document.querySelectorAll('table.variations select').forEach(function (sel) {
+      if (!sel.value) return;
+      var lab = sel.id && document.querySelector('table.variations label[for="' + sel.id + '"]');
+      details.push((lab ? lab.textContent.trim() + ' ' : '') + sel.options[sel.selectedIndex].text.trim());
+    });
+    var q = '?product=' + encodeURIComponent(title ? title.textContent.trim() : '');
+    if (details.length) q += '&details=' + encodeURIComponent(details.join(', '));
+    location.href = '/get-your-quote/' + q;
+  }, true);
+  function initQuoteButton() {
+    var a = document.getElementById('product-detail-quote');
+    if (a && !a.getAttribute('href')) a.setAttribute('href', '/get-your-quote/');
+  }
+
+  /* ---------- product page: printable spec sheet ---------- */
+  function initSpecPrint() {
+    if (!/^\/product\//.test(location.pathname)) return;
+    var h = Array.prototype.find.call(document.querySelectorAll('.elementor-heading-title'), function (x) { return x.textContent.trim() === 'Specifications'; });
+    if (!h) return;
+    var b = document.createElement('button');
+    b.type = 'button'; b.className = 'cpp-print';
+    b.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 9V3h10v6M7 17H5a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2h-2M7 14h10v7H7z"/></svg>Print spec sheet';
+    b.addEventListener('click', function () { window.print(); });
+    var widget = h.closest('.elementor-widget');
+    widget.classList.add('cpp-has-print');
+    widget.appendChild(b);
+    var ph = document.createElement('div');
+    ph.className = 'cpp-print-head';
+    ph.innerHTML = '<strong>Crown Plastic &amp; Paper</strong><span>' + PHONE + ' · ' + EMAIL + ' · crownplasticandpaper.com</span>';
+    document.body.insertBefore(ph, document.body.firstChild);
+  }
+
+  /* ---------- back to top ---------- */
+  function initToTop() {
+    var b = document.createElement('button');
+    b.type = 'button'; b.className = 'cpp-totop'; b.setAttribute('aria-label', 'Back to top');
+    b.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7"/></svg>';
+    b.addEventListener('click', function () {
+      window.scrollTo({ top: 0, behavior: reduce ? 'auto' : 'smooth' });
+      var skip = document.getElementById('content'); if (skip) skip.focus({ preventScroll: true });
+    });
+    document.body.appendChild(b);
+    var ticking = false;
+    window.addEventListener('scroll', function () {
+      if (ticking) return; ticking = true;
+      requestAnimationFrame(function () { b.classList.toggle('is-on', window.scrollY > window.innerHeight * 1.5); ticking = false; });
+    }, { passive: true });
+  }
+
+  /* ---------- blog posts: reading time and progress ---------- */
+  function initArticle() {
+    if (!document.body.classList.contains('single-post')) return;
+    var body = document.querySelector('.elementor-widget-theme-post-content');
+    if (!body) return;
+    var words = (body.textContent || '').trim().split(/\s+/).length;
+    var mins = Math.max(1, Math.round(words / 225));
+    var info = document.querySelector('ul.elementor-post-info');
+    if (info) {
+      var li = document.createElement('li');
+      li.className = 'elementor-icon-list-item elementor-inline-item cpp-readtime';
+      li.innerHTML = '<span class="elementor-icon-list-icon"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span><span class="elementor-icon-list-text">' + mins + ' min read</span>';
+      info.appendChild(li);
+    }
+    var bar = document.createElement('div');
+    bar.className = 'cpp-progress'; bar.setAttribute('aria-hidden', 'true');
+    document.body.appendChild(bar);
+    var update = function () {
+      var r = body.getBoundingClientRect();
+      var total = r.height - window.innerHeight * 0.6;
+      var p = total > 0 ? Math.min(1, Math.max(0, -r.top / total)) : 1;
+      bar.style.transform = 'scaleX(' + p.toFixed(4) + ')';
+    };
+    window.addEventListener('scroll', function () { requestAnimationFrame(update); }, { passive: true });
+    update();
+  }
+
   /* ---------- init ---------- */
-  function init() { enhanceAllSearch(); enhanceFields(); }
+  function init() {
+    enhanceAllSearch(); enhanceFields();
+    [initQuote, initQuoteButton, initSpecPrint, initToTop, initArticle].forEach(function (f) { try { f(); } catch (err) { if (window.console) console.warn('cpp', err); } });
+  }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init); else init();
   // Elementor renders some widgets late; pick up search forms that appear afterwards.
   window.addEventListener('load', function () {
