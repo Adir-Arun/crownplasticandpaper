@@ -208,10 +208,10 @@
           note(form, isNewsletter ? 'Thanks for subscribing. We\u2019ll send product and inventory updates to ' + email + '.'
             : 'Thanks, your message was sent. Our team will get back to you soon.');
         } else {
-          fallback('We couldn\u2019t send your message right now.');
+          fallback('Your message didn\u2019t send.');
         }
       })
-      .catch(function () { clearTimeout(timer); setBusy(false); fallback('We couldn\u2019t reach our message service.'); });
+      .catch(function () { clearTimeout(timer); setBusy(false); fallback('The message service didn\u2019t respond.'); });
   }, true);
 
   /* ---------- form fields: right keyboard and autofill ---------- */
@@ -343,7 +343,7 @@
     if (!h) return;
     var b = document.createElement('button');
     b.type = 'button'; b.className = 'cpp-print';
-    b.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 9V3h10v6M7 17H5a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2h-2M7 14h10v7H7z"/></svg>Print spec sheet';
+    b.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 9V3h10v6M7 17H5a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2h-2M7 14h10v7H7z"/></svg>Print Spec Sheet';
     b.addEventListener('click', function () { window.print(); });
     var widget = h.closest('.elementor-widget');
     widget.classList.add('cpp-has-print');

@@ -50,11 +50,11 @@ body { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; 
 .icn-color-change a.e-con,
 .home-new-latest-insights,
 .ts-category-product-grid .product-card > a {
-  transition: transform 220ms cubic-bezier(0.23, 1, 0.32, 1), box-shadow 220ms ease, border-color 220ms ease;
+  transition: transform 200ms cubic-bezier(0.23, 1, 0.32, 1), box-shadow 200ms ease, border-color 200ms ease;
 }
 .icn-color-change a.e-con { box-shadow: var(--cpp-shadow-sm); }
 .icn-color-change a.e-con img,
-.ts-category-product-grid .product-card img { transition: transform 320ms cubic-bezier(0.23, 1, 0.32, 1); }
+.ts-category-product-grid .product-card img { transition: transform 200ms cubic-bezier(0.23, 1, 0.32, 1); }
 @media (hover: hover) and (pointer: fine) {
   .icn-color-change a.e-con:hover { transform: translateY(-3px); box-shadow: var(--cpp-shadow-md); border-color: var(--cpp-line-hover) !important; }
   .icn-color-change a.e-con:hover img { transform: scale(1.06); }
@@ -63,7 +63,7 @@ body { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; 
   .ts-category-product-grid .product-card > a:hover .woocommerce-loop-product__title { color: var(--cpp-teal); }
 }
 .icn-color-change a.e-con:active { transform: translateY(-1px) scale(0.985); }
-.home-new-latest-insights img { transition: transform 420ms cubic-bezier(0.23, 1, 0.32, 1); }
+.home-new-latest-insights img { transition: transform 200ms cubic-bezier(0.23, 1, 0.32, 1); }
 @media (hover: hover) and (pointer: fine) { .home-new-latest-insights:hover img { transform: scale(1.03); } }
 .ts-category-product-grid .product-card > a { display: block; border-radius: 12px; }
 .ts-category-product-grid .product-card .woocommerce-loop-product__title { transition: color 180ms ease; }
@@ -240,3 +240,35 @@ img[src*="element_arus_hero"], img[data-lazy-src*="element_arus_hero"] { visibil
 .home-new-latest-insights .elementor-element-05bc7ce img { width: 100% !important; height: auto !important; aspect-ratio: 16 / 10; object-fit: cover; }
 /* "Get In Contact" used a one-off teal; match the other section titles */
 .elementor-element-395f09e .elementor-heading-title { color: var(--cpp-navy) !important; }
+
+/* =========================================================================
+   Apple HIG pass (accessibility.md, typography.md, writing.md, buttons.md)
+   ========================================================================= */
+/* Controls: comfortable hit areas. HIG minimum is 28pt; footer and header text links were 17-21px tall. */
+.elementor-location-footer .elementor-nav-menu a, .elementor-location-footer a.elementor-item { min-height: 32px; display: inline-flex !important; align-items: center; }
+.elementor-location-header .elementor-icon-list-item > a { min-height: 28px; display: inline-flex; align-items: center; }
+.woocommerce-breadcrumb a { display: inline-block; padding: 6px 0; }
+.cpp-pre-cat { display: inline-block; padding: 8px 0; }
+@media (max-width: 767px) {
+  .elementor-location-footer .elementor-nav-menu a, .elementor-location-footer a.elementor-item { min-height: 40px; }
+  .wpc-filter-link { min-height: 40px; display: inline-flex !important; align-items: center; font-size: 14px !important; }
+}
+
+/* Type: nothing under 13px for reading text (blog card dates and topics were 12px; certificates 12px on phones) */
+.elementor-widget-post-info .elementor-icon-list-text, .elementor-post-info__terms-list-item { font-size: 13px !important; }
+@media (max-width: 767px) { .elementor-element-356c105 .elementor-icon-list-text { font-size: 14px !important; } }
+
+/* States: unavailable options say so to the pointer too (apple-ui-skills: disabled = not-allowed) */
+.cfvsw-swatches-option.cfvsw-swatches-disabled, .cfvsw-swatches-option.cfvsw-swatches-out-of-stock, .cfvsw-swatches-option.cfvsw-swatches-blur { cursor: not-allowed !important; }
+
+/* Share buttons: white on Twitter blue was 2.8:1; X's black is 21:1 */
+.elementor-share-btn_twitter { background-color: #000 !important; }
+.elementor-widget-post-info .elementor-post-info__terms-list a.elementor-post-info__terms-list-item, .elementor-widget-post-info .elementor-post-info__terms-list { font-size: 13px !important; }
+.cpp-pre-card dd a { display: inline-block; padding: 4px 0; }
+@media (max-width: 767px) {
+  .wpc-filter-link, .wpc-filter-link * { font-size: 14px !important; }
+  .single-product .elementor-icon-list--layout-inline .elementor-icon-list-text { font-size: 14px !important; }
+}
+.wpc-filters-ul-list .wpc-term-item a.wpc-filter-link { min-height: 28px; display: inline-flex !important; align-items: center; }
+@media (max-width: 767px) { .wpc-filters-ul-list .wpc-term-item a.wpc-filter-link { font-size: 14px !important; min-height: 40px; } }
+.elementor-widget-icon-list .elementor-icon-list-item > a { min-height: 28px; display: inline-flex; align-items: center; }

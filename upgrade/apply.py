@@ -20,7 +20,7 @@ ASSETS = os.path.join(HERE, 'assets')
 MARK = 'data-cpp-upgrade'
 # Brand palette refresh (chosen Oct 2026): the pale blue-grey and grey-teal become a warm
 # stone and a deep blue that sit better with the navy and cream. Set to {} to switch off.
-PALETTE = {'EEF5F8': 'F3F1EC', '1F4959': '163A5C'}
+PALETTE = {'EEF5F8': 'F3F1EC', '1F4959': '163A5C', '64748B': '566275'}  # 64748B failed 4.5:1 on stone
 PALETTE_RE = re.compile(r'#(%s)\b' % '|'.join(PALETTE), re.I) if PALETTE else None
 
 
@@ -348,6 +348,10 @@ def upgrade_html(path, snippets, search_items, sitemap):
 
     # --- testimonial titles mixed straight and curly quotes: use curly everywhere
     s = re.sub(r'(<h5 class="elementor-heading-title elementor-size-default">)"([^"<]{3,120})"(</h5>)', '\\1\u201c\\2\u201d\\3', s)
+
+    # --- labels say what happens (HIG writing.md): form buttons, contact title
+    s = s.replace('<span class="elementor-button-text">Submit</span>', '<span class="elementor-button-text">Send Message</span>')
+    s = s.replace('>Get In Contact<', '>Get in Touch<')
 
     # --- category bar: "New Arrivals" (it only linked to the shop page) becomes Disposable Gloves
     gloves = '/products/product_cat-gloves/'
