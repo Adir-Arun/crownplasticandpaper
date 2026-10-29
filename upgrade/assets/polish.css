@@ -512,3 +512,22 @@ img[src*="element_arus_hero"], img[data-lazy-src*="element_arus_hero"] { visibil
 /* calmer display weight for section headings site-wide */
 h1.elementor-heading-title, h2.elementor-heading-title { font-weight: 700 !important; letter-spacing: -0.018em; }
 .woocommerce-breadcrumb { gap: 0 !important; }
+
+/* =========================================================================
+   Mobile fixes: View All Products spacing, true-to-size portion cup, footer
+   ========================================================================= */
+/* portion cups are small: show them smaller than the 12-24 oz cups next to them */
+.cpp-best-link[href*="portion-cups"] .cpp-best-img img { top: 26%; left: 26%; width: 48%; height: 48%; }
+@media (max-width: 1024px) { .cpp-allprod { margin-top: 24px; } }
+@media (max-width: 767px) {
+  .cpp-allprod .cpp-btn, .cpp-allprod a { display: inline-flex; width: auto; padding-left: 28px; padding-right: 28px; }
+  /* footer: Products and Shop span the width in two columns, Company and Support side by side */
+  .elementor-element-2e6701c { row-gap: 28px !important; }
+  .elementor-element-2e6701c > .elementor-element-c83f966, .elementor-element-2e6701c > .elementor-element-334a0d7 { width: 100% !important; flex: 0 0 100% !important; max-width: 100% !important; }
+  .elementor-element-2e6701c .elementor-widget-nav-menu { width: 100% !important; }
+  .elementor-element-c83f966 .elementor-nav-menu--main .elementor-nav-menu, .elementor-element-334a0d7 .elementor-nav-menu--main .elementor-nav-menu { display: grid !important; grid-template-columns: 1fr 1fr; column-gap: 16px; }
+  .elementor-element-2e6701c .elementor-nav-menu--main .elementor-nav-menu > li { margin: 0 !important; }
+  .elementor-element-2e6701c .elementor-nav-menu--main .elementor-item { min-height: 40px; }
+  /* legal links: one centered block */
+  .elementor-element-536f213, .elementor-element-536f213 > .e-con-full { justify-content: center !important; align-items: center !important; text-align: center; }
+}
