@@ -246,3 +246,21 @@ button.cpp-totop:hover { background: var(--cpp-teal); }
 .cpp-bar__quote { min-width: 0; }
 .cpp-bar-label { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
 @media (max-width: 767px) { .cpp-bar a { font-size: 15px; gap: 6px; } }
+@media (max-width: 767px) {
+  .cpp-bar { grid-template-columns: 1fr 1fr 48px 1.6fr; }
+  .cpp-bar__wa { color: #128C4A !important; box-shadow: inset 0 0 0 1.5px #128C4A; }
+  .cpp-bar__wa svg { width: 22px; height: 22px; }
+}
+@media (min-width: 1025px) { .cpp-sticky-wa { color: #0F7A3F !important; font-weight: 600; font-size: 15px; text-decoration: none; padding: 8px 12px; border-radius: 8px; min-height: 36px; display: inline-flex; align-items: center; }
+  .cpp-sticky-wa:hover { background: #E8F5EC; } }
+@media (max-width: 767px) {
+  .cpp-bar { grid-template-columns: auto auto 46px minmax(0, 1fr); gap: 6px; }
+  .cpp-bar__call { padding: 0 12px; }
+  .cpp-bar__quote { padding: 0 10px; font-size: 15px; }
+}
+@media (max-width: 767px) {
+  .cpp-bar { grid-template-columns: 48px 48px 48px minmax(0, 1fr); }
+  .cpp-bar__call { padding: 0; font-size: 0 !important; gap: 0; }
+  .cpp-bar__call svg { width: 22px; height: 22px; }
+  .cpp-bar__quote { font-size: 16px; white-space: nowrap; }
+}
