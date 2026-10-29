@@ -342,6 +342,9 @@
   /* mobile quick bar: on a product page the quote button names the product */
   function initProductBar() {
     var name = productName();
+    if (name && /^\/product\//.test(location.pathname)) document.querySelectorAll('a[href^="https://wa.me/"]').forEach(function (w) {
+      w.href = w.href.split('?')[0] + '?text=' + encodeURIComponent('Hi Crown, I\'d like a quote for ' + name + ': ');
+    });
     var a = document.querySelector('.cpp-bar a[href*="get-your-quote"]');
     if (!name || !a || !/^\/product\//.test(location.pathname)) return;
     a.setAttribute('data-cpp-product-quote', '');
@@ -376,7 +379,7 @@
       x.innerHTML = '<p>Need pricing for a full supply list?</p>' +
         '<a class="cpp-btn cpp-btn--solid" href="/get-your-quote/">Request a Quote<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>' +
         '<a class="cpp-btn cpp-btn--line" href="https://heyzine.com/flip-book/0ee04dad9c.html#page/13" target="_blank" rel="noopener">View 2026 Catalog</a>' +
-        '<p class="cpp-cardx-text">Prefer to text? <a href="sms:+17136975320">(713) 697-5320</a></p>';
+        '<p class="cpp-cardx-text">Prefer to text? <a href="sms:+17136975320">(713) 697-5320</a> · <a href="https://wa.me/17136975320?text=Hi%20Crown%2C%20I%27d%20like%20a%20quote%20for%3A%20" target="_blank" rel="noopener">WhatsApp</a></p>';
       card.appendChild(x);
     }
   }
@@ -395,6 +398,7 @@
         '<a href="https://heyzine.com/flip-book/0ee04dad9c.html#page/13" target="_blank" rel="noopener" tabindex="-1">Catalog</a>' +
         '<a href="/about-us/" tabindex="-1">About Us</a><a href="/contact-us/" tabindex="-1">Contact</a></nav>' +
       '<a class="cpp-sticky-tel" href="tel:+18449008804" tabindex="-1">' + PHONE + '</a>' +
+      '<a class="cpp-sticky-wa" href="https://wa.me/17136975320?text=Hi%20Crown%2C%20I%27d%20like%20a%20quote%20for%3A%20" target="_blank" rel="noopener" tabindex="-1">WhatsApp</a>' +
       '<a class="cpp-sticky-cta" href="/get-your-quote/" tabindex="-1"' + (name ? ' data-cpp-product-quote' : '') + '>' +
         (name ? '<span>Quote ' + name.replace(/[<&]/g, '') + '</span>' : 'Get a Quote') + '</a></div>';
     document.body.appendChild(bar);
