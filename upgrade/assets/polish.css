@@ -299,18 +299,18 @@ img[src*="element_arus_hero"], img[data-lazy-src*="element_arus_hero"] { visibil
   .cpp-hbtn--line:hover { background: rgba(255,255,255,.1); border-color: #fff; }
 }
 .cpp-hbtn svg { transition: transform 200ms var(--cpp-ease); }
-.cpp-qq { background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.16); border-radius: 14px; padding: 16px; }
+.cpp-qq { background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.16); border-radius: 14px; padding: 20px 22px 22px; }
 .cpp-qq-title { margin: 0 0 10px !important; font-size: 13px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: rgba(255,255,255,.75); }
-.cpp-qq-row { display: grid; grid-template-columns: 1.3fr .8fr 1.3fr auto; gap: 8px; align-items: end; }
+.cpp-qq-row { display: grid; grid-template-columns: minmax(0, 1fr) 150px; gap: 12px; align-items: end; }
 .cpp-qq-f label { display: block; font-size: 13px; font-weight: 600; color: rgba(255,255,255,.85); margin-bottom: 5px; }
-.cpp-qq input { width: 100%; min-height: 46px; padding: 0 12px; font: inherit; font-size: 16px; border-radius: 8px; border: 1px solid transparent; background: #fff; color: var(--cpp-navy); }
+.cpp-qq input { width: 100%; min-height: 50px; padding: 0 12px; font: inherit; font-size: 16px; border-radius: 8px; border: 1px solid transparent; background: #fff; color: var(--cpp-navy); }
 .cpp-qq input:focus { outline: none; box-shadow: 0 0 0 3px rgba(245,243,237,.55); }
-.cpp-qq button.cpp-qq-send { min-height: 46px; padding: 0 20px; border: 0; border-radius: 8px; background: var(--cpp-cream); color: var(--cpp-navy); font: inherit; font-weight: 700; cursor: pointer; transition: background-color 160ms ease, transform 140ms var(--cpp-ease); }
+.cpp-qq button.cpp-qq-send { min-height: 50px; padding: 0 20px; border: 0; border-radius: 8px; background: var(--cpp-cream); color: var(--cpp-navy); font: inherit; font-weight: 700; cursor: pointer; transition: background-color 160ms ease, transform 140ms var(--cpp-ease); }
 .cpp-qq button.cpp-qq-send:hover { background: #fff; color: var(--cpp-navy); }
 .cpp-qq button.cpp-qq-send:active { transform: scale(0.97); }
 .cpp-qq .cpp-form-note { margin-top: 10px; background: rgba(255,255,255,.1); color: #fff; }
 .cpp-qq .cpp-form-note a { color: #fff; }
-@media (max-width: 1024px) { .cpp-qq-row { grid-template-columns: 1fr 1fr; } .cpp-qq button.cpp-qq-send { grid-column: 1 / -1; } }
+@media (max-width: 1024px) { .cpp-qq-row { grid-template-columns: minmax(0, 1fr) 130px; } }
 @media (max-width: 767px) {
   .cpp-hero-in { grid-template-columns: 1fr; padding-top: 24px; }
   .cpp-hero-copy { order: -1; }
@@ -332,8 +332,8 @@ img[src*="element_arus_hero"], img[data-lazy-src*="element_arus_hero"] { visibil
 .cpp-best-card { margin: 0; border: 1px solid var(--cpp-line); border-radius: 14px; background: #fff; display: flex; flex-direction: column; overflow: hidden; transition: box-shadow 200ms ease, transform 200ms var(--cpp-ease); }
 @media (hover: hover) and (pointer: fine) { .cpp-best-card:hover { box-shadow: var(--cpp-shadow-md); transform: translateY(-2px); } }
 .cpp-best-link { display: flex; flex-direction: column; text-decoration: none; color: var(--cpp-navy) !important; flex: 1; }
-.cpp-best-img { background: var(--cpp-ice); aspect-ratio: 4 / 3; display: grid; place-items: center; padding: 16px; }
-.cpp-best-img img { max-width: 100%; max-height: 100%; width: auto; height: auto; object-fit: contain; mix-blend-mode: multiply; }
+.cpp-best-img { position: relative; display: block; aspect-ratio: 4 / 3; background: #fff; border-bottom: 1px solid var(--cpp-line); overflow: hidden; }
+.cpp-best-img img { position: absolute; top: 14%; left: 14%; width: 72%; height: 72%; object-fit: contain; object-position: center; }
 .cpp-best-name { padding: 14px 16px 6px; font-weight: 700; font-size: 17px; }
 .cpp-best-quote { margin: 0 16px 16px; min-height: 40px; display: inline-flex; align-items: center; justify-content: center; border-radius: 8px; border: 1.5px solid var(--cpp-navy); color: var(--cpp-navy) !important; font-weight: 700; font-size: 15px; text-decoration: none; transition: background-color 160ms ease, color 160ms ease; }
 .cpp-best-quote:hover { background: var(--cpp-navy); color: #fff !important; }
@@ -382,3 +382,6 @@ img[src*="element_arus_hero"], img[data-lazy-src*="element_arus_hero"] { visibil
 @media (prefers-reduced-motion: reduce) { .cpp-hbtn, .cpp-hbtn svg, .cpp-best-card, .cpp-tile-host, .cpp-faq-item summary svg { transition: none !important; transform: none !important; } }
 .cpp-btn svg { fill: none; stroke: currentColor; stroke-linecap: round; stroke-linejoin: round; }
 .cpp-cardx-text a { color: var(--cpp-teal) !important; font-weight: 700; }
+
+.cpp-qq input::placeholder { color: #8A94A3; opacity: 1; }
+.cpp-qq button.cpp-qq-send, .cpp-qq button.cpp-qq-send .elementor-button-text { font-size: 17px !important; }
