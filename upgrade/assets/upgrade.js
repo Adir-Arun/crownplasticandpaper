@@ -292,7 +292,11 @@
         inp.value = params.get('product') || ''; sel.replaceWith(inp);
       });
     });
-    form.querySelector('.cpp-add-line').addEventListener('click', function () {
+    var lastAdd = 0;
+    form.querySelector('.cpp-add-line').addEventListener('click', function (e) {
+      // WP Rocket replays clicks as synthetic events; one press adds one row.
+      if (!e.isTrusted && Date.now() - lastAdd < 400) return;
+      lastAdd = Date.now();
       var row = tpl.cloneNode(true);
       row.querySelectorAll('input').forEach(function (i) { i.value = ''; });
       var sel = row.querySelector('select[data-cpp-products]');
@@ -304,7 +308,7 @@
     });
     form.addEventListener('click', function (e) {
       var rm = e.target.closest('.cpp-line-remove');
-      if (!rm) return;
+      if (!rm || !rm.isConnected || !rm.closest('.cpp-line')) return;
       var row = rm.closest('.cpp-line'), prev = row.previousElementSibling || row.nextElementSibling;
       row.remove(); syncLines(form);
       if (prev) prev.querySelector('select, input').focus();
@@ -395,8 +399,11 @@
   }
 
   /* ---------- init ---------- */
+  var started = false;
   function init() {
     enhanceAllSearch(); enhanceFields();
+    if (started) return;  // WP Rocket re-fires DOMContentLoaded; set these up once
+    started = true;
     [initQuote, initQuoteButton, initSpecPrint, initToTop, initArticle].forEach(function (f) { try { f(); } catch (err) { if (window.console) console.warn('cpp', err); } });
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init); else init();

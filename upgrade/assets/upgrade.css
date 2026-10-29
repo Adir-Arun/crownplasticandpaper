@@ -153,13 +153,13 @@ p { text-wrap: pretty; }
 .cpp-lines { display: grid; gap: 12px; }
 .cpp-line { display: grid; grid-template-columns: minmax(0, 2.2fr) minmax(0, 1.6fr) minmax(0, .8fr) minmax(0, 1fr) 44px; gap: 12px; align-items: end;
   background: var(--cpp-ice); border-radius: 12px; padding: 16px; }
-.cpp-line-remove { width: 44px; height: 48px; border: 0; border-radius: 8px; background: transparent; color: var(--cpp-slate); cursor: pointer; display: grid; place-items: center; transition: background-color 160ms ease, color 160ms ease; }
+.cpp-quote-form button.cpp-line-remove { width: 44px; padding: 0; box-shadow: none; height: 48px; border: 0; border-radius: 8px; background: transparent; color: var(--cpp-slate); cursor: pointer; display: grid; place-items: center; transition: background-color 160ms ease, color 160ms ease; }
 .cpp-line-remove[hidden] { display: grid; visibility: hidden; }
-.cpp-line-remove:hover { background: #fff; color: #B42318; }
+.cpp-quote-form button.cpp-line-remove:hover { background: #fff; color: #B42318; }
 .cpp-quote-form svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
-.cpp-add-line { margin-top: 12px; display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 16px; font: inherit; font-weight: 700; font-size: 15px;
+.cpp-quote-form button.cpp-add-line { margin-top: 12px; box-shadow: none; display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 16px; font: inherit; font-weight: 700; font-size: 15px;
   color: var(--cpp-teal); background: #fff; border: 1.5px dashed #9FB7C3; border-radius: 8px; cursor: pointer; transition: border-color 160ms ease, background-color 160ms ease, transform 140ms var(--cpp-ease); }
-.cpp-add-line:hover { border-color: var(--cpp-teal); background: var(--cpp-ice); }
+.cpp-quote-form button.cpp-add-line:hover { border-color: var(--cpp-teal); background: var(--cpp-ice); }
 .cpp-add-line:active, .cpp-line-remove:active { transform: scale(0.97); }
 .cpp-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
 .cpp-f--wide { grid-column: 1 / -1; }
@@ -174,7 +174,7 @@ p { text-wrap: pretty; }
 @media (max-width: 767px) {
   .cpp-line { grid-template-columns: 1fr 1fr; padding: 14px; }
   .cpp-f--product, .cpp-f--details { grid-column: 1 / -1; }
-  .cpp-line-remove { grid-column: 1 / -1; width: 100%; height: 40px; }
+  .cpp-quote-form button.cpp-line-remove { grid-column: 1 / -1; width: 100%; height: 40px; }
   .cpp-line-remove[hidden] { display: none; }
   .cpp-grid { grid-template-columns: 1fr; }
   .cpp-quote-form .cpp-q-submit { width: 100%; }
@@ -182,21 +182,21 @@ p { text-wrap: pretty; }
 
 /* ---------- product page: print spec sheet button ---------- */
 .cpp-has-print { display: flex !important; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
-.cpp-print { display: inline-flex; align-items: center; gap: 8px; min-height: 40px; padding: 0 14px; font: inherit; font-size: 14px; font-weight: 600;
+button.cpp-print { display: inline-flex; box-shadow: none; align-items: center; gap: 8px; min-height: 40px; padding: 0 14px; font: inherit; font-size: 14px; font-weight: 600;
   color: var(--cpp-teal); background: #fff; border: 1px solid #CBD5E1; border-radius: 8px; cursor: pointer; transition: border-color 160ms ease, transform 140ms var(--cpp-ease); }
-.cpp-print:hover { border-color: var(--cpp-teal); }
+button.cpp-print:hover { border-color: var(--cpp-teal); }
 .cpp-print:active { transform: scale(0.97); }
 .cpp-print svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
 .cpp-print-head { display: none; }
 
 /* ---------- back to top ---------- */
-.cpp-totop { position: fixed; right: 20px; bottom: 24px; z-index: 9980; width: 48px; height: 48px; border-radius: 50%; border: 0; cursor: pointer;
+button.cpp-totop { position: fixed; padding: 0; right: 20px; bottom: 24px; z-index: 9980; width: 48px; height: 48px; border-radius: 50%; border: 0; cursor: pointer;
   background: var(--cpp-navy); color: #fff; display: grid; place-items: center; box-shadow: 0 8px 20px -6px rgba(1, 20, 37, .45);
   opacity: 0; transform: translateY(12px) scale(.9); pointer-events: none; transition: opacity 200ms ease, transform 220ms var(--cpp-ease), background-color 160ms ease; }
-.cpp-totop.is-on { opacity: 1; transform: none; pointer-events: auto; }
-.cpp-totop:hover { background: var(--cpp-teal); }
+button.cpp-totop.is-on { opacity: 1; transform: none; pointer-events: auto; }
+button.cpp-totop:hover { background: var(--cpp-teal); }
 .cpp-totop svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
-@media (max-width: 767px) { .cpp-totop { bottom: 92px; right: 16px; width: 44px; height: 44px; } }
+@media (max-width: 767px) { button.cpp-totop { bottom: 92px; right: 16px; width: 44px; height: 44px; } }
 
 /* ---------- blog posts: reading progress and time ---------- */
 .cpp-progress { position: fixed; top: 0; left: 0; right: 0; height: 3px; z-index: 10000; background: var(--cpp-teal); transform-origin: 0 50%; transform: scaleX(0); pointer-events: none; }
