@@ -385,3 +385,4 @@ img[src*="element_arus_hero"], img[data-lazy-src*="element_arus_hero"] { visibil
 
 .cpp-qq input::placeholder { color: #8A94A3; opacity: 1; }
 .cpp-qq button.cpp-qq-send, .cpp-qq button.cpp-qq-send .elementor-button-text { font-size: 17px !important; }
+.cpp-hero-actions--last { margin-bottom: 0; }
