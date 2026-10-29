@@ -137,8 +137,9 @@
   }
   document.addEventListener('submit', function (e) {
     var form = e.target;
-    if (!form.matches || !form.matches('form.elementor-form, form.cpp-quote-form')) return;
+    if (!form.matches || !form.matches('form.elementor-form, form.cpp-quote-form, form.cpp-qq')) return;
     var isQuote = form.classList.contains('cpp-quote-form');
+    var isQuick = form.classList.contains('cpp-qq');
     e.preventDefault(); e.stopImmediatePropagation();
     if (form.dataset.cppSending) return;
     if (form.checkValidity && !form.checkValidity()) { form.reportValidity(); return; }
@@ -166,7 +167,7 @@
     });
     var name = (form.getAttribute('name') || '').toLowerCase();
     var isNewsletter = lines.length <= 1 && !!email;
-    var subject = isQuote ? 'Quote request' : isNewsletter ? 'Newsletter signup' : (/quote/.test(name + location.pathname) ? 'Quote request' : 'Website inquiry');
+    var subject = isQuick ? 'Quick quote request' : isQuote ? 'Quote request' : isNewsletter ? 'Newsletter signup' : (/quote/.test(name + location.pathname) ? 'Quote request' : 'Website inquiry');
     if (isQuote && data['Company']) subject += ' from ' + data['Company'];
     var page = document.title.split('|')[0].trim();
     data._subject = subject + ' - crownplasticandpaper.com';
@@ -204,6 +205,7 @@
         clearTimeout(timer); setBusy(false);
         if (res && (res.success === true || res.success === 'true')) {
           form.reset();
+          if (isQuick) { note(form, '<strong>Thanks, your request was sent.</strong> Our sales team will email pricing to ' + email + '.'); return; }
           if (isQuote) { resetQuoteLines(form); note(form, '<strong>Thanks, your quote request was sent.</strong> Our sales team will reply to ' + email + ' with pricing.'); return; }
           note(form, isNewsletter ? 'Thanks for subscribing. We\u2019ll send product and inventory updates to ' + email + '.'
             : 'Thanks, your message was sent. Our team will get back to you soon.');
@@ -349,6 +351,35 @@
     if (label) label.replaceWith(span); else a.appendChild(span);
   }
 
+  /* ---------- homepage: quick quote suggestions, clickable customer tiles, contact card ---------- */
+  function initHome() {
+    var list = document.getElementById('cpp-qq-list');
+    if (list) loadIndex().then(function (all) {
+      all.filter(function (x) { return x.k === 'Product'; }).forEach(function (x) { var o = document.createElement('option'); o.value = x.n; list.appendChild(o); });
+    });
+    var targets = { 'Wholesalers': '/products/', 'Food Distributors': '/products/', 'Cash and Carry': '/products/',
+      'Hospitals': '/products/product_cat-gloves/', 'Schools': '/product/school-trays/',
+      'Chain Restaurants': '/products/product_cat-food-service-supplies/', 'Catering Services': '/products/product_cat-food-service-supplies/',
+      'More Businesses': '/products/' };
+    document.querySelectorAll('.arus-our-services .elementor-image-box-title').forEach(function (t) {
+      var name = t.textContent.trim(), href = targets[name];
+      var box = t.closest('.elementor-widget-image-box') || t.closest('.elementor-widget');
+      if (!href || !box || box.querySelector('.cpp-tile-link')) return;
+      var a = document.createElement('a'); a.className = 'cpp-tile-link'; a.href = href;
+      a.setAttribute('aria-label', name + ': see products');
+      box.classList.add('cpp-tile-host'); box.appendChild(a);
+    });
+    var ci = [].find.call(document.querySelectorAll('.elementor-heading-title'), function (h) { return h.textContent.trim() === 'Contact Info'; });
+    var card = ci && ci.closest('.e-con');
+    if (card && !card.querySelector('.cpp-cardx')) {
+      var x = document.createElement('div'); x.className = 'cpp-cardx';
+      x.innerHTML = '<p>Need pricing for a full supply list?</p>' +
+        '<a class="cpp-btn cpp-btn--solid" href="/get-your-quote/">Request a Quote<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>' +
+        '<a class="cpp-btn cpp-btn--line" href="https://heyzine.com/flip-book/0ee04dad9c.html#page/13" target="_blank" rel="noopener">View 2026 Catalog</a>';
+      card.appendChild(x);
+    }
+  }
+
   /* desktop: a slim bar keeps navigation and the quote button in reach once the header scrolls away */
   function initStickyBar() {
     var header = document.querySelector('[data-elementor-type="header"]');
@@ -447,7 +478,7 @@
     enhanceAllSearch(); enhanceFields();
     if (started) return;  // WP Rocket re-fires DOMContentLoaded; set these up once
     started = true;
-    [initQuote, initQuoteButton, initSpecPrint, initToTop, initArticle, initProductBar, initStickyBar].forEach(function (f) { try { f(); } catch (err) { if (window.console) console.warn('cpp', err); } });
+    [initQuote, initQuoteButton, initSpecPrint, initToTop, initArticle, initProductBar, initStickyBar, initHome].forEach(function (f) { try { f(); } catch (err) { if (window.console) console.warn('cpp', err); } });
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init); else init();
   // Elementor renders some widgets late; pick up search forms that appear afterwards.
