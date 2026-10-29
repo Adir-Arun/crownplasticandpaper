@@ -61,9 +61,9 @@ PLACEHOLDER_TARGETS = {
     'bulk': 'get-your-quote/',
 }
 PLACEHOLDER_RE = re.compile(
-    r'href="((?:\.\./)*)products/product_cat-aluminum-products-or-[^"]*?\{\{data\.gallery_thumbnail_src\}\}\.html(#[^"]*)?"')
+    r'href="((?:\.\./)*)(?:products/)?(?:product_cat-[^"/]*/)?\{\{data\.[a-z_]+\}\}\.html(#[^"]*)?"')
 SEARCH_ACTION_RE = re.compile(
-    r'action="((?:\.\./)*)products/product_cat-aluminum-products-or-[^"]*?\{\{data\.gallery_thumbnail_src\}\}\.html"')
+    r'action="((?:\.\./)*)(?:products/)?(?:product_cat-[^"/]*/)?\{\{data\.[a-z_]+\}\}\.html"')
 
 
 BRAND_OLD = 'AR Unlimited Supply'
@@ -280,6 +280,75 @@ def div_span(s, start):
             return start, m.end()
     return start, start
 
+CUSTOMER_TILES = {
+    'Wholesalers': 'Pallets of Crown PET lids stacked in the Houston warehouse',
+    'Food Distributors': 'Food distributor receiving a Crown supply order',
+    'Cash and Carry': 'Cash and carry store aisle stocked with food service supplies',
+    'Hospitals': 'Hospital receiving a delivery of disposable supplies',
+    'Schools': 'School cafeteria serving lunch with disposable trays',
+    'Chain Restaurants': 'Chain restaurant staff serving guests',
+    'Catering Services': 'Catering line plated for an event',
+    'More Businesses': 'Assorted Crown food service packaging',
+}
+# the About Us grid still carried the old site's labels
+CUSTOMER_LEGACY = {'Restaurants': 'Wholesalers', 'Hospitality': 'Food Distributors', 'Food and Beverage': 'Cash and Carry',
+                   'Retail': 'Hospitals', 'Clean Restaurants': 'Chain Restaurants',
+                   'and more businesses across various industries': 'More Businesses'}
+
+
+# category page headers: (name, line, photo, alt)
+CAT_HEADERS = {
+    'gloves': ('Disposable Gloves', 'Nitrile, vinyl and latex gloves by the case for food service, janitorial and healthcare buyers.',
+               'crown-cat-gloves', 'Cases of Crown disposable vinyl gloves stacked on pallets in the Houston warehouse'),
+    'food-service-supplies': ('Food Service Supplies', 'PET and portion cups with lids, deli and take-out containers, cutlery kits, food film and paper bags.',
+                              'crown-cat-food-service-supplies', 'Pallets of Crown 28 oz rectangular black containers in the Houston warehouse'),
+    'paper-napkins': ('Paper Napkins', 'Interfold, tall fold, dinner and beverage napkins in bulk cases.',
+                      'crown-cat-paper-napkins', 'Stacked cases of Crown white tall fold napkins'),
+    'paper-supply': ('Paper Supply', 'Kitchen roll towels, C-fold towels, multi-fold and single-fold napkins.',
+                     'crown-cat-paper-supply', 'Racks of Crown paper cases along a warehouse aisle'),
+    'aluminum-products': ('Aluminum Products', 'Foil rolls and sheets, round and steam table pans, lids and plates.', None, None),
+    'miscellaneous': ('Janitorial & Miscellaneous', 'Trash liners, poly bags, stretch film, wax and deli papers, register rolls and school trays.',
+                      'crown-cat-miscellaneous', 'Pallets of can liners on warehouse racking'),
+    'toilet-tissue': ('Toilet Tissue', 'Jumbo roll and individually wrapped bath tissue by the case.', None, None),
+}
+
+
+def cat_header(slug, count):
+    name, line, photo, alt = CAT_HEADERS[slug]
+    img = ('<div class="cpp-cat-hero-media"><img src="/wp-content/uploads/2026/10/%s.webp" width="900" height="600" alt="%s" '
+           'fetchpriority="high" decoding="async"></div>' % (photo, html.escape(alt))) if photo else ''
+    return ('<section class="cpp-cat-hero%s" data-cpp-upgrade aria-labelledby="cpp-cat-title"><div class="cpp-cat-hero-in">'
+            '<div class="cpp-cat-hero-copy">'
+            '<nav class="cpp-cat-crumbs" aria-label="Breadcrumb"><a href="/">Home</a><span aria-hidden="true">/</span>'
+            '<a href="/products/">Products</a><span aria-hidden="true">/</span><span aria-current="page">%s</span></nav>'
+            '<h1 id="cpp-cat-title">Wholesale %s</h1><p class="cpp-cat-line">%s</p>'
+            '<p class="cpp-cat-meta">%d products <span aria-hidden="true">·</span> Ships from Houston in 24–48 hrs</p>'
+            '<div class="cpp-cat-actions"><a class="cpp-hbtn cpp-hbtn--main" href="/get-your-quote/">Request a Quote'
+            '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>'
+            '<a class="cpp-cat-tel" href="tel:+18449008804">or call (844) 900-8804</a></div>'
+            '</div>%s</div></section>') % (' cpp-cat-hero--photo' if photo else '', html.escape(name), html.escape(name),
+                                          html.escape(line), count, img)
+
+
+def filter_combo(s, url):
+    """Multi-category filter pages (/products/product_cat-a-or-b/) were saved with every
+    category on them: keep only the categories in the URL."""
+    m = re.match(r'^/products/product_cat-([a-z-]+-or-[a-z-]+)/$', url)
+    if not m:
+        return s
+    wanted = {w.replace('-', ' ').title() for w in m.group(1).split('-or-')}
+    out, pos = [], 0
+    for t in re.finditer(r'<h2 class="ts-category-title">([^<]*)</h2>', s):
+        g = s.find('<div class="ts-category-product-grid"', t.end())
+        if g < 0 or g - t.end() > 200:
+            continue
+        end = div_span(s, g)[1]
+        if html.unescape(t.group(1)).strip().title() not in wanted:
+            out.append(s[pos:t.start()])
+            pos = end
+    out.append(s[pos:])
+    return ''.join(out)
+
 
 def section_span(s, el_id):
     m = re.search(r'<div class="elementor-element elementor-element-%s ' % el_id, s)
@@ -393,10 +462,12 @@ def fix_placeholders(s):
             return 'href="/"'
         for key, target in PLACEHOLDER_TARGETS.items():
             if text.startswith(key):
-                return 'href="%s%s"' % (prefix, target)
-        return 'href="#"'
+                return 'href="/%s"' % target
+        return 'href="#"' if frag == '#' else 'href="/"'  # the logo and other bare links go home
     s = PLACEHOLDER_RE.sub(repl, s)
-    s = SEARCH_ACTION_RE.sub(lambda m: 'action="%sproducts/"' % m.group(1), s)
+    s = SEARCH_ACTION_RE.sub('action="/products/"', s)
+    # anything the mirror still pointed at its {{data.*}} template stubs goes home
+    s = re.sub(r'href="(?:https?://[^"]*)?[^"]*\{\{data\.[^"]*"', 'href="/"', s)
     return s
 
 
@@ -473,7 +544,7 @@ def upgrade_html(path, snippets, search_items, sitemap):
     s = re.sub(r'<li[^>]*>\s*<a[^>]*page_id=66[^>]*>\s*Home old\s*</a>\s*</li>', '', s)
 
     # --- About Us video still showed an AR Unlimited Supply truck: use the Crown warehouse photo
-    s = s.replace('/wp-content/uploads/2026/01/img_arus_about_bg.png', '/wp-content/uploads/2026/10/crown-warehouse-floor-1086.webp')  # real Crown warehouse photo
+    s = s.replace('/wp-content/uploads/2026/01/img_arus_about_bg.png', '/wp-content/uploads/2026/10/crown-video-cover.webp')  # Crown warehouse: 12 oz PET cup aisle
     s = FORM_ICON_RE.sub(r'icn_crown_form_\1-line.svg', s)
 
     # --- testimonial titles mixed straight and curly quotes: use curly everywhere
@@ -499,6 +570,10 @@ def upgrade_html(path, snippets, search_items, sitemap):
     active = url == gloves
     s = re.sub(r'(menu-item-4234"><a href=")[^"]*(" class="elementor-item)("[^>]*>)New Arrivals</a>',
                lambda m: m.group(1) + gloves + m.group(2) + (' elementor-item-active" aria-current="page' if active else '') + m.group(3) + 'Disposable Gloves</a>', s)
+
+    s = filter_combo(s, url)
+    if url.startswith('/products/product_cat-') and '-or-' in url:
+        s = set_robots(s, 'noindex, follow')  # filter combinations are not pages of their own
 
     # --- broken links ----------------------------------------------------------
     s = fix_placeholders(s)
@@ -537,7 +612,10 @@ def upgrade_html(path, snippets, search_items, sitemap):
         cat = re.match(r'^/products/product_cat-([a-z-]+)/$', url)
         if cat and '-or-' not in url:
             t = 'Wholesale ' + cat.group(1).replace('-', ' ').title()
-        if t:
+        if cat and '-or-' not in url and POLISH and cat.group(1) in CAT_HEADERS:
+            h1 = cat_header(cat.group(1), s.count('class="product-card"'))
+            s = re.sub(r'(<div id="content"[^>]*>)', lambda m: m.group(1) + h1, s, count=1)
+        elif t:
             h1 = '<h1 class="cpp-sr-only">%s</h1>' % html.escape(t)
             s = re.sub(r'(<div id="content"[^>]*>)', r'\1' + h1, s, count=1)
 
@@ -600,16 +678,32 @@ def upgrade_html(path, snippets, search_items, sitemap):
         sp = section_span(s, '2e1d291')            # newsletter: low value for wholesale buyers
         if sp:
             s = s[:sp[0]] + s[sp[1]:]
-        # customer photos were shuffled (Schools showed catering, Hospitals a store delivery...):
-        # each tile gets the photo file named after its own title
-        def match_photo(m):
-            block = m.group(0)
-            t = re.search(r'elementor-image-box-title">([^<]*)<', block)
-            if not t:
-                return block
-            name = html.unescape(t.group(1)).strip().replace(' ', '-')
-            return re.sub(r'our_customers-[A-Za-z-]+?(?=\.png|-\d+x\d+)', 'our_customers-' + name, block)
-        s = re.sub(r'<div class="elementor-element[^"]*elementor-widget-image-box".*?elementor-image-box-title">[^<]*<', match_photo, s, flags=re.S)
+
+    # customer photos were shuffled (Schools showed catering, Hospitals a store delivery...):
+    # each tile gets the photo file named after its own title
+    def match_photo(m):
+        block = m.group(0)
+        t = re.search(r'(elementor-image-box-title">)([^<]*)<', block)
+        if not t:
+            return block
+        title = html.unescape(t.group(2)).strip()
+        title = CUSTOMER_LEGACY.get(title, title)
+        if title not in CUSTOMER_TILES:
+            return block
+        src = '/wp-content/uploads/2026/03/img_crown_home_our_customers-%s.png.webp' % title.replace(' ', '-')
+        block = block[:t.start(2)] + html.escape(title) + block[t.end(2):]
+        def fix_img(im):
+            tag = im.group(0)
+            tag = re.sub(r'\s(?:data-lazy-)?(?:srcset|sizes)="[^"]*"', '', tag)
+            tag = re.sub(r'(\s(?:data-lazy-)?src=")(?!data:)[^"]*"', r'\g<1>%s"' % src, tag)
+            tag = re.sub(r'\salt="[^"]*"', ' alt="%s"' % html.escape(CUSTOMER_TILES[title]), tag)
+            return re.sub(r'\stitle="[^"]*"', '', tag)
+        return re.sub(r'<img\b[^>]*>', fix_img, block)
+    s = re.sub(r'<div class="elementor-element[^"]*elementor-widget-image-box".*?elementor-image-box-title">[^<]*<', match_photo, s, flags=re.S)
+    # Wholesalers gets a Crown warehouse photo (pallets of PET lids)
+    s = re.sub(r'(?:\.\./)*/?wp-content/uploads/2026/03/img_crown_home_our_customers-Wholesalers[^"\' ,]*?\.png(?:\.webp)?',
+               '/wp-content/uploads/2026/10/crown-customers-wholesalers.webp', s)
+    s = re.sub(r'(crown-customers-wholesalers\.webp) \d+w(?:, [^"]*)?"', r'\1 540w"', s)
 
     # --- injected layer ---------------------------------------------------------
     head = ('<link rel="stylesheet" href="/upgrade/upgrade.css" %s>' % MARK)
