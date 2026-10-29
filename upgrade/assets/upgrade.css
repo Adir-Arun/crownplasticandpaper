@@ -132,3 +132,6 @@ p { text-wrap: pretty; }
   .cpp-map.is-pre .arm-dots circle { opacity: 1; transform: none; }
   .cpp-bar, .cpp-results { transition: none; animation: none; }
 }
+
+/* reCAPTCHA is keyed to the WordPress domain and shows an error box here; forms use FormSubmit instead */
+.grecaptcha-badge { display: none !important; }
