@@ -381,3 +381,4 @@ img[src*="element_arus_hero"], img[data-lazy-src*="element_arus_hero"] { visibil
 }
 @media (prefers-reduced-motion: reduce) { .cpp-hbtn, .cpp-hbtn svg, .cpp-best-card, .cpp-tile-host, .cpp-faq-item summary svg { transition: none !important; transform: none !important; } }
 .cpp-btn svg { fill: none; stroke: currentColor; stroke-linecap: round; stroke-linejoin: round; }
+.cpp-cardx-text a { color: var(--cpp-teal) !important; font-weight: 700; }

@@ -91,7 +91,7 @@ p { text-wrap: pretty; }
 /* ---------- mobile quick-contact bar ---------- */
 .cpp-bar { display: none; }
 @media (max-width: 767px) {
-  .cpp-bar { display: grid; grid-template-columns: 1fr 1.6fr; gap: 10px; position: fixed; left: 0; right: 0; bottom: 0; z-index: 9990;
+  .cpp-bar { display: grid; grid-template-columns: 1fr 1fr 1.7fr; gap: 8px; position: fixed; left: 0; right: 0; bottom: 0; z-index: 9990;
     padding: 10px max(16px, env(safe-area-inset-right, 0px)) calc(10px + env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px));
     background: rgba(255,255,255,.97); border-top: 1px solid #dfe7ee; box-shadow: 0 -6px 20px rgba(1,20,37,.08);
     transform: translateY(0); transition: transform 260ms var(--cpp-ease); }
@@ -245,3 +245,4 @@ button.cpp-totop:hover { background: var(--cpp-teal); }
 /* mobile quick bar: long product names stay on one line */
 .cpp-bar__quote { min-width: 0; }
 .cpp-bar-label { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
+@media (max-width: 767px) { .cpp-bar a { font-size: 15px; gap: 6px; } }
