@@ -18,6 +18,21 @@ SITE = sys.argv[1] if len(sys.argv) > 1 else 'site'
 HERE = os.path.dirname(os.path.abspath(__file__))
 ASSETS = os.path.join(HERE, 'assets')
 MARK = 'data-cpp-upgrade'
+# Brand palette refresh (chosen Oct 2026): the pale blue-grey and grey-teal become a warm
+# stone and a deep blue that sit better with the navy and cream. Set to {} to switch off.
+PALETTE = {'EEF5F8': 'F3F1EC', '1F4959': '163A5C', '64748B': '566275'}  # 64748B failed 4.5:1 on stone
+PALETTE_RE = re.compile(r'#(%s)\b' % '|'.join(PALETTE), re.I) if PALETTE else None
+
+
+# Contact form field icons: filled two-tone icons become thin line icons that match the site.
+FORM_ICON_RE = re.compile(r'icn_crown_form_(full-name|company-name|email|phone|message)\.svg')
+
+
+def recolor(s):
+    return PALETTE_RE.sub(lambda m: '#' + PALETTE[m.group(1).upper()], s) if PALETTE_RE else s
+
+
+POLISH = True  # visual polish layer (upgrade/assets/polish.css); set False to switch it off
 ORIGIN = 'https://www.crownplasticandpaper.com'
 
 PHONE_TEXT = '(844) 900-8804'
@@ -47,6 +62,120 @@ SEARCH_ACTION_RE = re.compile(
 BRAND_OLD = 'AR Unlimited Supply'
 BRAND_NEW = 'Crown Plastic & Paper'
 LDJSON_RE = re.compile(r'(<script[^>]*application/ld\+json[^>]*>)(.*?)(</script>)', re.S)
+
+
+BUSINESS_LD = {
+    '@context': 'https://schema.org',
+    '@type': 'WholesaleStore',
+    '@id': ORIGIN + '/#business',
+    'name': 'Crown Plastic & Paper',
+    'url': ORIGIN + '/',
+    'logo': ORIGIN + '/wp-content/uploads/2026/01/icn_crown_logo.svg',
+    'telephone': '+1-844-900-8804',
+    'email': EMAIL,
+    'address': {'@type': 'PostalAddress', 'streetAddress': '7350 Langfield Rd', 'addressLocality': 'Houston',
+                'addressRegion': 'TX', 'postalCode': '77092', 'addressCountry': 'US'},
+    'areaServed': 'US',
+    'description': 'Wholesale disposable food service packaging: cups, containers, foil, paper and gloves, shipped from Houston, Texas.',
+}
+
+
+# ---------------------------------------------------------------------------------------
+# SEO audit fixes (Oct 2026 crawl of the live site)
+CATEGORY_NAMES = {
+    'aluminum-products': 'Aluminum Foil Products', 'food-service-supplies': 'Food Service Supplies',
+    'gloves': 'Disposable Gloves', 'miscellaneous': 'Janitorial & Miscellaneous Supplies',
+    'paper-napkins': 'Paper Napkins', 'paper-supply': 'Paper Supplies', 'toilet-tissue': 'Toilet Tissue',
+}
+# Near-copies of the AR Unlimited Supply legal pages: keep them out of Google, keep links followed.
+NOINDEX_PAGES = {'/terms-conditions/', '/privacy-policy/', '/accessibility-statement/',
+                 '/do-not-sell-my-personal-information/', '/category/uncategorized/'}
+# Real articles that WordPress had set to noindex.
+INDEX_PAGES = {'/choosing-the-right-food-packaging-for-your-business/',
+               '/why-bulk-purchasing-saves-money-for-food-businesses/'}
+# Two products shared one title; the latex page carried the nitrile copy.
+FIX_TITLES = {
+    '/product/latex-gloves/': ('Disposable Latex Gloves | Wholesale Bulk Supply USA',
+                               'Disposable latex gloves in bulk cases for food handling, janitorial and commercial use. '
+                               'Wholesale pricing from Crown Plastic & Paper in Houston, TX.'),
+}
+DEFAULT_OG_IMAGE = ORIGIN + '/wp-content/uploads/2026/01/img_crown_The_Trusted_Choice_of_Distributors.png'
+INDEX_ROBOTS = 'follow, index, max-snippet:-1, max-video-preview:-1, max-image-preview:large'
+SITEMAP_SKIP = re.compile(r'^/product/single-fold-napkins/|^/(?:\d{4}/|category/[^/]+/page/|products/page/|blog/page/|feed/)|-or-|-[23]/$')
+
+
+def set_robots(s, value):
+    s, n = re.subn(r"<meta name=[\"']robots[\"'] content=[\"'][^\"']*[\"']\s*/?>", '<meta name="robots" content="%s">' % value, s)
+    if not n:
+        s = s.replace('</head>', '<meta name="robots" content="%s">\n</head>' % value, 1)
+    return s
+
+
+def set_title(s, title, desc=None):
+    t = html.escape(title, quote=True)
+    s = re.sub(r'<title>[^<]*</title>', lambda m: '<title>%s</title>' % t, s, count=1)
+    s = re.sub(r'(<meta (?:property|name)="(?:og:title|twitter:title)" content=")[^"]*', lambda m: m.group(1) + t, s)
+    if desc:
+        d = html.escape(desc, quote=True)
+        if re.search(r'<meta name="description"', s):
+            s = re.sub(r'(<meta name="description" content=")[^"]*', lambda m: m.group(1) + d, s)
+        else:
+            s = s.replace('</head>', '<meta name="description" content="%s">\n</head>' % d, 1)
+        s = re.sub(r'(<meta (?:property|name)="(?:og:description|twitter:description)" content=")[^"]*', lambda m: m.group(1) + d, s)
+    return s
+
+
+def drop_ratings(s):
+    """No reviews are shown on the site, so star ratings in Google data are not allowed."""
+    def clean(o):
+        if isinstance(o, dict):
+            return {k: clean(v) for k, v in o.items() if k not in ('aggregateRating', 'review')}
+        if isinstance(o, list):
+            return [clean(v) for v in o]
+        return o
+
+    def fix(m):
+        if 'aggregateRating' not in m.group(2):
+            return m.group(0)
+        try:
+            data = json.loads(m.group(2))
+        except ValueError:
+            return m.group(0)
+        return m.group(1) + json.dumps(clean(data), ensure_ascii=False) + m.group(3)
+    return LDJSON_RE.sub(fix, s)
+
+
+def seo(s, url):
+    cat = re.match(r'^/products/product_cat-([a-z-]+)/$', url)
+    if cat and '-or-' not in url:
+        slug = cat.group(1)
+        name = CATEGORY_NAMES.get(slug, slug.replace('-', ' ').title())
+        s = set_robots(s, INDEX_ROBOTS)
+        s = set_title(s, 'Wholesale %s | Crown Plastic & Paper' % name,
+                      'Buy %s wholesale from Crown Plastic & Paper in Houston, TX. Bulk cases and pallets for '
+                      'distributors, restaurants and food service businesses. Request a quote.' % name.lower())
+    blogcat = re.match(r'^/category/([a-z-]+)/$', url)
+    if blogcat and url not in NOINDEX_PAGES and not re.search(r'<meta name="description"', s):
+        name = blogcat.group(1).replace('-', ' ')
+        s = set_title(s, '%s Articles | Crown Plastic & Paper' % name.title(),
+                      'Guides and articles on %s for food service and wholesale buyers, from Crown Plastic & Paper.' % name)
+    if url in FIX_TITLES:
+        s = set_title(s, *FIX_TITLES[url])
+    if url in NOINDEX_PAGES:
+        s = set_robots(s, 'noindex, follow')
+    if url in INDEX_PAGES:
+        s = set_robots(s, INDEX_ROBOTS)
+    if 'og:image' not in s:
+        s = s.replace('</head>', '<meta property="og:image" content="%s">\n<meta name="twitter:card" content="summary_large_image">\n</head>' % DEFAULT_OG_IMAGE, 1)
+    # One description per page (some pages had two from different plugins).
+    seen = []
+    s = re.sub(r'<meta name="description"[^>]*>\s*', lambda m: '' if seen else (seen.append(1) or m.group(0)), s)
+    return drop_ratings(s)
+
+
+def indexable(s, url):
+    r = re.search(r"<meta name=[\"']robots[\"'] content=[\"']([^\"']*)", s)
+    return not (r and 'noindex' in r.group(1)) and not SITEMAP_SKIP.search(url)
 
 
 def rebrand(s):
@@ -86,6 +215,40 @@ def page_url(path):
     return '/' + rel
 
 
+# Links that were left as "#" in WordPress (blog keywords, a hidden old footer): give them
+# real destinations. Internal links from articles to products also help search engines.
+DEAD_LINKS = {
+    'disposable napkins': '/products/product_cat-paper-napkins/',
+    'wholesale food packaging': '/products/',
+    'takeout bags for restaurants': '/product/paper-bags/',
+    'disposable tableware': '/product/round-plates/',
+    'food storage bags for restaurants': '/product/poly-bags/',
+    'wholesale distribution': '/business-partnership/',
+    'disposable portion cups': '/product/portion-cups/',
+    'food delivery packaging': '/products/product_cat-food-service-supplies/',
+    'international sourcing': '/about-us/',
+    'tamper evident food packaging': '/product/deli-containers/',
+    'contact us': '/contact-us/',
+    'request a quote': '/get-your-quote/',
+    'browse products': '/products/',
+    'products': '/products/',
+    'privacy policy': '/privacy-policy/',
+    'terms &amp; conditions': '/terms-conditions/',
+    'accessibility statement': '/accessibility-statement/',
+    'do not sell my personal information': '/do-not-sell-my-personal-information/',
+}
+
+
+def fix_dead_links(s):
+    def repl(m):
+        text = re.sub(r'<[^>]+>|\s+', ' ', m.group(3)).strip().lower()
+        target = DEAD_LINKS.get(text)
+        return m.group(1) + target + m.group(2) + m.group(3) + '</a>' if target else m.group(0)
+    s = re.sub(r'(<a [^>]*href=")#("[^>]*>)(.{1,2500}?)</a>', repl, s, flags=re.S)
+    # the header logo linked to "#" on many pages: it goes home
+    return re.sub(r'(data-widget_type="theme-site-logo\.default">\s*<a href=")#(")', r'\1/\2', s)
+
+
 def fix_placeholders(s):
     def repl(m):
         prefix = m.group(1)
@@ -96,6 +259,8 @@ def fix_placeholders(s):
         text = strip_tags(tail.split('</a>', 1)[0].split('>', 1)[-1]).lower()
         if 'catalog' in text:
             return 'href="%s" target="_blank" rel="noopener"' % CATALOG
+        if text == 'home':  # product-page breadcrumb
+            return 'href="/"'
         for key, target in PLACEHOLDER_TARGETS.items():
             if text.startswith(key):
                 return 'href="%s%s"' % (prefix, target)
@@ -152,7 +317,7 @@ def webp_swap(s, page_dir):
     return s
 
 
-def upgrade_html(path, snippets, search_items):
+def upgrade_html(path, snippets, search_items, sitemap):
     s = open(path, encoding='utf-8', errors='ignore').read()
     if MARK in s:
         return False
@@ -168,15 +333,35 @@ def upgrade_html(path, snippets, search_items):
     s = re.sub(r'Sales@www\.crownplasticandpaper\.com', EMAIL, s, flags=re.I)
     s = re.sub(r'sales@arunlimitedsupply\.com', EMAIL, s, flags=re.I)  # header link went to AR's inbox
     s = rebrand(s)
+    s = recolor(s)
     s = fix_ldjson(s)
+    s = seo(s, url)
     s = s.replace('@www.crownplasticandpaper.com', '@crownplasticandpaper.com')
     s = s.replace('Copyright © 2025 AR Unlimited Supply', 'Copyright © %s Crown Plastic &#038; Paper' % YEAR)
     s = re.sub(r'Copyright © 2025 Crown', 'Copyright © %s Crown' % YEAR, s)
     s = s.replace('View 2025 Catalog', 'View 2026 Catalog')
     s = re.sub(r'<li[^>]*>\s*<a[^>]*page_id=66[^>]*>\s*Home old\s*</a>\s*</li>', '', s)
 
+    # --- About Us video still showed an AR Unlimited Supply truck: use the Crown warehouse photo
+    s = s.replace('img_arus_about_bg.png', 'img_crown_Your-One-Stop-Supply-Partner.png')
+    s = FORM_ICON_RE.sub(r'icn_crown_form_\1-line.svg', s)
+
+    # --- testimonial titles mixed straight and curly quotes: use curly everywhere
+    s = re.sub(r'(<h5 class="elementor-heading-title elementor-size-default">)"([^"<]{3,120})"(</h5>)', '\\1\u201c\\2\u201d\\3', s)
+
+    # --- labels say what happens (HIG writing.md): form buttons, contact title
+    s = s.replace('<span class="elementor-button-text">Submit</span>', '<span class="elementor-button-text">Send Message</span>')
+    s = s.replace('>Get In Contact<', '>Get in Touch<')
+
+    # --- category bar: "New Arrivals" (it only linked to the shop page) becomes Disposable Gloves
+    gloves = '/products/product_cat-gloves/'
+    active = url == gloves
+    s = re.sub(r'(menu-item-4234"><a href=")[^"]*(" class="elementor-item)("[^>]*>)New Arrivals</a>',
+               lambda m: m.group(1) + gloves + m.group(2) + (' elementor-item-active" aria-current="page' if active else '') + m.group(3) + 'Disposable Gloves</a>', s)
+
     # --- broken links ----------------------------------------------------------
     s = fix_placeholders(s)
+    s = fix_dead_links(s)
     s = re.sub(r'href="([^"#?:]*?)index\.html(#[^"]*)?"',
                lambda m: 'href="%s"' % m.group(2) if not m.group(1) and m.group(2) and len(m.group(2)) > 1
                else 'href="%s%s"' % (m.group(1) or './', m.group(2) or ''), s)
@@ -227,12 +412,45 @@ def upgrade_html(path, snippets, search_items):
         if i > 0 and k > 0:
             s = s[:k] + snippets['map'] + s[k:]
 
+    # --- industrial additions (POLISH layer): trust strip under the homepage hero, quote band before the footer
+    if POLISH:
+        if url == '/':
+            i = s.find('About Us</h2>')
+            j = s.rfind('e-parent', 0, i)
+            k = s.rfind('<div', 0, j)
+            if i > 0 and k > 0:
+                s = s[:k] + snippets['trust'] + s[k:]
+        if url not in ('/', '/get-your-quote/', '/contact-us/') and 'cpp-pre' not in s:
+            foot = s.find('<footer data-elementor-type="footer"')
+            i = s.find('Join Our Newsletter')
+            # the homepage has its newsletter band just above the footer: go above that
+            k = s.rfind('<div', 0, s.rfind('e-parent', 0, i)) if 0 < i < foot else -1
+            if k < 0:
+                k = foot
+            if k > 0:
+                s = s[:k] + snippets['pre'] + s[k:]
+
+    # --- quote page: the bulk-quote plugin shortcode never rendered; use our quote builder
+    s = s.replace('<div class="elementor-shortcode">[dppq_bulk_products]</div>',
+                  '<div class="elementor-shortcode">%s</div>' % snippets['quote'])
+
+    # --- brand colour for mobile browser chrome, and business details for Google --------
+    if 'name="theme-color"' not in s:
+        s = s.replace('</head>', '<meta name="theme-color" content="#011425">\n</head>', 1)
+    if url in ('/', '/contact-us/'):
+        s = s.replace('</head>', '<script type="application/ld+json">%s</script>\n</head>' % json.dumps(BUSINESS_LD), 1)
+
     # --- injected layer ---------------------------------------------------------
     head = ('<link rel="stylesheet" href="/upgrade/upgrade.css" %s>' % MARK)
+    if POLISH:
+        head += '<link rel="stylesheet" href="/upgrade/polish.css">'
     s = s.replace('</head>', head + '</head>', 1)
     tail = snippets['bar'] + '<script src="/upgrade/upgrade.js" defer></script>'
     s = s.replace('</body>', tail + '</body>', 1)
     open(path, 'w', encoding='utf-8').write(s)
+    if os.path.basename(path) == 'index.html' and indexable(s, url):
+        mod = re.search(r'<meta property="article:modified_time" content="([^"]{10})', s)
+        sitemap.append((url, mod.group(1) if mod else None))
 
     # --- search index -------------------------------------------------------------
     kind = None
@@ -262,7 +480,7 @@ def upgrade_html(path, snippets, search_items):
 
 def upgrade_css(path):
     s = open(path, encoding='utf-8', errors='ignore').read()
-    t = webp_swap(s, os.path.dirname(path))
+    t = FORM_ICON_RE.sub(r'icn_crown_form_\1-line.svg', recolor(webp_swap(s, os.path.dirname(path))))
     if t != s:
         open(path, 'w', encoding='utf-8').write(t)
         return True
@@ -276,21 +494,25 @@ def main():
     snippets = {
         'map': open(os.path.join(ASSETS, 'map-section.html'), encoding='utf-8').read(),
         'bar': open(os.path.join(ASSETS, 'action-bar.html'), encoding='utf-8').read(),
+        'quote': open(os.path.join(ASSETS, 'quote-form.html'), encoding='utf-8').read(),
+        'trust': open(os.path.join(ASSETS, 'trust-strip.html'), encoding='utf-8').read(),
+        'pre': open(os.path.join(ASSETS, 'prefooter.html'), encoding='utf-8').read(),
     }
     out = os.path.join(SITE, 'upgrade')
     os.makedirs(out, exist_ok=True)
-    for name in ('upgrade.css', 'upgrade.js'):
-        shutil.copy(os.path.join(ASSETS, name), os.path.join(out, name))
+    for name in ('upgrade.css', 'upgrade.js', 'polish.css'):
+        src = open(os.path.join(ASSETS, name), encoding='utf-8').read()
+        open(os.path.join(out, name), 'w', encoding='utf-8').write(recolor(src))
 
     pages = css = 0
-    items = []
+    items, sitemap = [], []
     for d, dirs, files in os.walk(SITE):
         if os.path.abspath(d).startswith(os.path.abspath(out)):
             continue
         for f in files:
             p = os.path.join(d, f)
             if f.endswith('.html'):
-                pages += upgrade_html(p, snippets, items)
+                pages += upgrade_html(p, snippets, items, sitemap)
             elif f.endswith('.css') or '.css@' in f:
                 css += upgrade_css(p)
     seen, uniq = set(), []
@@ -299,6 +521,24 @@ def main():
             seen.add(it['u'])
             uniq.append(it)
     json.dump(uniq, open(os.path.join(out, 'search-index.json'), 'w'), ensure_ascii=False, separators=(',', ':'))
+    # sitemap.xml and robots.txt (WordPress's were not part of the copy)
+    urls = sorted(sitemap, key=lambda x: (x[0] != '/', x[0].count('/'), x[0]))
+    with open(os.path.join(SITE, 'sitemap.xml'), 'w', encoding='utf-8') as f:
+        f.write('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n')
+        for u, mod in urls:
+            f.write('  <url><loc>%s%s</loc>%s</url>\n' % (ORIGIN, html.escape(u), '<lastmod>%s</lastmod>' % mod if mod else ''))
+        f.write('</urlset>\n')
+    with open(os.path.join(SITE, 'robots.txt'), 'w', encoding='utf-8') as f:
+        f.write('User-agent: *\nAllow: /\nDisallow: /upgrade/search-index.json\n\nSitemap: %s/sitemap.xml\n' % ORIGIN)
+    print('sitemap: %d urls' % len(urls))
+    icon_dir = os.path.join(SITE, 'wp-content', 'uploads', '2026', '03')
+    if os.path.isdir(icon_dir):
+        for name in os.listdir(os.path.join(ASSETS, 'form-icons')):
+            shutil.copy(os.path.join(ASSETS, 'form-icons', name),
+                        os.path.join(icon_dir, 'icn_crown_form_%s-line.svg' % name[:-4]))
+    # Branded "page not found" (Vercel serves /404.html for unknown paths).
+    open(os.path.join(SITE, '404.html'), 'w', encoding='utf-8').write(
+        recolor(open(os.path.join(ASSETS, '404.html'), encoding='utf-8').read()))
     print('upgraded %d pages, %d stylesheets, %d search entries' % (pages, css, len(uniq)))
     return 0
 

@@ -5,6 +5,21 @@
   "framework": null,
   "headers": [
     {
+      "source": "/(.*)",
+      "missing": [
+        {
+          "type": "host",
+          "value": "(www\\.)?crownplasticandpaper\\.com"
+        }
+      ],
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, nofollow"
+        }
+      ]
+    },
+    {
       "source": "/(.*)\\.css@(.*)",
       "headers": [
         {
@@ -39,6 +54,84 @@
           "value": "public, max-age=3600"
         }
       ]
+    }
+  ],
+  "trailingSlash": true,
+  "redirects": [
+    {
+      "source": "/cost-effective-dinner-napkin-solutions-for-restaurants-and-catering-businesses-:n(2|3)/",
+      "destination": "/cost-effective-dinner-napkin-solutions-for-restaurants-and-catering-businesses/",
+      "permanent": true
+    },
+    {
+      "source": "/how-wholesale-food-packaging-helps-restaurants-reduce-operating-costs-2/",
+      "destination": "/how-wholesale-food-packaging-helps-restaurants-reduce-operating-costs/",
+      "permanent": true
+    },
+    {
+      "source": "/product/single-fold-napkins/",
+      "destination": "/product/single-multi-and-c-fold-napkins/",
+      "permanent": true
+    },
+    {
+      "source": "/product/single-fold-napkins/single-fold-napkins/",
+      "destination": "/product/single-multi-and-c-fold-napkins/",
+      "permanent": true
+    },
+    {
+      "source": "/products/product_cat-:cats(.*-or-.*)/",
+      "destination": "/products/",
+      "permanent": true
+    },
+    {
+      "source": "/:year(\\d{4})/:rest*",
+      "destination": "/blog/",
+      "permanent": true
+    },
+    {
+      "source": "/feed/",
+      "destination": "/blog/",
+      "permanent": true
+    },
+    {
+      "source": "/comments/feed/",
+      "destination": "/blog/",
+      "permanent": true
+    },
+    {
+      "source": "/:map(.*sitemap.*\\.html)",
+      "destination": "/sitemap.xml",
+      "permanent": true
+    },
+    {
+      "source": "/contact-us.html",
+      "destination": "/contact-us/",
+      "permanent": true
+    },
+    {
+      "source": "/applications.html",
+      "destination": "/applications/",
+      "permanent": true
+    },
+    {
+      "source": "/business-partnership.html",
+      "destination": "/business-partnership/",
+      "permanent": true
+    },
+    {
+      "source": "/index.html@p=:id(.*)",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/wp-admin/:path*",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/wp-login.php",
+      "destination": "/",
+      "permanent": true
     }
   ]
 }
