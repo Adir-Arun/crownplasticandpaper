@@ -185,6 +185,18 @@
       btn.disabled = on; btn.setAttribute('aria-busy', on ? 'true' : 'false');
       if (btnText) btnText.textContent = on ? 'Sending…' : original;
     }
+    // Backup path: a normal page submission to FormSubmit (no background request, no CORS);
+    // FormSubmit sends the visitor back here with ?sent=1.
+    function classicSubmit() {
+      var f = document.createElement('form');
+      f.method = 'POST'; f.action = 'https://formsubmit.co/' + EMAIL; f.style.display = 'none';
+      var all = {}; Object.keys(data).forEach(function (k) { all[k] = data[k]; });
+      all._next = location.origin + location.pathname + '?sent=1';
+      Object.keys(all).forEach(function (k) { var i = document.createElement('input'); i.type = 'hidden'; i.name = k; i.value = all[k]; f.appendChild(i); });
+      document.body.appendChild(f);
+      note(form, 'Sending\u2026');
+      HTMLFormElement.prototype.submit.call(f);
+    }
     function fallback(reason) {
       var href = 'mailto:' + EMAIL + '?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(lines.join('\n') + '\n\nSent from ' + location.href);
       note(form, reason + ' Please <a href="' + href + '">email your message</a> instead, or call <a href="tel:+18449008804">' + PHONE + '</a>.', true);
@@ -194,11 +206,14 @@
 
     setBusy(true);
     var ctrl = 'AbortController' in window ? new AbortController() : null;
-    var timer = setTimeout(function () { if (ctrl) ctrl.abort(); }, 15000);
+    var timer = setTimeout(function () { if (ctrl) ctrl.abort(); }, 30000);
+    // Plain form encoding: a "simple" request, so the browser sends it without a CORS preflight
+    var body = new URLSearchParams();
+    Object.keys(data).forEach(function (k) { body.append(k, data[k]); });
     fetch(FORM_ENDPOINT, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-      body: JSON.stringify(data),
+      headers: { 'Accept': 'application/json' },
+      body: body,
       signal: ctrl ? ctrl.signal : undefined
     }).then(function (r) { return r.json().catch(function () { return {}; }); })
       .then(function (res) {
@@ -209,11 +224,14 @@
           if (isQuote) { resetQuoteLines(form); note(form, '<strong>Thanks, your quote request was sent.</strong> Our sales team will reply to ' + email + ' with pricing.'); return; }
           note(form, isNewsletter ? 'Thanks for subscribing. We\u2019ll send product and inventory updates to ' + email + '.'
             : 'Thanks, your message was sent. Our team will get back to you soon.');
+        } else if (res && /activat/i.test(res.message || '')) {
+          // FormSubmit needs the inbox owner to confirm once; the message is held until then
+          note(form, 'Thanks, your message was received. It will be delivered as soon as the inbox is confirmed. For anything urgent call <a href="tel:+18449008804">' + PHONE + '</a>.');
         } else {
-          fallback('Your message didn\u2019t send.');
+          classicSubmit();
         }
       })
-      .catch(function () { clearTimeout(timer); setBusy(false); fallback('The message service didn\u2019t respond.'); });
+      .catch(function () { clearTimeout(timer); setBusy(false); classicSubmit(); });
   }, true);
 
   /* ---------- form fields: right keyboard and autofill ---------- */
@@ -478,12 +496,22 @@
   }
 
   /* ---------- init ---------- */
+  function confirmClassicSend() {
+    if (!/[?&]sent=1/.test(location.search)) return;
+    var t = document.createElement('div');
+    t.className = 'cpp-toast'; t.setAttribute('role', 'status');
+    t.innerHTML = '<strong>Thanks, your message was sent.</strong> Our sales team will get back to you soon.';
+    document.body.appendChild(t);
+    setTimeout(function () { t.classList.add('is-out'); }, 7000);
+    if (history.replaceState) history.replaceState(null, '', location.pathname + location.hash);
+  }
+
   var started = false;
   function init() {
     enhanceAllSearch(); enhanceFields();
     if (started) return;  // WP Rocket re-fires DOMContentLoaded; set these up once
     started = true;
-    [initQuote, initQuoteButton, initSpecPrint, initToTop, initArticle, initProductBar, initStickyBar, initHome].forEach(function (f) { try { f(); } catch (err) { if (window.console) console.warn('cpp', err); } });
+    [initQuote, initQuoteButton, initSpecPrint, initToTop, initArticle, initProductBar, initStickyBar, initHome, confirmClassicSend].forEach(function (f) { try { f(); } catch (err) { if (window.console) console.warn('cpp', err); } });
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init); else init();
   // Elementor renders some widgets late; pick up search forms that appear afterwards.
