@@ -219,3 +219,29 @@ button.cpp-totop:hover { background: var(--cpp-teal); }
 
 /* reCAPTCHA is keyed to the WordPress domain and shows an error box here; forms use FormSubmit instead */
 .grecaptcha-badge { display: none !important; }
+
+/* ---------- desktop sticky bar (appears once the header has scrolled away) ---------- */
+.cpp-sticky { display: none; }
+@media (min-width: 1025px) {
+  .cpp-sticky { display: block; position: fixed; top: 0; left: 0; right: 0; z-index: 9985; background: rgba(255, 255, 255, .97);
+    border-bottom: 1px solid #E2E8F0; box-shadow: 0 6px 20px -12px rgba(1, 20, 37, .35);
+    transform: translateY(-100%); visibility: hidden; transition: transform 200ms var(--cpp-ease), visibility 0s linear 200ms; }
+  .cpp-sticky.is-on { transform: none; visibility: visible; transition: transform 200ms var(--cpp-ease), visibility 0s; }
+  .cpp-sticky-in { max-width: 1170px; margin: 0 auto; padding: 0 20px; height: 64px; display: flex; align-items: center; gap: 28px; font-family: "Satoshi", system-ui, sans-serif; }
+  .cpp-sticky-logo img { height: 40px; width: auto; display: block; }
+  .cpp-sticky-nav { display: flex; gap: 4px; flex: 1; }
+  .cpp-sticky-nav a, .cpp-sticky-tel { color: var(--cpp-navy) !important; text-decoration: none; font-size: 15px; font-weight: 500; padding: 8px 12px; border-radius: 8px; min-height: 36px; display: inline-flex; align-items: center; transition: background-color 160ms ease; }
+  .cpp-sticky-nav a:hover, .cpp-sticky-tel:hover { background: var(--cpp-ice); }
+  .cpp-sticky-tel { font-weight: 600; font-variant-numeric: tabular-nums; }
+  .cpp-sticky-cta { display: inline-flex; align-items: center; min-height: 44px; max-width: 280px; padding: 0 20px; border-radius: 8px; background: var(--cpp-navy); color: #fff !important;
+    font-weight: 700; font-size: 15px; text-decoration: none; white-space: nowrap; transition: background-color 160ms ease, transform 140ms var(--cpp-ease); }
+  .cpp-sticky-cta span { overflow: hidden; text-overflow: ellipsis; }
+  .cpp-sticky-cta:hover { background: var(--cpp-teal); }
+  .cpp-sticky-cta:active { transform: scale(0.97); }
+  html { scroll-padding-top: 80px; }
+}
+@media (prefers-reduced-motion: reduce) { .cpp-sticky, .cpp-sticky.is-on { transition: none; } }
+
+/* mobile quick bar: long product names stay on one line */
+.cpp-bar__quote { min-width: 0; }
+.cpp-bar-label { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }

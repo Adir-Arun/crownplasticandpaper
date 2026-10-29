@@ -178,6 +178,10 @@ def indexable(s, url):
     return not (r and 'noindex' in r.group(1)) and not SITEMAP_SKIP.search(url)
 
 
+TILE_NAMES = ['Cups', 'Containers', 'Foil Products', 'Napkins', 'Cutlery', 'Paper Bags', 'School Trays',
+              'Register Paper', 'Toilet Tissue', 'Paper Towels', 'Can Liners', 'Gloves']
+
+
 def rebrand(s):
     """This is Crown's site: replace the AR Unlimited Supply name (titles, Google data, text)."""
     if BRAND_OLD not in s:
@@ -352,6 +356,17 @@ def upgrade_html(path, snippets, search_items, sitemap):
     # --- labels say what happens (HIG writing.md): form buttons, contact title
     s = s.replace('<span class="elementor-button-text">Submit</span>', '<span class="elementor-button-text">Send Message</span>')
     s = s.replace('>Get In Contact<', '>Get in Touch<')
+
+    # --- product page: the button says what it does (HIG writing.md: labels are actions)
+    s = re.sub(r'(id="product-detail-quote">.*?<span class="elementor-button-text">)Price Upon Request(</span>)',
+               r'\1Request a Quote\2', s, count=1, flags=re.S)
+
+    # --- heading levels: product tiles are items, not sections (H2 -> H3); card, testimonial and
+    #     footer titles skipped from H2 to H5 (H5 -> H3). Styling comes from classes, so nothing moves.
+    if url == '/':
+        s = re.sub(r'<h2 class="elementor-heading-title elementor-size-default">(%s)</h2>' % '|'.join(TILE_NAMES),
+                   r'<h3 class="elementor-heading-title elementor-size-default">\1</h3>', s)
+    s = re.sub(r'<h5( class="elementor-heading-title[^"]*">)(.*?)</h5>', r'<h3\1\2</h3>', s, flags=re.S)
 
     # --- category bar: "New Arrivals" (it only linked to the shop page) becomes Disposable Gloves
     gloves = '/products/product_cat-gloves/'

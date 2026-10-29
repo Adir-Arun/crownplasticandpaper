@@ -316,21 +316,64 @@
   }
 
   /* ---------- product page: "Price Upon Request" opens the quote form for this product ---------- */
-  document.addEventListener('click', function (e) {
-    var btn = e.target.closest && e.target.closest('#product-detail-quote');
-    if (!btn) return;
-    e.preventDefault();
-    var title = document.querySelector('h1.product_title, .product_title, h1');
+  function productName() {
+    var t = document.querySelector('h1.product_title, .product_title');
+    return t ? t.textContent.trim() : '';
+  }
+  function productQuoteUrl() {
     var details = [];
     document.querySelectorAll('table.variations select').forEach(function (sel) {
       if (!sel.value) return;
       var lab = sel.id && document.querySelector('table.variations label[for="' + sel.id + '"]');
       details.push((lab ? lab.textContent.trim() + ' ' : '') + sel.options[sel.selectedIndex].text.trim());
     });
-    var q = '?product=' + encodeURIComponent(title ? title.textContent.trim() : '');
+    var q = '?product=' + encodeURIComponent(productName());
     if (details.length) q += '&details=' + encodeURIComponent(details.join(', '));
-    location.href = '/get-your-quote/' + q;
+    return '/get-your-quote/' + q;
+  }
+  document.addEventListener('click', function (e) {
+    var btn = e.target.closest && e.target.closest('#product-detail-quote, [data-cpp-product-quote]');
+    if (!btn || !productName()) return;
+    e.preventDefault();
+    location.href = productQuoteUrl();
   }, true);
+  /* mobile quick bar: on a product page the quote button names the product */
+  function initProductBar() {
+    var name = productName();
+    var a = document.querySelector('.cpp-bar a[href*="get-your-quote"]');
+    if (!name || !a || !/^\/product\//.test(location.pathname)) return;
+    a.setAttribute('data-cpp-product-quote', '');
+    a.setAttribute('aria-label', 'Request a quote for ' + name);
+    var label = [].filter.call(a.childNodes, function (n) { return n.nodeType === 3 && n.textContent.trim(); })[0];
+    var span = document.createElement('span'); span.className = 'cpp-bar-label'; span.textContent = 'Quote ' + name;
+    if (label) label.replaceWith(span); else a.appendChild(span);
+  }
+
+  /* desktop: a slim bar keeps navigation and the quote button in reach once the header scrolls away */
+  function initStickyBar() {
+    var header = document.querySelector('[data-elementor-type="header"]');
+    if (!header || !('IntersectionObserver' in window)) return;
+    var name = /^\/product\//.test(location.pathname) ? productName() : '';
+    var bar = document.createElement('div');
+    bar.className = 'cpp-sticky'; bar.setAttribute('aria-hidden', 'true');
+    bar.innerHTML = '<div class="cpp-sticky-in">' +
+      '<a class="cpp-sticky-logo" href="/" tabindex="-1"><img src="/wp-content/uploads/2026/01/icn_crown_logo.svg" width="44" height="40" alt="Crown Plastic &amp; Paper home"></a>' +
+      '<nav class="cpp-sticky-nav" aria-label="Quick navigation">' +
+        '<a href="/products/" tabindex="-1">Products</a><a href="/products/product_cat-gloves/" tabindex="-1">Disposable Gloves</a>' +
+        '<a href="https://heyzine.com/flip-book/0ee04dad9c.html#page/13" target="_blank" rel="noopener" tabindex="-1">Catalog</a>' +
+        '<a href="/about-us/" tabindex="-1">About Us</a><a href="/contact-us/" tabindex="-1">Contact</a></nav>' +
+      '<a class="cpp-sticky-tel" href="tel:+18449008804" tabindex="-1">' + PHONE + '</a>' +
+      '<a class="cpp-sticky-cta" href="/get-your-quote/" tabindex="-1"' + (name ? ' data-cpp-product-quote' : '') + '>' +
+        (name ? '<span>Quote ' + name.replace(/[<&]/g, '') + '</span>' : 'Get a Quote') + '</a></div>';
+    document.body.appendChild(bar);
+    var links = bar.querySelectorAll('a');
+    new IntersectionObserver(function (es) {
+      var show = !es[0].isIntersecting && window.innerWidth > 1024;
+      bar.classList.toggle('is-on', show);
+      bar.setAttribute('aria-hidden', show ? 'false' : 'true');
+      links.forEach(function (l) { if (show) l.removeAttribute('tabindex'); else l.setAttribute('tabindex', '-1'); });
+    }, { rootMargin: '0px' }).observe(header);
+  }
   function initQuoteButton() {
     var a = document.getElementById('product-detail-quote');
     if (a && !a.getAttribute('href')) a.setAttribute('href', '/get-your-quote/');
@@ -404,7 +447,7 @@
     enhanceAllSearch(); enhanceFields();
     if (started) return;  // WP Rocket re-fires DOMContentLoaded; set these up once
     started = true;
-    [initQuote, initQuoteButton, initSpecPrint, initToTop, initArticle].forEach(function (f) { try { f(); } catch (err) { if (window.console) console.warn('cpp', err); } });
+    [initQuote, initQuoteButton, initSpecPrint, initToTop, initArticle, initProductBar, initStickyBar].forEach(function (f) { try { f(); } catch (err) { if (window.console) console.warn('cpp', err); } });
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init); else init();
   // Elementor renders some widgets late; pick up search forms that appear afterwards.

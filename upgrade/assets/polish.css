@@ -130,7 +130,7 @@ body { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; 
 .cpp-pre-in { max-width: 1170px; margin: 0 auto; padding: clamp(56px, 7vw, 96px) 20px; display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr); gap: clamp(32px, 5vw, 72px); align-items: center; }
 .cpp-eyebrow { margin: 0 0 14px !important; font-size: 13px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--cpp-teal); display: flex; align-items: center; gap: 10px; }
 .cpp-eyebrow::before { content: ""; width: 28px; height: 2px; background: currentColor; }
-.cpp-pre h2 { margin: 0 0 16px !important; font-size: clamp(30px, 3.6vw, 46px); line-height: 1.08; font-weight: 700; letter-spacing: -0.02em; color: var(--cpp-navy); }
+.cpp-pre h2 { margin: 0 0 16px !important; font-size: clamp(28px, 2.8vw, 36px); line-height: 1.12; font-weight: 700; letter-spacing: -0.02em; color: var(--cpp-navy); }
 .cpp-pre-lead { margin: 0 0 28px !important; font-size: 18px; line-height: 1.55; color: #475569; max-width: 46ch; }
 .cpp-pre-actions { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 18px; }
 .cpp-btn { display: inline-flex; align-items: center; gap: 10px; min-height: 54px; padding: 0 26px; border-radius: 8px; font-weight: 700; font-size: 16px; text-decoration: none;
