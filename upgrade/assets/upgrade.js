@@ -375,7 +375,8 @@
       var x = document.createElement('div'); x.className = 'cpp-cardx';
       x.innerHTML = '<p>Need pricing for a full supply list?</p>' +
         '<a class="cpp-btn cpp-btn--solid" href="/get-your-quote/">Request a Quote<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>' +
-        '<a class="cpp-btn cpp-btn--line" href="https://heyzine.com/flip-book/0ee04dad9c.html#page/13" target="_blank" rel="noopener">View 2026 Catalog</a>';
+        '<a class="cpp-btn cpp-btn--line" href="https://heyzine.com/flip-book/0ee04dad9c.html#page/13" target="_blank" rel="noopener">View 2026 Catalog</a>' +
+        '<p class="cpp-cardx-text">Prefer to text? <a href="sms:+17136975320">(713) 697-5320</a></p>';
       card.appendChild(x);
     }
   }
