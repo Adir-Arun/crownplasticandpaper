@@ -214,9 +214,24 @@
     });
   }
 
+  /* ---------- carousels: load images in carousel slides (lazy-load misses the copies) ---------- */
+  function loadCarouselImages() {
+    document.querySelectorAll('.swiper img[data-lazy-src], .elementor-loop-container img[data-lazy-src], .e-n-carousel img[data-lazy-src]').forEach(function (img) {
+      var src = img.getAttribute('data-lazy-src');
+      if (img.getAttribute('data-lazy-srcset')) img.setAttribute('srcset', img.getAttribute('data-lazy-srcset'));
+      if (img.getAttribute('data-lazy-sizes')) img.setAttribute('sizes', img.getAttribute('data-lazy-sizes'));
+      img.setAttribute('src', src);
+      ['data-lazy-src', 'data-lazy-srcset', 'data-lazy-sizes'].forEach(function (a) { img.removeAttribute(a); });
+      img.classList.add('entered', 'lazyloaded');
+    });
+  }
+
   /* ---------- init ---------- */
   function init() { enhanceAllSearch(); enhanceFields(); }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init); else init();
   // Elementor renders some widgets late; pick up search forms that appear afterwards.
-  window.addEventListener('load', function () { setTimeout(enhanceAllSearch, 400); });
+  window.addEventListener('load', function () {
+    setTimeout(function () { enhanceAllSearch(); loadCarouselImages(); }, 400);
+    setTimeout(loadCarouselImages, 1800);  // carousels add their slide copies after start-up
+  });
 })();

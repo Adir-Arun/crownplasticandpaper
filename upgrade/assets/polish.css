@@ -1,0 +1,97 @@
+/* Crown Plastic & Paper: visual polish.
+   Refines the existing design only: same layout, sections, order, colors and fonts.
+   Nothing here moves or resizes a section. To switch it off, set POLISH = False in
+   upgrade/apply.py and redeploy. */
+:root {
+  --cpp-shadow-sm: 0 1px 2px rgba(1, 20, 37, .05), 0 1px 1px rgba(1, 20, 37, .03);
+  --cpp-shadow-md: 0 10px 24px -6px rgba(1, 20, 37, .14), 0 3px 6px rgba(1, 20, 37, .05);
+  --cpp-line: #E2E8F0;
+  --cpp-line-hover: #B9CDD8;
+}
+
+/* ---------- type: tighter display headings, calmer body ---------- */
+.elementor-widget-heading h1.elementor-heading-title,
+.elementor-widget-heading h2.elementor-heading-title { letter-spacing: -0.012em; }
+body { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; text-rendering: optimizeLegibility; }
+/* customer-type labels under the photos: easier to read */
+.arus-our-services .elementor-image-box-title { font-size: 15px !important; font-weight: 600 !important; letter-spacing: -0.005em; }
+/* product-type tiles */
+.icn-color-change a.e-con .elementor-heading-title { font-weight: 600; }
+
+/* ---------- buttons: one consistent feel ---------- */
+.elementor-button {
+  transition: background-color 180ms ease, color 180ms ease, box-shadow 200ms ease, transform 160ms cubic-bezier(0.23, 1, 0.32, 1) !important;
+}
+.elementor-button:active { transform: scale(0.97); }
+.elementor-button .elementor-button-icon svg,
+.elementor-button .elementor-button-icon i { transition: transform 200ms cubic-bezier(0.23, 1, 0.32, 1); }
+@media (hover: hover) and (pointer: fine) {
+  .elementor-button:hover .elementor-button-icon svg,
+  .elementor-button:hover .elementor-button-icon i { transform: translateX(3px); }
+}
+
+/* Primary buttons on the dark navy bands (hero slider, newsletter): use the brand's
+   cream so the main action stands out instead of blending into the navy. */
+.elementor-element-cb63f7e .elementor-widget-button .elementor-button,
+.elementor-element-87dd592 .elementor-button {
+  background-color: var(--cpp-cream) !important;
+  color: var(--cpp-navy) !important;
+}
+.elementor-element-cb63f7e .elementor-widget-button .elementor-button .elementor-button-text,
+.elementor-element-87dd592 .elementor-button .elementor-button-text { color: var(--cpp-navy) !important; }
+.elementor-element-cb63f7e .elementor-widget-button .elementor-button svg path,
+.elementor-element-87dd592 .elementor-button svg path { stroke: var(--cpp-navy) !important; }
+@media (hover: hover) and (pointer: fine) {
+  .elementor-element-cb63f7e .elementor-widget-button .elementor-button:hover,
+  .elementor-element-87dd592 .elementor-button:hover { background-color: #fff !important; box-shadow: 0 8px 22px -8px rgba(0, 0, 0, .55); }
+}
+
+/* ---------- cards: quiet at rest, clearly clickable on hover ---------- */
+.icn-color-change a.e-con,
+.home-new-latest-insights,
+.ts-category-product-grid .product-card > a {
+  transition: transform 220ms cubic-bezier(0.23, 1, 0.32, 1), box-shadow 220ms ease, border-color 220ms ease;
+}
+.icn-color-change a.e-con { box-shadow: var(--cpp-shadow-sm); }
+.icn-color-change a.e-con img,
+.ts-category-product-grid .product-card img { transition: transform 320ms cubic-bezier(0.23, 1, 0.32, 1); }
+@media (hover: hover) and (pointer: fine) {
+  .icn-color-change a.e-con:hover { transform: translateY(-3px); box-shadow: var(--cpp-shadow-md); border-color: var(--cpp-line-hover) !important; }
+  .icn-color-change a.e-con:hover img { transform: scale(1.06); }
+  .home-new-latest-insights:hover { transform: translateY(-3px); box-shadow: var(--cpp-shadow-md); border-color: var(--cpp-line-hover) !important; }
+  .ts-category-product-grid .product-card > a:hover img { transform: scale(1.05); }
+  .ts-category-product-grid .product-card > a:hover .woocommerce-loop-product__title { color: var(--cpp-teal); }
+}
+.icn-color-change a.e-con:active { transform: translateY(-1px) scale(0.985); }
+.home-new-latest-insights img { transition: transform 420ms cubic-bezier(0.23, 1, 0.32, 1); }
+@media (hover: hover) and (pointer: fine) { .home-new-latest-insights:hover img { transform: scale(1.03); } }
+.ts-category-product-grid .product-card > a { display: block; border-radius: 12px; }
+.ts-category-product-grid .product-card .woocommerce-loop-product__title { transition: color 180ms ease; }
+
+/* customer photos: soft depth */
+.arus-our-services .elementor-image-box-img img { box-shadow: var(--cpp-shadow-sm); }
+
+/* ---------- product page: size / pack / lid choices ---------- */
+.cfvsw-swatches-option { transition: box-shadow 160ms ease, background-color 160ms ease, transform 140ms cubic-bezier(0.23, 1, 0.32, 1); }
+.cfvsw-swatches-option:active { transform: scale(0.97); }
+@media (hover: hover) and (pointer: fine) {
+  .cfvsw-swatches-option:not(.cfvsw-selected-swatch):hover { box-shadow: inset 0 0 0 1.5px var(--cpp-line-hover); }
+}
+.cfvsw-swatches-option.cfvsw-selected-swatch { box-shadow: inset 0 0 0 2px var(--cpp-teal) !important; }
+
+/* ---------- FAQ: smoother open/close indicator ---------- */
+.e-n-accordion-item-title-icon svg, .e-n-tab-title svg { transition: transform 200ms cubic-bezier(0.23, 1, 0.32, 1); }
+
+/* ---------- form fields: clearer focus ---------- */
+.elementor-field-textual { transition: border-color 160ms ease, box-shadow 160ms ease; }
+.elementor-field-textual:focus { border-color: var(--cpp-teal) !important; box-shadow: 0 0 0 3px rgba(31, 73, 89, .14) !important; outline: none; }
+
+/* ---------- spacing: the section after the shipping map gets room to breathe ---------- */
+.cpp-map + .e-con, .cpp-map + .e-parent { padding-top: clamp(56px, 6vw, 88px) !important; }
+
+@media (prefers-reduced-motion: reduce) {
+  .elementor-button, .icn-color-change a.e-con, .home-new-latest-insights, .ts-category-product-grid .product-card > a,
+  .icn-color-change a.e-con img, .ts-category-product-grid .product-card img, .home-new-latest-insights img, .cfvsw-swatches-option {
+    transition: none !important; transform: none !important;
+  }
+}

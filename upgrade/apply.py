@@ -18,6 +18,7 @@ SITE = sys.argv[1] if len(sys.argv) > 1 else 'site'
 HERE = os.path.dirname(os.path.abspath(__file__))
 ASSETS = os.path.join(HERE, 'assets')
 MARK = 'data-cpp-upgrade'
+POLISH = True  # visual polish layer (upgrade/assets/polish.css); set False to switch it off
 ORIGIN = 'https://www.crownplasticandpaper.com'
 
 PHONE_TEXT = '(844) 900-8804'
@@ -229,6 +230,8 @@ def upgrade_html(path, snippets, search_items):
 
     # --- injected layer ---------------------------------------------------------
     head = ('<link rel="stylesheet" href="/upgrade/upgrade.css" %s>' % MARK)
+    if POLISH:
+        head += '<link rel="stylesheet" href="/upgrade/polish.css">'
     s = s.replace('</head>', head + '</head>', 1)
     tail = snippets['bar'] + '<script src="/upgrade/upgrade.js" defer></script>'
     s = s.replace('</body>', tail + '</body>', 1)
@@ -279,7 +282,7 @@ def main():
     }
     out = os.path.join(SITE, 'upgrade')
     os.makedirs(out, exist_ok=True)
-    for name in ('upgrade.css', 'upgrade.js'):
+    for name in ('upgrade.css', 'upgrade.js', 'polish.css'):
         shutil.copy(os.path.join(ASSETS, name), os.path.join(out, name))
 
     pages = css = 0
