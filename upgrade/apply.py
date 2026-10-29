@@ -13,6 +13,7 @@ import os
 import re
 import shutil
 import sys
+import urllib.parse
 
 SITE = sys.argv[1] if len(sys.argv) > 1 else 'site'
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -20,7 +21,7 @@ ASSETS = os.path.join(HERE, 'assets')
 MARK = 'data-cpp-upgrade'
 # Brand palette refresh (chosen Oct 2026): the pale blue-grey and grey-teal become a warm
 # stone and a deep blue that sit better with the navy and cream. Set to {} to switch off.
-PALETTE = {'EEF5F8': 'F3F1EC', '1F4959': '163A5C', '64748B': '566275'}  # 64748B failed 4.5:1 on stone
+PALETTE = {'EEF5F8': 'F3F1EC', '1F4959': '163A5C', '64748B': '566275', 'F7FAFC': 'F9F8F5'}  # 64748B failed 4.5:1 on stone
 PALETTE_RE = re.compile(r'#(%s)\b' % '|'.join(PALETTE), re.I) if PALETTE else None
 
 
@@ -267,6 +268,44 @@ def indexable(s, url):
 
 TILE_NAMES = ['Cups', 'Containers', 'Foil Products', 'Napkins', 'Cutlery', 'Paper Bags', 'School Trays',
               'Register Paper', 'Toilet Tissue', 'Paper Towels', 'Can Liners', 'Gloves']
+
+
+def div_span(s, start):
+    """(start, end) of the <div> element that opens at `start` (end is after its </div>)."""
+    depth, i = 0, start
+    tag = re.compile(r'<(/?)div\b[^>]*>')
+    for m in tag.finditer(s, start):
+        depth += -1 if m.group(1) else 1
+        if depth == 0:
+            return start, m.end()
+    return start, start
+
+
+def section_span(s, el_id):
+    m = re.search(r'<div class="elementor-element elementor-element-%s ' % el_id, s)
+    return div_span(s, m.start()) if m else None
+
+
+HOME_FAQ = ['How can I place an order?', 'Do you offer bulk pricing?', 'Do you supply eco-friendly or compostable products?',
+            'Where do you deliver?', 'How long does delivery take?']
+BEST_SELLERS = ['pet-cups', 'portion-cups', 'deli-containers', 'round-foil-pans', 'blue-nitrile-gloves', 'paper-bags',
+                'dinner-napkins', 'trash-liners']
+
+
+def home_faq(s):
+    items = []
+    for m in re.finditer(r'<details[^>]*class="e-n-accordion-item"[^>]*>(.*?)</details>', s, re.S):
+        q = re.search(r'e-n-accordion-item-title-text">(.*?)</div>', m.group(1), re.S)
+        q = strip_tags(q.group(1)) if q else ''
+        if q in HOME_FAQ and q not in [x[0] for x in items]:
+            items.append((q, strip_tags(m.group(1).split('</summary>', 1)[-1])))
+    items.sort(key=lambda x: HOME_FAQ.index(x[0]))
+    rows = ''.join('<details class="cpp-faq-item"%s><summary>%s<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></summary><p>%s</p></details>'
+                   % (' open' if i == 0 else '', html.escape(html.unescape(q)), html.escape(html.unescape(a))) for i, (q, a) in enumerate(items))
+    return ('<section class="cpp-faq" data-cpp-upgrade aria-labelledby="cpp-faq-title"><div class="cpp-wrap">'
+            '<h2 id="cpp-faq-title">Frequently Asked Questions</h2><div class="cpp-faq-list">%s</div>'
+            '<p class="cpp-faq-more"><a href="/faqs/">See all questions<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></p>'
+            '</div></section>') % rows
 
 
 def rebrand(s):
@@ -547,6 +586,31 @@ def upgrade_html(path, snippets, search_items, sitemap):
     if url in ('/', '/contact-us/'):
         s = s.replace('</head>', '<script type="application/ld+json">%s</script>\n</head>' % json.dumps(BUSINESS_LD), 1)
 
+    # --- homepage round 2: static hero, best sellers, ordering steps, short FAQ, no newsletter
+    if url == '/' and POLISH:
+        sp = section_span(s, '0aac01e')            # slider hero (3 slides, 2 hidden) -> static hero
+        if sp:
+            s = s[:sp[0]] + snippets['hero'] + s[sp[1]:]
+        sp = section_span(s, '5be266d')            # after the product categories
+        if sp:
+            s = s[:sp[1]] + snippets['home_x'] + s[sp[1]:]
+        sp = section_span(s, '5219eb1')            # 26-question tabbed FAQ -> 5 key questions + link
+        if sp:
+            s = s[:sp[0]] + home_faq(s[sp[0]:sp[1]]) + s[sp[1]:]
+        sp = section_span(s, '2e1d291')            # newsletter: low value for wholesale buyers
+        if sp:
+            s = s[:sp[0]] + s[sp[1]:]
+        # customer photos were shuffled (Schools showed catering, Hospitals a store delivery...):
+        # each tile gets the photo file named after its own title
+        def match_photo(m):
+            block = m.group(0)
+            t = re.search(r'elementor-image-box-title">([^<]*)<', block)
+            if not t:
+                return block
+            name = html.unescape(t.group(1)).strip().replace(' ', '-')
+            return re.sub(r'our_customers-[A-Za-z-]+?(?=\.png|-\d+x\d+)', 'our_customers-' + name, block)
+        s = re.sub(r'<div class="elementor-element[^"]*elementor-widget-image-box".*?elementor-image-box-title">[^<]*<', match_photo, s, flags=re.S)
+
     # --- injected layer ---------------------------------------------------------
     head = ('<link rel="stylesheet" href="/upgrade/upgrade.css" %s>' % MARK)
     if POLISH:
@@ -605,6 +669,8 @@ def main():
         'quote': open(os.path.join(ASSETS, 'quote-form.html'), encoding='utf-8').read(),
         'trust': open(os.path.join(ASSETS, 'trust-strip.html'), encoding='utf-8').read(),
         'pre': open(os.path.join(ASSETS, 'prefooter.html'), encoding='utf-8').read(),
+        'hero': open(os.path.join(ASSETS, 'hero.html'), encoding='utf-8').read(),
+        'home_x': open(os.path.join(ASSETS, 'home-extras.html'), encoding='utf-8').read(),
     }
     out = os.path.join(SITE, 'upgrade')
     os.makedirs(out, exist_ok=True)
@@ -629,6 +695,21 @@ def main():
             seen.add(it['u'])
             uniq.append(it)
     json.dump(uniq, open(os.path.join(out, 'search-index.json'), 'w'), ensure_ascii=False, separators=(',', ':'))
+    # homepage best sellers: real product cards from the search index
+    home = os.path.join(SITE, 'index.html')
+    hs = open(home, encoding='utf-8').read()
+    if '<!--cpp-bestsellers-->' in hs:
+        by = {it['u']: it for it in uniq}
+        cards = []
+        for slug in BEST_SELLERS:
+            it = by.get('/product/%s/' % slug)
+            if not it:
+                continue
+            cards.append('<li class="cpp-best-card"><a class="cpp-best-link" href="%s"><span class="cpp-best-img"><img src="%s" alt="%s" loading="lazy" decoding="async" width="240" height="240"></span><span class="cpp-best-name">%s</span></a>'
+                         '<a class="cpp-best-quote" href="/get-your-quote/?product=%s">Request a Quote</a></li>'
+                         % (it['u'], it['i'], html.escape(it['n']), html.escape(it['n']), urllib.parse.quote(it['n'])))
+        open(home, 'w', encoding='utf-8').write(hs.replace('<!--cpp-bestsellers-->', ''.join(cards)))
+
     # sitemap.xml and robots.txt (WordPress's were not part of the copy)
     urls = sorted(sitemap, key=lambda x: (x[0] != '/', x[0].count('/'), x[0]))
     with open(os.path.join(SITE, 'sitemap.xml'), 'w', encoding='utf-8') as f:

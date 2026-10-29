@@ -38,7 +38,7 @@
       ]
     },
     {
-      "source": "/wp-content/(.*)",
+      "source": "/wp-content/(.*)\\.(png|jpe?g|webp|gif|svg|avif|woff2?|ttf|otf|ico|mp4)(.*)",
       "headers": [
         {
           "key": "Cache-Control",
@@ -51,7 +51,25 @@
       "headers": [
         {
           "key": "Cache-Control",
-          "value": "public, max-age=3600"
+          "value": "public, max-age=0, must-revalidate"
+        }
+      ]
+    },
+    {
+      "source": "/wp-content/(.*)\\.(css|js)(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=0, must-revalidate"
+        }
+      ]
+    },
+    {
+      "source": "/(favicon\\.svg|favicon\\.ico|icon-192\\.png|apple-touch-icon\\.png)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=0, must-revalidate"
         }
       ]
     }

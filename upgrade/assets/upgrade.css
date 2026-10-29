@@ -227,7 +227,7 @@ button.cpp-totop:hover { background: var(--cpp-teal); }
     border-bottom: 1px solid #E2E8F0; box-shadow: 0 6px 20px -12px rgba(1, 20, 37, .35);
     transform: translateY(-100%); visibility: hidden; transition: transform 200ms var(--cpp-ease), visibility 0s linear 200ms; }
   .cpp-sticky.is-on { transform: none; visibility: visible; transition: transform 200ms var(--cpp-ease), visibility 0s; }
-  .cpp-sticky-in { max-width: 1170px; margin: 0 auto; padding: 0 20px; height: 64px; display: flex; align-items: center; gap: 28px; font-family: "Satoshi", system-ui, sans-serif; }
+  .cpp-sticky-in { max-width: 1210px; margin: 0 auto; padding: 0 20px; height: 64px; display: flex; align-items: center; gap: 28px; font-family: "Satoshi", system-ui, sans-serif; }
   .cpp-sticky-logo img { height: 40px; width: auto; display: block; }
   .cpp-sticky-nav { display: flex; gap: 4px; flex: 1; }
   .cpp-sticky-nav a, .cpp-sticky-tel { color: var(--cpp-navy) !important; text-decoration: none; font-size: 15px; font-weight: 500; padding: 8px 12px; border-radius: 8px; min-height: 36px; display: inline-flex; align-items: center; transition: background-color 160ms ease; }
