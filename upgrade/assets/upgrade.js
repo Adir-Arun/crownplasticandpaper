@@ -677,6 +677,44 @@
     }, true);
   }
 
+  /* ---------- category sort: the store's price/rating sorts need a database; sort by name in place ---------- */
+  function setupSort() {
+    document.querySelectorAll('form.woocommerce-ordering select.orderby').forEach(function (sel) {
+      if (sel.dataset.cppSort) return;
+      sel.dataset.cppSort = '1';
+      sel.innerHTML = '<option value="featured">Featured</option><option value="az">Name: A–Z</option><option value="za">Name: Z–A</option>';
+      sel.setAttribute('aria-label', 'Sort products');
+      document.querySelectorAll('.ts-category-product-grid').forEach(function (g) {
+        Array.prototype.forEach.call(g.children, function (c, i) { if (c.dataset.cppOrder === undefined) c.dataset.cppOrder = i; });
+      });
+    });
+  }
+  function initSort() {
+    setupSort();
+    document.addEventListener('submit', function (e) {
+      if (e.target.matches && e.target.matches('form.woocommerce-ordering')) { e.preventDefault(); e.stopImmediatePropagation(); }
+    }, true);
+    document.addEventListener('change', function (e) {
+      var sel = e.target;
+      if (!sel.matches || !sel.matches('form.woocommerce-ordering select.orderby')) return;
+      e.stopImmediatePropagation();
+      var mode = sel.value;
+      document.querySelectorAll('.ts-category-product-grid').forEach(function (g) {
+        var cards = Array.prototype.slice.call(g.children);
+        var name = function (c) { var t = c.querySelector('.woocommerce-loop-product__title'); return t ? t.textContent.trim().toLowerCase() : ''; };
+        cards.sort(function (a, b) {
+          if (mode === 'az') return name(a).localeCompare(name(b));
+          if (mode === 'za') return name(b).localeCompare(name(a));
+          return (+a.dataset.cppOrder) - (+b.dataset.cppOrder);
+        });
+        cards.forEach(function (c) { g.appendChild(c); });
+      });
+    }, true);
+    // the in-place filter swaps the list: set the menu up again
+    var wrap = document.querySelector('.woocommerce-products-wrapper');
+    if (wrap && window.MutationObserver) new MutationObserver(setupSort).observe(wrap, { childList: true });
+  }
+
   /* ---------- init ---------- */
   function confirmClassicSend() {
     if (!/[?&]sent=1/.test(location.search)) return;
@@ -693,7 +731,7 @@
     enhanceAllSearch(); enhanceFields();
     if (started) return;  // WP Rocket re-fires DOMContentLoaded; set these up once
     started = true;
-    [initQuote, initQuoteButton, initSpecPrint, initToTop, initArticle, initProductBar, initStickyBar, initHome, initFilterNav, initFluentForms, confirmClassicSend].forEach(function (f) { try { f(); } catch (err) { if (window.console) console.warn('cpp', err); } });
+    [initQuote, initQuoteButton, initSpecPrint, initToTop, initArticle, initProductBar, initStickyBar, initHome, initFilterNav, initFluentForms, initSort, confirmClassicSend].forEach(function (f) { try { f(); } catch (err) { if (window.console) console.warn('cpp', err); } });
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init); else init();
   // Elementor renders some widgets late; pick up search forms that appear afterwards.
