@@ -577,6 +577,106 @@
     window.addEventListener('popstate', function (e) { if (e.state && e.state.cppFilter) go(location.pathname, false); });
   }
 
+  /* ---------- credit application (Fluent Forms): its WordPress endpoint is gone, deliver it ourselves ---------- */
+  function initFluentForms() {
+    var forms = document.querySelectorAll('form.frm-fluent-form');
+    if (!forms.length) return;
+    var MAX_FILE = 5 * 1024 * 1024;
+    function groupLabel(g) {
+      var l = g.querySelector('.ff-el-input--label label, .ff-el-input--label');
+      return l ? l.textContent.replace(/\*/g, '').replace(/\s+/g, ' ').trim() : '';
+    }
+    forms.forEach(function (form) {
+      // The plugin uploads files the moment they are picked, to an endpoint that no longer exists:
+      // keep the file in the form and show its name instead.
+      form.querySelectorAll('input[type="file"]').forEach(function (inp) {
+        inp.removeAttribute('multiple');
+        var out = document.createElement('div'); out.className = 'cpp-ff-files'; out.setAttribute('aria-live', 'polite');
+        (inp.closest('.ff-el-input--content') || inp.parentNode).appendChild(out);
+        inp.addEventListener('change', function (e) {
+          e.stopImmediatePropagation();
+          var f = inp.files && inp.files[0];
+          out.textContent = f ? 'Attached: ' + f.name + ' (' + Math.max(1, Math.round(f.size / 1024)) + ' KB)' + (f.size > MAX_FILE ? ' — over 5 MB, please email it instead' : '') : '';
+        }, true);
+      });
+    });
+    document.addEventListener('submit', function (e) {
+      var form = e.target;
+      if (!form.matches || !form.matches('form.frm-fluent-form')) return;
+      e.preventDefault(); e.stopImmediatePropagation();
+      if (form.dataset.cppSending) return;
+      // required fields (the plugin marks them with aria-required, not "required")
+      var missing = null;
+      form.querySelectorAll('[aria-required="true"]').forEach(function (el) {
+        var empty = (el.type === 'checkbox') ? !form.querySelector('[name="' + el.name + '"]:checked') : !String(el.value || '').trim();
+        el.classList.toggle('cpp-ff-missing', empty);
+        if (empty && !missing) missing = el;
+      });
+      if (missing) { missing.focus(); note(form, 'Please fill in the highlighted required fields.', true); return; }
+      var fields = {}, lines = [], email = '', company = '', files = [];
+      form.querySelectorAll('.ff-el-group').forEach(function (g) {
+        if (g.querySelector('.ff-el-group')) return;  // only innermost groups
+        var label = groupLabel(g);
+        var vals = [];
+        g.querySelectorAll('input, select, textarea').forEach(function (el) {
+          if (el.type === 'hidden' || el.type === 'submit' || el.type === 'button') return;
+          if (el.type === 'file') return;
+          if ((el.type === 'checkbox' || el.type === 'radio') && !el.checked) return;
+          var v = String(el.value || '').trim(); if (!v) return;
+          if (el.tagName === 'SELECT' && el.selectedIndex > -1) v = el.options[el.selectedIndex].text.trim();
+          if (el.type === 'email' && !email) email = v;
+          if (el.name === 'company_name') company = v;
+          if (el.name === 'terms-n-condition') v = 'Agreed';
+          vals.push(v);
+        });
+        if (!vals.length) return;
+        var key = label || 'Field', i = 2; while (fields[key] !== undefined) key = (label || 'Field') + ' ' + i++;
+        fields[key] = vals.join(', '); lines.push(key + ': ' + fields[key]);
+      });
+      form.querySelectorAll('input[type="file"]').forEach(function (inp) { if (inp.files) for (var k = 0; k < inp.files.length; k++) files.push(inp.files[k]); });
+      if (files.length) { fields['Attached documents'] = files.map(function (f) { return f.name; }).join(', '); lines.push('Attached documents: ' + fields['Attached documents']); }
+      var subject = 'Credit application' + (company ? ' from ' + company : '');
+      fields['Sent from'] = location.href.split('#')[0];
+      var btn = form.querySelector('[type="submit"]'), btnLabel = btn ? btn.innerHTML : '';
+      function busy(on) { if (on) form.dataset.cppSending = '1'; else delete form.dataset.cppSending; if (btn) { btn.disabled = on; btn.innerHTML = on ? 'Sending…' : btnLabel; } }
+      function build(withFiles) {
+        var fd = new FormData();
+        fd.append('access_key', W3F_KEY); fd.append('subject', subject + ' - crownplasticandpaper.com'); fd.append('from_name', 'Crown website');
+        if (email) fd.append('replyto', email);
+        Object.keys(fields).forEach(function (k) { fd.append(k, fields[k]); });
+        if (withFiles) files.forEach(function (f, n) { if (f.size <= MAX_FILE) fd.append(n ? 'attachment_' + (n + 1) : 'attachment', f, f.name); });
+        return fd;
+      }
+      function send(fd) {
+        var ctrl = 'AbortController' in window ? new AbortController() : null;
+        var t = setTimeout(function () { if (ctrl) ctrl.abort(); }, 45000);
+        return fetch('https://api.web3forms.com/submit', { method: 'POST', body: fd, signal: ctrl ? ctrl.signal : undefined })
+          .then(function (r) { clearTimeout(t); return r.json().catch(function () { return {}; }); }, function (err) { clearTimeout(t); throw err; })
+          .then(function (res) { if (!res || !res.success) throw new Error((res && res.message) || 'failed'); return res; });
+      }
+      var mailDocs = 'mailto:' + EMAIL + '?subject=' + encodeURIComponent('Documents for ' + subject) + '&body=' + encodeURIComponent('Attached are the documents for our credit application.\n\n' + (company ? 'Company: ' + company + '\n' : '') + (email ? 'Email: ' + email : ''));
+      busy(true);
+      var hadFiles = files.some(function (f) { return f.size <= MAX_FILE; });
+      var tooBig = files.some(function (f) { return f.size > MAX_FILE; });
+      (hadFiles ? send(build(true)).then(function () { return true; }, function () { return send(build(false)).then(function () { return false; }); })
+                : send(build(false)).then(function () { return !files.length; }))
+        .then(function (filesDelivered) {
+          busy(false); form.reset(); form.querySelectorAll('.cpp-ff-files').forEach(function (o) { o.textContent = ''; });
+          var msg = '<strong>Thanks, your credit application was sent.</strong> Our team will review it and contact you' + (email ? ' at ' + email : '') + '.';
+          if (files.length && (!filesDelivered || tooBig)) msg += ' To complete it, please <a href="' + mailDocs + '">email your documents</a> to ' + EMAIL + '.';
+          note(form, msg);
+          form.querySelector('.cpp-form-note').scrollIntoView({ behavior: 'smooth', block: 'center' });
+        })
+        .catch(function () {
+          busy(false);
+          var text = subject + '\n\n' + lines.join('\n');
+          note(form, '<strong>Our online form isn’t responding right now.</strong> Your application is ready — ' +
+            '<a href="mailto:' + EMAIL + '?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(text) + '">email it with one tap</a>' +
+            (files.length ? ' and attach your documents' : '') + ', or call <a href="tel:+18449008804">' + PHONE + '</a>.', true);
+        });
+    }, true);
+  }
+
   /* ---------- init ---------- */
   function confirmClassicSend() {
     if (!/[?&]sent=1/.test(location.search)) return;
@@ -593,7 +693,7 @@
     enhanceAllSearch(); enhanceFields();
     if (started) return;  // WP Rocket re-fires DOMContentLoaded; set these up once
     started = true;
-    [initQuote, initQuoteButton, initSpecPrint, initToTop, initArticle, initProductBar, initStickyBar, initHome, initFilterNav, confirmClassicSend].forEach(function (f) { try { f(); } catch (err) { if (window.console) console.warn('cpp', err); } });
+    [initQuote, initQuoteButton, initSpecPrint, initToTop, initArticle, initProductBar, initStickyBar, initHome, initFilterNav, initFluentForms, confirmClassicSend].forEach(function (f) { try { f(); } catch (err) { if (window.console) console.warn('cpp', err); } });
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init); else init();
   // Elementor renders some widgets late; pick up search forms that appear afterwards.

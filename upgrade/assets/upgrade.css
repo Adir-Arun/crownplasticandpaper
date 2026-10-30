@@ -277,3 +277,8 @@ button.cpp-totop:hover { background: var(--cpp-teal); }
 .cpp-form-note .cpp-fb-btn--main { background: #011425; color: #fff !important; }
 .cpp-form-note .cpp-fb-retry { border-style: dashed; }
 .cpp-form-note .cpp-fb-call { display: block; font-size: 14px; }
+
+/* credit application: our own file + validation feedback */
+.cpp-ff-files { margin-top: 8px; font-size: 14px; color: #011425; font-weight: 600; }
+.frm-fluent-form .cpp-ff-missing { border-color: #B42318 !important; box-shadow: 0 0 0 3px rgba(180,35,24,.15) !important; }
+.frm-fluent-form .cpp-form-note { margin-top: 16px; }

@@ -330,6 +330,23 @@ def cat_header(slug, count):
                                           html.escape(line), count, img)
 
 
+def close_open_styles(s):
+    """A few WordPress pages have a <style> block that is never closed (an HTML widget with custom CSS),
+    so the browser treats the rest of the page - footer, scripts - as CSS. Close it where the CSS ends."""
+    out, pos = [], 0
+    for m in re.finditer(r'<style\b[^>]*>', s):
+        if m.start() < pos:
+            continue
+        close = s.find('</style>', m.end())
+        tag = re.search(r'\n\s*<(?!/?style\b)[a-zA-Z!/]', s[m.end():])
+        if tag and (close < 0 or m.end() + tag.start() < close):
+            cut = m.end() + tag.start()
+            out.append(s[pos:cut] + '</style>')
+            pos = cut
+    out.append(s[pos:])
+    return ''.join(out)
+
+
 def filter_combo(s, url):
     """Multi-category filter pages (/products/product_cat-a-or-b/) were saved with every
     category on them: keep only the categories in the URL."""
@@ -572,6 +589,7 @@ def upgrade_html(path, snippets, search_items, sitemap):
                lambda m: m.group(1) + gloves + m.group(2) + (' elementor-item-active" aria-current="page' if active else '') + m.group(3) + 'Disposable Gloves</a>', s)
 
     s = filter_combo(s, url)
+    s = close_open_styles(s)
     if url.startswith('/products/product_cat-') and '-or-' in url:
         s = set_robots(s, 'noindex, follow')  # filter combinations are not pages of their own
 
