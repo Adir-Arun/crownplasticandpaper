@@ -576,3 +576,32 @@ h1.elementor-heading-title, h2.elementor-heading-title { font-weight: 700 !impor
 /* sort menu: same field style as the forms */
 .woocommerce-ordering select, select.orderby { background-color: #fff !important; border: 1px solid #C9CFD8 !important; border-radius: var(--cpp-r-ctl) !important; min-height: 44px; padding: 0 36px 0 12px !important; font: inherit; font-size: 15px !important; color: var(--cpp-navy) !important; }
 @media (max-width: 767px) { .aru-product-filter .wpc-filter-layout-checkboxes.wpc-filter-product_cat .wpc-filter-header .wpc-filter-title { font-size: 12px !important; font-weight: 700 !important; letter-spacing: .12em !important; color: #566275 !important; margin: 0 0 10px !important; } }
+
+/* =========================================================================
+   Product spec sheets
+   ========================================================================= */
+.cpp-specs { font-family: "Satoshi", system-ui, sans-serif; margin: 14px 0 22px; width: 100%; }
+.cpp-specs svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; flex: none; }
+.cpp-specs-main { display: flex; align-items: center; gap: 14px; min-height: 56px; padding: 10px 18px; border-radius: var(--cpp-r-ctl); background: var(--cpp-navy); color: #fff !important; text-decoration: none !important; transition: background-color 160ms ease; cursor: pointer; }
+.cpp-specs-main:hover { background: #163A5C; }
+.cpp-specs-txt { display: flex; flex-direction: column; line-height: 1.25; min-width: 0; }
+.cpp-specs-txt strong { font-size: 16px; font-weight: 700; }
+.cpp-specs-txt small { font-size: 13px; color: rgba(255,255,255,.78); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.cpp-specs-main.is-off { background: #fff; color: var(--cpp-navy) !important; border: 1px dashed #B9C0CB; cursor: default; }
+.cpp-specs-main.is-off .cpp-specs-txt small { color: #566275; }
+.cpp-specs-hint:empty { display: none; }
+.cpp-specs-hint { margin: 8px 0 0 !important; font-size: 14px; color: #566275; }
+.cpp-specs-all { margin-top: 10px; border: 1px solid var(--cpp-line); border-radius: var(--cpp-r-card); background: #fff; }
+.cpp-specs-all summary { cursor: pointer; list-style: none; padding: 12px 16px; font-weight: 700; font-size: 15px; color: var(--cpp-navy); display: flex; justify-content: space-between; align-items: center; min-height: 44px; }
+.cpp-specs-all summary::-webkit-details-marker { display: none; }
+.cpp-specs-all summary::after { content: "+"; font-size: 20px; font-weight: 400; color: #566275; }
+.cpp-specs-all[open] summary::after { content: "\2212"; }
+.cpp-specs-all ul { list-style: none; margin: 0; padding: 0 8px 8px; }
+.cpp-specs-all li { margin: 0; border-top: 1px solid var(--cpp-line); }
+.cpp-specs-all li a { display: flex; align-items: center; gap: 10px; min-height: 44px; padding: 6px 8px; color: var(--cpp-navy) !important; text-decoration: none !important; font-size: 15px; }
+.cpp-specs-all li a svg { width: 18px; height: 18px; color: #566275; }
+.cpp-specs-all li a span { flex: 1; }
+.cpp-specs-all li a em { font-style: normal; font-size: 11px; font-weight: 700; letter-spacing: .08em; color: #566275; border: 1px solid var(--cpp-line); border-radius: 3px; padding: 1px 5px; }
+.cpp-specs-all li a:hover span { text-decoration: underline; text-underline-offset: 3px; }
+@media print { .cpp-specs { display: none !important; } }
+.cpp-doc-link { cursor: pointer; } .cpp-doc-link:hover .elementor-icon-list-text { text-decoration: underline; text-underline-offset: 3px; }

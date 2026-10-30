@@ -1,0 +1,1825 @@
+{
+ "bagasse-hinged-containers": [
+  {
+   "match": {
+    "size": "8\" x 8\"",
+    "compartments": "3-Compartment",
+    "pack-size": "200/Case",
+    "ti-x-hi": "10 x 4",
+    "cases-pallets": "40"
+   },
+   "file": "8-x-8-3-compartment-bagasse-hinged-container-spec-sheet.pdf",
+   "label": "8\" x 8\" · 3-Compartment"
+  },
+  {
+   "match": {
+    "size": "9\" x 9\"",
+    "compartments": "1-Compartment",
+    "pack-size": "200/Case",
+    "ti-x-hi": "10 x 4",
+    "cases-pallets": "40"
+   },
+   "file": "9-x-9-1-compartment-bagasse-hinged-container-991cmfc-200-spec-sheet.pdf",
+   "label": "9\" x 9\" · 1-Compartment"
+  },
+  {
+   "match": {
+    "size": "9\" x 6\"",
+    "compartments": "1-Compartment",
+    "pack-size": "250/Case",
+    "ti-x-hi": "15 x 3",
+    "cases-pallets": "45"
+   },
+   "file": "9-x-6-bagasse-hinged-container-96mfc-250-spec-sheet.pdf",
+   "label": "9\" x 6\" · 1-Compartment"
+  },
+  {
+   "match": {
+    "size": "6\" x 6\"",
+    "compartments": "1-Compartment",
+    "pack-size": "500/Case",
+    "ti-x-hi": "9 x 4",
+    "cases-pallets": "36"
+   },
+   "file": "6-x-6-bagasse-hinged-container-66mfc-500-spec-sheet.pdf",
+   "label": "6\" x 6\" · 1-Compartment"
+  },
+  {
+   "match": {
+    "size": "9\" x 9\"",
+    "compartments": "3-Compartment",
+    "pack-size": "200/Case",
+    "ti-x-hi": "10 x 4",
+    "cases-pallets": "40"
+   },
+   "file": "9-x-9-3-compartment-bagasse-hinged-container-993cmfc-200-spec-sheet.pdf",
+   "label": "9\" x 9\" · 3-Compartment"
+  }
+ ],
+ "bakery-tissue": [
+  {
+   "match": {},
+   "file": "6-x-10-75-bakery-tissue-t-6p-spec-sheet.pdf",
+   "label": ""
+  }
+ ],
+ "beverage-napkins": [
+  {
+   "match": {
+    "color": "Black",
+    "pack-size": "1000/Case",
+    "cases-pallets": "200",
+    "ti-x-hi": "20 x 10"
+   },
+   "file": "2-ply-black-beverage-napkins-bbn-1000-spec-sheet.pdf",
+   "label": "Black"
+  },
+  {
+   "match": {
+    "color": "White",
+    "pack-size": "4000/Case",
+    "cases-pallets": "108",
+    "ti-x-hi": "12 x 9"
+   },
+   "file": "1-ply-white-beverage-napkins-wbn-4000-spec-sheet.pdf",
+   "label": "White"
+  }
+ ],
+ "black-containers": [
+  {
+   "match": {
+    "size": "38oz",
+    "shape": "Rectangular",
+    "color": "Black",
+    "pack-size": "150/Case",
+    "ti-x-hi": "10 x 5",
+    "cases-pallets": "50"
+   },
+   "file": "38oz-rectangular-black-containers-bcre-38-spec-sheet.pdf",
+   "label": "38oz · Rectangular · Black"
+  },
+  {
+   "match": {
+    "size": "16oz",
+    "shape": "Rectangular",
+    "color": "Black",
+    "pack-size": "150/Case",
+    "ti-x-hi": "15 x 5",
+    "cases-pallets": "60"
+   },
+   "file": "16oz-rectangular-black-containers-bcre16-spec-sheet.pdf",
+   "label": "16oz · Rectangular · Black"
+  },
+  {
+   "match": {
+    "size": "28oz",
+    "shape": "Rectangular",
+    "color": "Black",
+    "pack-size": "150/Case",
+    "ti-x-hi": "10 x 5",
+    "cases-pallets": "50"
+   },
+   "file": "28oz-rectangular-black-containers-bcre-28-spec-sheet.pdf",
+   "label": "28oz · Rectangular · Black"
+  },
+  {
+   "match": {
+    "size": "32oz",
+    "shape": "Rectangular",
+    "color": "Black",
+    "pack-size": "150/Case",
+    "ti-x-hi": "10 x 5",
+    "cases-pallets": "50"
+   },
+   "file": "32oz-rectangular-black-containers-bcre-32-spec-sheet.pdf",
+   "label": "32oz · Rectangular · Black"
+  },
+  {
+   "match": {
+    "size": "58oz",
+    "shape": "Rectangular",
+    "color": "Black",
+    "pack-size": "150/Case",
+    "ti-x-hi": "6 x 4",
+    "cases-pallets": "24"
+   },
+   "file": "58oz-rectangular-black-containers-bcre-58-spec-sheet.pdf",
+   "label": "58oz · Rectangular · Black"
+  },
+  {
+   "match": {
+    "size": "48oz",
+    "shape": "Square",
+    "color": "Black",
+    "pack-size": "150/Case",
+    "ti-x-hi": "6 x 4",
+    "cases-pallets": "24"
+   },
+   "file": "48oz-square-containers-spec-sheet.pdf",
+   "label": "48oz · Square · Black"
+  },
+  {
+   "match": {
+    "size": "24oz",
+    "shape": "Rectangular",
+    "color": "Black",
+    "pack-size": "150/Case",
+    "ti-x-hi": "15 x 4",
+    "cases-pallets": "50"
+   },
+   "file": "24oz-rectangular-black-containers-bcre-24-spec-sheet.pdf",
+   "label": "24oz · Rectangular · Black"
+  }
+ ],
+ "black-hinged-containers": [
+  {
+   "match": {
+    "size": "6\" x 6\"",
+    "compartments": "1-Compartment",
+    "pack-size": "300/Case",
+    "ti-x-hi": "12 x 3",
+    "cases-pallets": "36"
+   },
+   "file": "6-x-6-hinged-container-dchc6-1c-spec-sheet.pdf",
+   "label": "6\" x 6\" · 1-Compartment"
+  },
+  {
+   "match": {
+    "size": "9\" x 6\"",
+    "compartments": "1-Compartment",
+    "pack-size": "150/Case",
+    "ti-x-hi": "12 x 3",
+    "cases-pallets": "36"
+   },
+   "file": "9-x-6-hinged-container-dchc963-1c-spec-sheet.pdf",
+   "label": "9\" x 6\" · 1-Compartment"
+  },
+  {
+   "match": {
+    "size": "8\" x 8\"",
+    "compartments": "3-Compartment",
+    "pack-size": "150/Case",
+    "ti-x-hi": "10 x 4",
+    "cases-pallets": "40"
+   },
+   "file": "8-x-8-3-compartment-dchc8-3c-spec-sheet.pdf",
+   "label": "8\" x 8\" · 3-Compartment"
+  },
+  {
+   "match": {
+    "size": "8\" x 8\"",
+    "compartments": "1-Compartment",
+    "pack-size": "150/Case",
+    "ti-x-hi": "12 x 4",
+    "cases-pallets": "48"
+   },
+   "file": "8-x-8-1-compartment-dchc8-1c-spec-sheet.pdf",
+   "label": "8\" x 8\" · 1-Compartment"
+  },
+  {
+   "match": {
+    "size": "9\" x 9\"",
+    "compartments": "3-Compartment",
+    "pack-size": "150/Case",
+    "ti-x-hi": "10 x 4",
+    "cases-pallets": "40"
+   },
+   "file": "9-x-9-3-compartment-dchc9-3c-spec-sheet.pdf",
+   "label": "9\" x 9\" · 3-Compartment"
+  },
+  {
+   "match": {
+    "size": "9\" x 9\"",
+    "compartments": "1-Compartment",
+    "pack-size": "150/Case",
+    "ti-x-hi": "12 x 4",
+    "cases-pallets": "48"
+   },
+   "file": "9-x-9-1-compartment-dchc9-1c-spec-sheet.pdf",
+   "label": "9\" x 9\" · 1-Compartment"
+  }
+ ],
+ "black-nitrile-gloves": [
+  {
+   "match": {
+    "color": "Black",
+    "size": "Medium",
+    "weight": "3.5g",
+    "pack-configuration": "10/100 (100 gloves per box, 10 boxes per case)",
+    "ti-x-hi": "15 x 8",
+    "cases-pallets": "120"
+   },
+   "file": "3-5g-black-nitrile-gloves-10-100-case-m-bng-m1000-spec-sheet.pdf",
+   "label": "Black · Medium"
+  },
+  {
+   "match": {
+    "color": "Black",
+    "size": "Large",
+    "weight": "3.5g",
+    "pack-configuration": "10/100 (100 gloves per box, 10 boxes per case)",
+    "ti-x-hi": "15 x 8",
+    "cases-pallets": "120"
+   },
+   "file": "3-5g-black-nitrile-gloves-10-100-case-l-bng-l1000-spec-sheet.pdf",
+   "label": "Black · Large"
+  },
+  {
+   "match": {
+    "color": "Black",
+    "size": "Small",
+    "weight": "3.5g",
+    "pack-configuration": "10/100 (100 gloves per box, 10 boxes per case)",
+    "ti-x-hi": "15 x 8",
+    "cases-pallets": "120"
+   },
+   "file": "3-5g-black-nitrile-gloves-10-100-case-s-bng-s1000-spec-sheet.pdf",
+   "label": "Black · Small"
+  },
+  {
+   "match": {
+    "color": "Black",
+    "size": "Extra Large",
+    "weight": "3.5g",
+    "pack-configuration": "10/100 (100 gloves per box, 10 boxes per case)",
+    "ti-x-hi": "15 x 8",
+    "cases-pallets": "120"
+   },
+   "file": "3-5g-black-nitrile-gloves-10-100-case-xl-bng-xl1000-spec-sheet.pdf",
+   "label": "Black · Extra Large"
+  }
+ ],
+ "blue-nitrile-gloves": [
+  {
+   "match": {
+    "color": "Blue",
+    "size": "Extra Large",
+    "weight": "3.5g",
+    "pack-configuration": "10/100 (100 gloves per box,10 boxes per case)",
+    "ti-x-hi": "15 x 8",
+    "cases-pallets": "120"
+   },
+   "file": "3-5g-blue-nitrile-gloves-10-100-case-xl-beng-xl1000-spec-sheet.pdf",
+   "label": "Blue · Extra Large"
+  },
+  {
+   "match": {
+    "color": "Blue",
+    "size": "Small",
+    "weight": "3.5g",
+    "pack-configuration": "10/100 (100 gloves per box,10 boxes per case)",
+    "ti-x-hi": "15 x 8",
+    "cases-pallets": "120"
+   },
+   "file": "3-5g-blue-nitrile-gloves-10-100-case-s-beng-s1000-spec-sheet.pdf",
+   "label": "Blue · Small"
+  },
+  {
+   "match": {
+    "color": "Blue",
+    "size": "Large",
+    "weight": "3.5g",
+    "pack-configuration": "10/100 (100 gloves per box,10 boxes per case)",
+    "ti-x-hi": "15 x 8",
+    "cases-pallets": "120"
+   },
+   "file": "3-5g-blue-nitrile-gloves-10-100-case-l-beng-l1000-spec-sheet.pdf",
+   "label": "Blue · Large"
+  },
+  {
+   "match": {
+    "color": "Blue",
+    "size": "Medium",
+    "weight": "3.5g",
+    "pack-configuration": "10/100 (100 gloves per box,10 boxes per case)",
+    "ti-x-hi": "15 x 8",
+    "cases-pallets": "120"
+   },
+   "file": "3-5g-blue-nitrile-gloves-10-100-case-m-beng-m1000-spec-sheet.pdf",
+   "label": "Blue · Medium"
+  }
+ ],
+ "c-fold-towel": [
+  {
+   "match": {},
+   "file": "c-fold-towel-cftw-2400-spec-sheet.pdf",
+   "label": ""
+  }
+ ],
+ "checker-deli-paper-wrap": [
+  {
+   "match": {
+    "design-color": "Black Checker",
+    "sheet-size": "12\" x 12\"",
+    "pack-size": "6/1000",
+    "ti-x-hi": "12 x 3",
+    "cases-pallets": "36"
+   },
+   "file": "12-x-12-black-checker-fdp12bk-spec-sheet.pdf",
+   "label": "Black Checker · 12\" x 12\""
+  },
+  {
+   "match": {
+    "design-color": "Red Checker",
+    "sheet-size": "12\" x 12\"",
+    "pack-size": "6/1000",
+    "ti-x-hi": "12 x 3",
+    "cases-pallets": "36"
+   },
+   "file": "12-x-12-red-checker-fdp12rc-spec-sheet.pdf",
+   "label": "Red Checker · 12\" x 12\""
+  },
+  {
+   "match": {
+    "design-color": "Blue Checker",
+    "sheet-size": "12\" x 12\"",
+    "pack-size": "6/1000",
+    "ti-x-hi": "12 x 3",
+    "cases-pallets": "36"
+   },
+   "file": "12-x-12-blue-checker-fdp12bc-spec-sheet.pdf",
+   "label": "Blue Checker · 12\" x 12\""
+  }
+ ],
+ "cushion-foil-wrap": [
+  {
+   "match": {},
+   "file": "10-5-x-14-cushion-foil-wrap-fsw66u-spec-sheet.pdf",
+   "label": ""
+  }
+ ],
+ "deep-steam-table-pans": [
+  {
+   "match": {
+    "pan-size": "Full Size",
+    "pack-size": "50/Case",
+    "ti-x-hi": "7 x 4",
+    "cases-pallets": "28"
+   },
+   "file": "full-size-deep-steam-pans-fsdfp-50-spec-sheet.pdf",
+   "label": "Full Size"
+  },
+  {
+   "match": {
+    "pan-size": "Half Size",
+    "pack-size": "100/Case",
+    "ti-x-hi": "12 x 4",
+    "cases-pallets": "42"
+   },
+   "file": "half-size-deep-steam-pans-hsdfp-100-spec-sheet.pdf",
+   "label": "Half Size"
+  }
+ ],
+ "deli-containers": [
+  {
+   "match": {
+    "size": "16oz",
+    "pack-size": "240/Case",
+    "ti-x-hi": "8 x 6",
+    "cases-pallets": "56"
+   },
+   "file": "deli-containers-16oz-dc16-240-spec-sheet.pdf",
+   "label": "16oz"
+  },
+  {
+   "match": {
+    "size": "32oz",
+    "pack-size": "240/Case",
+    "ti-x-hi": "9 x 4",
+    "cases-pallets": "36"
+   },
+   "file": "deli-containers-32oz-dc32-240-spec-sheet.pdf",
+   "label": "32oz"
+  },
+  {
+   "match": {
+    "size": "12oz",
+    "pack-size": "240/Case",
+    "ti-x-hi": "8 x 6",
+    "cases-pallets": "48"
+   },
+   "file": "deli-containers-12oz-dc12-240-spec-sheet.pdf",
+   "label": "12oz"
+  },
+  {
+   "match": {
+    "size": "8oz",
+    "pack-size": "240/Case",
+    "ti-x-hi": "9 x 7",
+    "cases-pallets": "63"
+   },
+   "file": "deli-containers-8oz-dc8-240-spec-sheet.pdf",
+   "label": "8oz"
+  },
+  {
+   "match": {
+    "size": "64oz",
+    "pack-size": "120/Case",
+    "ti-x-hi": "7 x 4",
+    "cases-pallets": "28"
+   },
+   "file": "deli-containers-64oz-dc64-120-spec-sheet.pdf",
+   "label": "64oz"
+  },
+  {
+   "match": {
+    "size": "24oz",
+    "pack-size": "240/Case",
+    "ti-x-hi": "9 x 4",
+    "cases-pallets": "36"
+   },
+   "file": "deli-containers-24oz-dc24-240-spec-sheet.pdf",
+   "label": "24oz"
+  }
+ ],
+ "dinner-napkins": [
+  {
+   "match": {},
+   "file": "2-ply-dinner-napkins-dn2p3000-spec-sheet.pdf",
+   "label": ""
+  }
+ ],
+ "disposable-cutlery-kits": [
+  {
+   "match": {
+    "kit-type": "Cutlery",
+    "pcs": "6",
+    "color": "Black",
+    "material": "PP",
+    "pack-size": "250/Case",
+    "ti-x-hi": "15 x 6",
+    "cases-pallets": "90",
+    "weight-class": "Medium-weight"
+   },
+   "file": "6pcs-cutlery-kit-black-medium-weight-ckmwbpp-250-spec-sheet.pdf",
+   "label": "Cutlery · 6 · Black · PP · Medium-weight"
+  },
+  {
+   "match": {
+    "kit-type": "Cutlery",
+    "pcs": "6",
+    "color": "White",
+    "material": "PP",
+    "pack-size": "250/Case",
+    "ti-x-hi": "15 x 6",
+    "cases-pallets": "90",
+    "weight-class": "Heavy-weight"
+   },
+   "file": "6pcs-cutlery-kit-white-heavy-weight-pp-ckhwwpp-250-spec-sheet.pdf",
+   "label": "Cutlery · 6 · White · PP · Heavy-weight"
+  },
+  {
+   "match": {
+    "kit-type": "Cutlery",
+    "pcs": "6",
+    "color": "White",
+    "material": "PP",
+    "pack-size": "250/Case",
+    "ti-x-hi": "15 x 6",
+    "cases-pallets": "90",
+    "weight-class": "Medium-weight"
+   },
+   "file": "6pcs-cutlery-kit-white-medium-weight-ckmwwpp-250-spec-sheet.pdf",
+   "label": "Cutlery · 6 · White · PP · Medium-weight"
+  },
+  {
+   "match": {
+    "kit-type": "Cutlery",
+    "pcs": "6",
+    "color": "Black",
+    "material": "PP",
+    "pack-size": "250/Case",
+    "ti-x-hi": "15 x 6",
+    "cases-pallets": "90",
+    "weight-class": "Heavy-weight"
+   },
+   "file": "6pcs-cutlery-kit-black-heavy-weight-pp-ckhwbpp-250-spec-sheet.pdf",
+   "label": "Cutlery · 6 · Black · PP · Heavy-weight"
+  },
+  {
+   "match": {
+    "kit-type": "Spork",
+    "pcs": "3",
+    "color": "White",
+    "material": "PP",
+    "pack-size": "250/Case",
+    "ti-x-hi": "16 x 5",
+    "cases-pallets": "80",
+    "weight-class": "Medium-weight"
+   },
+   "file": "3pcs-sprk-kit-white-medium-weight-ck3wmwpp-1000-spec-sheet.pdf",
+   "label": "Spork · 3 · White · PP · Medium-weight"
+  },
+  {
+   "match": {
+    "kit-type": "Cutlery",
+    "pcs": "6",
+    "color": "Black",
+    "material": "PS",
+    "pack-size": "250/Case",
+    "ti-x-hi": "15 x 6",
+    "cases-pallets": "90",
+    "weight-class": "Heavy-weight"
+   },
+   "file": "6pcs-cutlery-kit-black-heavy-weight-ps-ckhwbps-250-spec-sheet.pdf",
+   "label": "Cutlery · 6 · Black · PS · Heavy-weight"
+  }
+ ],
+ "foil-lids-for-steam-table-pans": [
+  {
+   "match": {
+    "pan-size": "Half Size",
+    "pack-size": "100/Case",
+    "ti-x-hi": "10 x 5",
+    "cases-pallets": "50"
+   },
+   "file": "foil-lids-for-half-size-pans-hsal-100-spec-sheet.pdf",
+   "label": "Half Size"
+  },
+  {
+   "match": {
+    "pan-size": "Full Size",
+    "pack-size": "50/Case",
+    "ti-x-hi": "10 x 5",
+    "cases-pallets": "50"
+   },
+   "file": "foil-lids-for-full-size-pans-fsal-50-spec-sheet.pdf",
+   "label": "Full Size"
+  }
+ ],
+ "foil-rolls": [
+  {
+   "match": {
+    "size": "12\" x 1000’",
+    "roll-type": "Standard",
+    "pack-size": "1 roll",
+    "ti-x-hi": "29 x 10",
+    "cases-pallets": "290"
+   },
+   "file": "12-x1000-foil-rolls-standard-frs12-1000-spec-sheet.pdf",
+   "label": "12\" x 1000’ · Standard"
+  },
+  {
+   "match": {
+    "size": "18\" x 500'",
+    "roll-type": "Heavy Duty",
+    "pack-size": "1 roll",
+    "ti-x-hi": "22 x 10",
+    "cases-pallets": "220"
+   },
+   "file": "18-x500-foil-rolls-heavy-duty-frhd18-500-spec-sheet.pdf",
+   "label": "18\" x 500' · Heavy Duty"
+  },
+  {
+   "match": {
+    "size": "18\" x 500'",
+    "roll-type": "Standard",
+    "pack-size": "1 roll",
+    "ti-x-hi": "22 x 10",
+    "cases-pallets": "220"
+   },
+   "file": "18-x500-foil-rolls-standard-frs18-500-spec-sheet.pdf",
+   "label": "18\" x 500' · Standard"
+  },
+  {
+   "match": {
+    "size": "18\" x 1000'",
+    "roll-type": "Standard",
+    "pack-size": "1 roll",
+    "ti-x-hi": "20 x 10",
+    "cases-pallets": "200"
+   },
+   "file": "18-x1000-foil-rolls-standard-frs18-1000-spec-sheet.pdf",
+   "label": "18\" x 1000' · Standard"
+  },
+  {
+   "match": {
+    "size": "18\" x 1000'",
+    "roll-type": "Heavy Duty",
+    "pack-size": "1 roll",
+    "ti-x-hi": "20 x 10",
+    "cases-pallets": "200"
+   },
+   "file": "18-x1000-foil-rolls-heavy-duty-frhd18-1000-spec-sheet.pdf",
+   "label": "18\" x 1000' · Heavy Duty"
+  }
+ ],
+ "foil-sheets": [
+  {
+   "match": {
+    "sheet-size": "9\" x 10.75\"",
+    "pack-size": "6/500",
+    "ti-x-hi": "12 x 6",
+    "cases-pallets": "72"
+   },
+   "file": "9-x10-75-foil-sheets-fs9-500-spec-sheet.pdf",
+   "label": "9\" x 10.75\""
+  },
+  {
+   "match": {
+    "sheet-size": "12\" x 10.75\"",
+    "pack-size": "6/500",
+    "ti-x-hi": "9 x 6",
+    "cases-pallets": "54"
+   },
+   "file": "12-x10-75-foil-sheets-fs12-500-spec-sheet.pdf",
+   "label": "12\" x 10.75\""
+  }
+ ],
+ "food-film": [
+  {
+   "match": {
+    "size": "18\" x 2000'",
+    "gauge": "35 Gauge",
+    "pack-size": "1 roll",
+    "ti-x-hi": "17 x 13",
+    "cases-pallets": "221"
+   },
+   "file": "18-x2000-food-film-ff18-2000-spec-sheet.pdf",
+   "label": "18\" x 2000'"
+  },
+  {
+   "match": {
+    "size": "24\" x 2000'",
+    "gauge": "35 Gauge",
+    "pack-size": "1 roll",
+    "ti-x-hi": "18 x 10",
+    "cases-pallets": "180"
+   },
+   "file": "24-x2000-food-film-ff24-2000-spec-sheet.pdf",
+   "label": "24\" x 2000'"
+  },
+  {
+   "match": {
+    "size": "12\" x 2000'",
+    "gauge": "35 Gauge",
+    "pack-size": "1 roll",
+    "ti-x-hi": "21 x 10",
+    "cases-pallets": "210"
+   },
+   "file": "12-x2000-food-film-ff12-2000-spec-sheet.pdf",
+   "label": "12\" x 2000'"
+  }
+ ],
+ "individual-wrapped-bath-tissue": [
+  {
+   "match": {},
+   "file": "individual-wrapped-bath-tissue-spec-sheet.pdf",
+   "label": ""
+  }
+ ],
+ "interfold-napkins": [
+  {
+   "match": {
+    "color": "White",
+    "sheet-size": "6.5\" x 7.9\"",
+    "pack-configuration": "24/250",
+    "pack-size": "6",
+    "ti-x-hi": "9 x 6",
+    "cases-pallets": "54"
+   },
+   "file": "interfold-napkins-white-ifw6000-spec-sheet.pdf",
+   "label": "White · 6.5\" x 7.9\""
+  },
+  {
+   "match": {
+    "color": "Kraft",
+    "sheet-size": "6.5\" x 7.9\"",
+    "pack-configuration": "24/250",
+    "pack-size": "6",
+    "ti-x-hi": "12 x 6",
+    "cases-pallets": "72"
+   },
+   "file": "interfold-napkins-kraft-ifk6000-spec-sheet.pdf",
+   "label": "Kraft · 6.5\" x 7.9\""
+  }
+ ],
+ "interfold-wax-paper": [
+  {
+   "match": {
+    "sheet-size": "6\" x 10.75\"",
+    "pack-size": "12/500 Box",
+    "ti-x-hi": "11 x 5",
+    "cases-pallets": "55"
+   },
+   "file": "6-x-10-75-interfold-wax-paper-ez-6-spec-sheet.pdf",
+   "label": "6\" x 10.75\""
+  },
+  {
+   "match": {
+    "sheet-size": "12\" x 10.75\"",
+    "pack-size": "12/500 Box",
+    "ti-x-hi": "11 x 3",
+    "cases-pallets": "33"
+   },
+   "file": "12-x-10-75-interfold-wax-paper-ez-12-spec-sheet.pdf",
+   "label": "12\" x 10.75\""
+  },
+  {
+   "match": {
+    "sheet-size": "8\" x 10.75\"",
+    "pack-size": "12/500 Box",
+    "ti-x-hi": "11 x 4",
+    "cases-pallets": "44"
+   },
+   "file": "8-x-10-75-interfold-wax-paper-ez-8-spec-sheet.pdf",
+   "label": "8\" x 10.75\""
+  },
+  {
+   "match": {
+    "sheet-size": "10\" x 10.75\"",
+    "pack-size": "12/500 Box",
+    "ti-x-hi": "11 x 4",
+    "cases-pallets": "44"
+   },
+   "file": "10-x-10-75-interfold-wax-paper-ez-10-spec-sheet.pdf",
+   "label": "10\" x 10.75\""
+  },
+  {
+   "match": {
+    "sheet-size": "15\" x 10.75\"",
+    "pack-size": "12/500 Box",
+    "ti-x-hi": "12 x 2",
+    "cases-pallets": "24"
+   },
+   "file": "15-x-10-75-interfold-wax-paper-ez-15-spec-sheet.pdf",
+   "label": "15\" x 10.75\""
+  }
+ ],
+ "jumbo-roll-tissue": [
+  {
+   "match": {
+    "roll-length": "1000'",
+    "pack-size": "12/Case",
+    "ti-x-hi": "6 x 6",
+    "cases-pallets": "36"
+   },
+   "file": "1000-jumbo-roll-tissue-spec-sheet.pdf",
+   "label": "1000'"
+  },
+  {
+   "match": {
+    "roll-length": "750'",
+    "pack-size": "12/Case",
+    "ti-x-hi": "6 x 6",
+    "cases-pallets": "36"
+   },
+   "file": "750-jumbo-roll-tissue-spec-sheet.pdf",
+   "label": "750'"
+  }
+ ],
+ "kraft-white-kitchen-roll-towels": [
+  {
+   "match": {
+    "roll-type": "Kitchen Roll Towel",
+    "length": "Standard",
+    "ply": "2-Ply",
+    "color": "N/A",
+    "pack-size": "30/Case",
+    "ti-x-hi": "8.5 x 10",
+    "cases-pallets": "85"
+   },
+   "file": "2-ply-kitchen-roll-towel-mftw-4008-spec-sheet.pdf",
+   "label": "Kitchen Roll Towel · Standard · 2-Ply"
+  },
+  {
+   "match": {
+    "roll-type": "Hand Roll Towel",
+    "length": "350'",
+    "ply": "Standard",
+    "color": "Kraft",
+    "pack-size": "12/Case",
+    "ti-x-hi": "12 x 4",
+    "cases-pallets": "48"
+   },
+   "file": "350-hand-roll-towel-kraft-hrtw300-spec-sheet.pdf",
+   "label": "Hand Roll Towel · 350' · Standard · Kraft"
+  },
+  {
+   "match": {
+    "roll-type": "Hand Roll Towel",
+    "length": "800'",
+    "ply": "Standard",
+    "color": "White",
+    "pack-size": "6/Case",
+    "ti-x-hi": "5 x 9",
+    "cases-pallets": "45"
+   },
+   "file": "800-hand-roll-towel-white-mftk-4008-spec-sheet.pdf",
+   "label": "Hand Roll Towel · 800' · Standard · White"
+  },
+  {
+   "match": {
+    "roll-type": "Hand Roll Towel",
+    "length": "350'",
+    "ply": "Standard",
+    "color": "White",
+    "pack-size": "12/Case",
+    "ti-x-hi": "12 x 5",
+    "cases-pallets": "60"
+   },
+   "file": "350-hand-roll-towel-white-spec-sheet.pdf",
+   "label": "Hand Roll Towel · 350' · Standard · White"
+  },
+  {
+   "match": {
+    "roll-type": "Hand Roll Towel",
+    "length": "800'",
+    "ply": "Standard",
+    "color": "Kraft",
+    "pack-size": "6/Case",
+    "ti-x-hi": "5 x 8",
+    "cases-pallets": "40"
+   },
+   "file": "800-hand-roll-towel-kraft-hrtw800-spec-sheet.pdf",
+   "label": "Hand Roll Towel · 800' · Standard · Kraft"
+  }
+ ],
+ "latex-gloves": [
+  {
+   "match": {
+    "color": "White",
+    "size": "Extra Large",
+    "weight": "3.5g",
+    "pack-configuration": "10/100 (100 gloves per box,10 boxes per case)",
+    "ti-x-hi": "15 x 8",
+    "cases-pallets": "120"
+   },
+   "file": "latex-gloves-extra-large-mg-s35xl-spec-sheet.pdf",
+   "label": "White · Extra Large"
+  },
+  {
+   "match": {
+    "color": "White",
+    "size": "Small",
+    "weight": "3.5g",
+    "pack-configuration": "10/100 (100 gloves per box,10 boxes per case)",
+    "ti-x-hi": "15 x 8",
+    "cases-pallets": "120"
+   },
+   "file": "latex-gloves-small-mg-s35s-spec-sheet.pdf",
+   "label": "White · Small"
+  },
+  {
+   "match": {
+    "color": "White",
+    "size": "Large",
+    "weight": "3.5g",
+    "pack-configuration": "10/100 (100 gloves per box,10 boxes per case)",
+    "ti-x-hi": "15 x 8",
+    "cases-pallets": "120"
+   },
+   "file": "latex-gloves-large-mg-s35l-spec-sheet.pdf",
+   "label": "White · Large"
+  },
+  {
+   "match": {
+    "color": "White",
+    "size": "Medium",
+    "weight": "3.5g",
+    "pack-configuration": "10/100 (100 gloves per box,10 boxes per case)",
+    "ti-x-hi": "15 x 8",
+    "cases-pallets": "120"
+   },
+   "file": "latex-gloves-medium-mg-s35m-spec-sheet.pdf",
+   "label": "White · Medium"
+  }
+ ],
+ "menu-tissue-paper": [
+  {
+   "match": {},
+   "file": "12-x-12-menu-tissue-paper-ft12mu-spec-sheet.pdf",
+   "label": ""
+  }
+ ],
+ "paper-bags": [
+  {
+   "match": {
+    "size-bag-capacity": "6 lb",
+    "color": "Kraft",
+    "pack-size": "500/Case",
+    "ti-x-hi": "12 x 12",
+    "cases-pallets": "144"
+   },
+   "file": "6-kraft-bpb-6-spec-sheet.pdf",
+   "label": "6 lb · Kraft"
+  },
+  {
+   "match": {
+    "size-bag-capacity": "2 lb",
+    "color": "Kraft",
+    "pack-size": "500/Case",
+    "ti-x-hi": "32 x 9",
+    "cases-pallets": "288"
+   },
+   "file": "2-kraft-bpb-2-spec-sheet.pdf",
+   "label": "2 lb · Kraft"
+  },
+  {
+   "match": {
+    "size-bag-capacity": "8 lb",
+    "color": "Kraft",
+    "pack-size": "500/Case",
+    "ti-x-hi": "9 x 10",
+    "cases-pallets": "90"
+   },
+   "file": "8-kraft-bpb-8-spec-sheet.pdf",
+   "label": "8 lb · Kraft"
+  },
+  {
+   "match": {
+    "size-bag-capacity": "2 lb",
+    "color": "White",
+    "pack-size": "500/Case",
+    "ti-x-hi": "32 x 9",
+    "cases-pallets": "288"
+   },
+   "file": "2-white-wpb-2-spec-sheet.pdf",
+   "label": "2 lb · White"
+  },
+  {
+   "match": {
+    "size-bag-capacity": "12 lb",
+    "color": "White",
+    "pack-size": "500/Case",
+    "ti-x-hi": "9 x 10",
+    "cases-pallets": "90"
+   },
+   "file": "12-white-wpb-12-spec-sheet.pdf",
+   "label": "12 lb · White"
+  },
+  {
+   "match": {
+    "size-bag-capacity": "8 lb",
+    "color": "White",
+    "pack-size": "500/Case",
+    "ti-x-hi": "9 x 10",
+    "cases-pallets": "90"
+   },
+   "file": "8-white-wpb-8-spec-sheet.pdf",
+   "label": "8 lb · White"
+  },
+  {
+   "match": {
+    "size-bag-capacity": "4 lb",
+    "color": "White",
+    "pack-size": "500/Case",
+    "ti-x-hi": "12 x 12",
+    "cases-pallets": "144"
+   },
+   "file": "4-white-wpb-4-spec-sheet.pdf",
+   "label": "4 lb · White"
+  },
+  {
+   "match": {
+    "size-bag-capacity": "4 lb",
+    "color": "Kraft",
+    "pack-size": "500/Case",
+    "ti-x-hi": "12 x 12",
+    "cases-pallets": "144"
+   },
+   "file": "4-kraft-bpb-4-spec-sheet.pdf",
+   "label": "4 lb · Kraft"
+  },
+  {
+   "match": {
+    "size-bag-capacity": "12 lb",
+    "color": "Kraft",
+    "pack-size": "500/Case",
+    "ti-x-hi": "9 x 10",
+    "cases-pallets": "90"
+   },
+   "file": "12-kraft-spec-sheet.pdf",
+   "label": "12 lb · Kraft"
+  },
+  {
+   "match": {
+    "size-bag-capacity": "6 lb",
+    "color": "White",
+    "pack-size": "500/Case",
+    "ti-x-hi": "12 x 12",
+    "cases-pallets": "144"
+   },
+   "file": "6-white-wpb-6-spec-sheet.pdf",
+   "label": "6 lb · White"
+  }
+ ],
+ "paper-boat-trays": [
+  {
+   "match": {
+    "tray-size-capacity": "5 lb",
+    "color-design": "Red Plaid",
+    "pack-size": "500/Case",
+    "ti-x-hi": "9 x 7",
+    "cases-pallets": "63"
+   },
+   "file": "5-lb-red-plaid-spec-sheet.pdf",
+   "label": "5 lb · Red Plaid"
+  },
+  {
+   "match": {
+    "tray-size-capacity": "3 lb",
+    "color-design": "Red Plaid",
+    "pack-size": "500/Case",
+    "ti-x-hi": "9 x 7",
+    "cases-pallets": "63"
+   },
+   "file": "3-lb-red-plaid-spec-sheet.pdf",
+   "label": "3 lb · Red Plaid"
+  },
+  {
+   "match": {
+    "tray-size-capacity": "1/2 lb",
+    "color-design": "Red Plaid",
+    "pack-size": "1000/Case",
+    "ti-x-hi": "N/A",
+    "cases-pallets": "N/A"
+   },
+   "file": "1-2-lb-red-plaid-spec-sheet.pdf",
+   "label": "1/2 lb · Red Plaid"
+  },
+  {
+   "match": {
+    "tray-size-capacity": "2 lb",
+    "color-design": "Red Plaid",
+    "pack-size": "1000/Case",
+    "ti-x-hi": "9 x 7",
+    "cases-pallets": "63"
+   },
+   "file": "2-lb-red-plaid-spec-sheet.pdf",
+   "label": "2 lb · Red Plaid"
+  },
+  {
+   "match": {
+    "tray-size-capacity": "1 lb",
+    "color-design": "Red Plaid",
+    "pack-size": "1000/Case",
+    "ti-x-hi": "9 x 7",
+    "cases-pallets": "63"
+   },
+   "file": "1-lb-red-plaid-spec-sheet.pdf",
+   "label": "1 lb · Red Plaid"
+  },
+  {
+   "match": {
+    "tray-size-capacity": "1/4 lb",
+    "color-design": "Red Plaid",
+    "pack-size": "1000/Case",
+    "ti-x-hi": "N/A",
+    "cases-pallets": "N/A"
+   },
+   "file": "1-4-lb-red-plaid-spec-sheet.pdf",
+   "label": "1/4 lb · Red Plaid"
+  }
+ ],
+ "patty-wax-paper": [
+  {
+   "match": {},
+   "file": "5-5-x-5-5-patty-wax-paper-p-55-spec-sheet.pdf",
+   "label": ""
+  }
+ ],
+ "pet-cup-lids": [
+  {
+   "match": {
+    "lid-type": "Dome Lid",
+    "pack-size": "1000/Case",
+    "ti-x-hi": "9 x 5",
+    "lid-size": "98mm",
+    "cases-pallets": "45"
+   },
+   "file": "98mm-dome-lid-dl-98-1000-spec-sheet.pdf",
+   "label": "Dome Lid · 98mm"
+  },
+  {
+   "match": {
+    "lid-type": "Flat Lid",
+    "pack-size": "500/Case",
+    "ti-x-hi": "9 x 5",
+    "lid-size": "107mm",
+    "cases-pallets": "45"
+   },
+   "file": "107mm-flat-lid-32oz-flwh107-500-spec-sheet.pdf",
+   "label": "Flat Lid · 107mm"
+  },
+  {
+   "match": {
+    "lid-type": "Flat Lid With Hole",
+    "pack-size": "1000/Case",
+    "ti-x-hi": "10 x 5",
+    "lid-size": "98mm",
+    "cases-pallets": "50"
+   },
+   "file": "98mm-flat-lid-with-hole-flwh98-1000-spec-sheet.pdf",
+   "label": "Flat Lid With Hole · 98mm"
+  },
+  {
+   "match": {
+    "lid-type": "Slip Thru Lid",
+    "pack-size": "1000/Case",
+    "ti-x-hi": "9 x 5",
+    "lid-size": "98mm",
+    "cases-pallets": "45"
+   },
+   "file": "98mm-slip-thru-stl-98-1000-spec-sheet.pdf",
+   "label": "Slip Thru Lid · 98mm"
+  }
+ ],
+ "pet-cups": [
+  {
+   "match": {
+    "size": "24oz",
+    "pack-size": "1000/Case",
+    "ti-x-hi": "8 x 4",
+    "lid-size": "98mm",
+    "cases-pallets": "32"
+   },
+   "file": "24oz-pet-cups-98mm-pet24-98-1000-spec-sheet.pdf",
+   "label": "24oz · 98mm"
+  },
+  {
+   "match": {
+    "size": "9oz",
+    "pack-size": "1000/Case",
+    "ti-x-hi": "6 x 6",
+    "lid-size": "92mm",
+    "cases-pallets": "36"
+   },
+   "file": "9oz-pet-cups-pet9-92-1000-spec-sheet.pdf",
+   "label": "9oz · 92mm"
+  },
+  {
+   "match": {
+    "size": "12oz",
+    "pack-size": "1000/Case",
+    "ti-x-hi": "6 x 5",
+    "lid-size": "98mm",
+    "cases-pallets": "30"
+   },
+   "file": "12oz-pet-cups-98mm-pet12-98-1000-spec-sheet.pdf",
+   "label": "12oz · 98mm"
+  },
+  {
+   "match": {
+    "size": "16oz",
+    "pack-size": "1000/Case",
+    "ti-x-hi": "6 x 4",
+    "lid-size": "98mm",
+    "cases-pallets": "24"
+   },
+   "file": "16oz-pet-cups-98mm-pet16-98-1000-spec-sheet.pdf",
+   "label": "16oz · 98mm"
+  },
+  {
+   "match": {
+    "size": "32oz",
+    "pack-size": "500/Case",
+    "ti-x-hi": "8 x 4",
+    "lid-size": "107mm",
+    "cases-pallets": "32"
+   },
+   "file": "32oz-pet-cups-107mm-pet32-500-spec-sheet.pdf",
+   "label": "32oz · 107mm"
+  },
+  {
+   "match": {
+    "size": "20oz",
+    "pack-size": "1000/Case",
+    "ti-x-hi": "6 x 4",
+    "lid-size": "98mm",
+    "cases-pallets": "24"
+   },
+   "file": "20oz-pet-cups-98mm-pet20-98-1000-spec-sheet.pdf",
+   "label": "20oz · 98mm"
+  }
+ ],
+ "poly-bags": [
+  {
+   "match": {
+    "bag-size": "8\" x 4\" x 18\"",
+    "pack-size": "100/Case",
+    "ti-x-hi": "9 x 10",
+    "cases-pallets": "90"
+   },
+   "file": "8x4x18-poly-bag-14ib-pb8418-spec-sheet.pdf",
+   "label": "8\" x 4\" x 18\""
+  },
+  {
+   "match": {
+    "bag-size": "23\" x 17\" x 34\"",
+    "pack-size": "100/Case",
+    "ti-x-hi": "12 x 6",
+    "cases-pallets": "72"
+   },
+   "file": "23x17x34-poly-bag-14ib-pb231734-spec-sheet.pdf",
+   "label": "23\" x 17\" x 34\""
+  },
+  {
+   "match": {
+    "bag-size": "12\" x 6\" x 24\"",
+    "pack-size": "100/Case",
+    "ti-x-hi": "12 x 6",
+    "cases-pallets": "72"
+   },
+   "file": "12x6x24-poly-bag-16ib-pb12624-spec-sheet.pdf",
+   "label": "12\" x 6\" x 24\""
+  }
+ ],
+ "portion-cups-lids": [
+  {
+   "match": {
+    "size": "1oz",
+    "pack-size": "2500/Case",
+    "ti-x-hi": "12 x 5",
+    "lid-size": "90mm",
+    "cases-pallets": "60"
+   },
+   "file": "lids-for-1oz-portion-cups-pcl1-2500-spec-sheet.pdf",
+   "label": "1oz · 90mm"
+  },
+  {
+   "match": {
+    "size": "1.5–2oz",
+    "pack-size": "2500/Case",
+    "ti-x-hi": "12 x 5",
+    "lid-size": "98mm",
+    "cases-pallets": "60"
+   },
+   "file": "lids-for-1-5-2oz-portion-cups-pcl2-2500-spec-sheet.pdf",
+   "label": "1.5–2oz · 98mm"
+  },
+  {
+   "match": {
+    "size": "3.25–5.5oz",
+    "pack-size": "2500/Case",
+    "ti-x-hi": "9 x 5",
+    "lid-size": "90mm",
+    "cases-pallets": "45"
+   },
+   "file": "lids-for-3-25-5-5oz-portion-cups-pcl325-2500-spec-sheet.pdf",
+   "label": "3.25–5.5oz · 90mm"
+  }
+ ],
+ "portion-cups": [
+  {
+   "match": {
+    "product-type": "Cup",
+    "size-oz": "2oz",
+    "color": "Clear",
+    "pack-size": "2500/Case",
+    "ti-x-hi": "12 x 5",
+    "cases-pallets": "60"
+   },
+   "file": "2oz-clear-portion-cups-pc2-2500-spec-sheet.pdf",
+   "label": "Cup · 2oz · Clear"
+  },
+  {
+   "match": {
+    "product-type": "Cup",
+    "size-oz": "1.5oz",
+    "color": "Clear",
+    "pack-size": "2500/Case",
+    "ti-x-hi": "12 x 5",
+    "cases-pallets": "60"
+   },
+   "file": "1-5oz-clear-portion-cups-pc15-2500-spec-sheet.pdf",
+   "label": "Cup · 1.5oz · Clear"
+  },
+  {
+   "match": {
+    "product-type": "Cup",
+    "size-oz": "1oz",
+    "color": "Clear",
+    "pack-size": "2500/Case",
+    "ti-x-hi": "12 x 5",
+    "cases-pallets": "45"
+   },
+   "file": "1oz-clear-portion-cups-pc1-2500-spec-sheet.pdf",
+   "label": "Cup · 1oz · Clear"
+  },
+  {
+   "match": {
+    "product-type": "Cup",
+    "size-oz": "4oz",
+    "color": "Clear",
+    "pack-size": "2500/Case",
+    "ti-x-hi": "9 x 5",
+    "cases-pallets": "45"
+   },
+   "file": "4oz-clear-portion-cups-pc4-2500-spec-sheet.pdf",
+   "label": "Cup · 4oz · Clear"
+  },
+  {
+   "match": {
+    "product-type": "Cup",
+    "size-oz": "5.5oz",
+    "color": "Clear",
+    "pack-size": "2500/Case",
+    "ti-x-hi": "9 x 5",
+    "cases-pallets": "45"
+   },
+   "file": "5-5oz-clear-portion-cups-pc55-2500-spec-sheet.pdf",
+   "label": "Cup · 5.5oz · Clear"
+  },
+  {
+   "match": {
+    "product-type": "Cup",
+    "size-oz": "3.25oz",
+    "color": "Clear",
+    "pack-size": "2500/Case",
+    "ti-x-hi": "9 x 5",
+    "cases-pallets": "45"
+   },
+   "file": "3-25oz-clear-portion-cups-pc325-2500-spec-sheet.pdf",
+   "label": "Cup · 3.25oz · Clear"
+  },
+  {
+   "match": {
+    "product-type": "Cup",
+    "size-oz": "4oz",
+    "color": "Black",
+    "pack-size": "2500/Case",
+    "ti-x-hi": "9 x 5",
+    "cases-pallets": "45"
+   },
+   "file": "4oz-black-portion-cups-pcb4-2500-spec-sheet.pdf",
+   "label": "Cup · 4oz · Black"
+  },
+  {
+   "match": {
+    "product-type": "Cup",
+    "size-oz": "5.5oz",
+    "color": "Black",
+    "pack-size": "2500/Case",
+    "ti-x-hi": "9 x 5",
+    "cases-pallets": "45"
+   },
+   "file": "5-5oz-black-portion-cups-spec-sheet.pdf",
+   "label": "Cup · 5.5oz · Black"
+  },
+  {
+   "match": {
+    "product-type": "Cup",
+    "size-oz": "3.25oz",
+    "color": "Black",
+    "pack-size": "2500/Case",
+    "ti-x-hi": "12 x 5",
+    "cases-pallets": "60"
+   },
+   "file": "3-25oz-black-portion-cups-pcb325-2500-spec-sheet.pdf",
+   "label": "Cup · 3.25oz · Black"
+  }
+ ],
+ "register-roll-paper": [
+  {
+   "match": {
+    "paper-type": "Bond",
+    "roll-size": "3\" x 165'",
+    "pack-size": "50/Case",
+    "ti-x-hi": "9 x 10",
+    "cases-pallets": "90"
+   },
+   "file": "3-x165-bond-paper-trp3-165-spec-sheet.pdf",
+   "label": "Bond · 3\" x 165'"
+  },
+  {
+   "match": {
+    "paper-type": "Thermal",
+    "roll-size": "3\" x 95'",
+    "pack-size": "50/Case",
+    "ti-x-hi": "N/A",
+    "cases-pallets": "N/A"
+   },
+   "file": "3-x95-thermal-roll-paper-spec-sheet.pdf",
+   "label": "Thermal · 3\" x 95'"
+  },
+  {
+   "match": {
+    "paper-type": "Thermal",
+    "roll-size": "3 1/8\" x 230'",
+    "pack-size": "50/Case",
+    "ti-x-hi": "9 x 10",
+    "cases-pallets": "90"
+   },
+   "file": "3-1-8-x230-thermal-roll-paper-trp230-50-spec-sheet.pdf",
+   "label": "Thermal · 3 1/8\" x 230'"
+  },
+  {
+   "match": {
+    "paper-type": "Thermal",
+    "roll-size": "3 1/8\" x 273'",
+    "pack-size": "50/Case",
+    "ti-x-hi": "9 x 10",
+    "cases-pallets": "90"
+   },
+   "file": "3-1-8-x273-thermal-roll-paper-trp318-273-spec-sheet.pdf",
+   "label": "Thermal · 3 1/8\" x 273'"
+  },
+  {
+   "match": {
+    "paper-type": "Thermal",
+    "roll-size": "2 1/4\" x 50'",
+    "pack-size": "50/Case",
+    "ti-x-hi": "30 x 12",
+    "cases-pallets": "360"
+   },
+   "file": "2-1-4-x50-thermal-roll-paper-trp214-50-spec-sheet.pdf",
+   "label": "Thermal · 2 1/4\" x 50'"
+  },
+  {
+   "match": {
+    "paper-type": "Thermal",
+    "roll-size": "2 1/4\" x 85'",
+    "pack-size": "50/Case",
+    "ti-x-hi": "20 x 12",
+    "cases-pallets": "240"
+   },
+   "file": "2-1-4-x85-thermal-roll-paper-trp214-85-spec-sheet.pdf",
+   "label": "Thermal · 2 1/4\" x 85'"
+  }
+ ],
+ "round-black-containers": [
+  {
+   "match": {
+    "size": "16oz",
+    "color": "Black",
+    "pack-size": "150/Case",
+    "ti-x-hi": "10 x 5",
+    "cases-pallets": "50"
+   },
+   "file": "16oz-round-black-containers-spec-sheet.pdf",
+   "label": "16oz · Black"
+  },
+  {
+   "match": {
+    "size": "48oz",
+    "color": "Black",
+    "pack-size": "150/Case",
+    "ti-x-hi": "6 x 5",
+    "cases-pallets": "30"
+   },
+   "file": "48oz-round-black-containers-bcro-48-spec-sheet.pdf",
+   "label": "48oz · Black"
+  },
+  {
+   "match": {
+    "size": "24oz",
+    "color": "Black",
+    "pack-size": "150/Case",
+    "ti-x-hi": "10 x 5",
+    "cases-pallets": "50"
+   },
+   "file": "24oz-round-black-containers-bcro-24-spec-sheet.pdf",
+   "label": "24oz · Black"
+  },
+  {
+   "match": {
+    "size": "32oz",
+    "color": "Black",
+    "pack-size": "150/Case",
+    "ti-x-hi": "10 x 5",
+    "cases-pallets": "50"
+   },
+   "file": "32oz-round-black-containers-bcro-32-spec-sheet.pdf",
+   "label": "32oz · Black"
+  }
+ ],
+ "round-foil-pan-lids": [
+  {
+   "match": {},
+   "file": "board-lids-for-7-round-pans-rfpl7-500-spec-sheet.pdf",
+   "label": "7\" board lid"
+  },
+  {
+   "match": {},
+   "file": "board-lids-for-9-round-pans-rfpl9-500-spec-sheet.pdf",
+   "label": "9\" board lid"
+  },
+  {
+   "match": {},
+   "file": "round-dome-lid-7-spec-sheet.pdf",
+   "label": "7\" dome lid"
+  },
+  {
+   "match": {},
+   "file": "round-dome-lid-9-spec-sheet.pdf",
+   "label": "9\" dome lid"
+  }
+ ],
+ "round-foil-pans": [
+  {
+   "match": {
+    "size": "7\"",
+    "pack-size": "500/Case",
+    "ti-x-hi": "5 x 9",
+    "cases-pallets": "45"
+   },
+   "file": "round-foil-pans-7-rfp7-500-spec-sheet.pdf",
+   "label": "7\""
+  },
+  {
+   "match": {
+    "size": "9\"",
+    "pack-size": "500/Case",
+    "ti-x-hi": "6 x 4",
+    "cases-pallets": "24"
+   },
+   "file": "round-foil-pans-9-rfp9-500-spec-sheet.pdf",
+   "label": "9\""
+  }
+ ],
+ "round-plates": [
+  {
+   "match": {},
+   "file": "9-round-plates-9mfrp-500-spec-sheet.pdf",
+   "label": ""
+  }
+ ],
+ "school-trays": [
+  {
+   "match": {},
+   "file": "school-trays-mft-500-spec-sheet.pdf",
+   "label": ""
+  }
+ ],
+ "single-fold-napkins": [
+  {
+   "match": {
+    "napkin-type": "Single Fold",
+    "color": "Kraft",
+    "pack-size": "4000/Case",
+    "ti-x-hi": "9 x 7",
+    "cases-pallets": "63"
+   },
+   "file": "single-fold-napkins-kraft-spec-sheet.pdf",
+   "label": "Single Fold · Kraft"
+  },
+  {
+   "match": {
+    "napkin-type": "Multifold",
+    "color": "White",
+    "pack-size": "4000/Case",
+    "ti-x-hi": "7 x 7",
+    "cases-pallets": "49"
+   },
+   "file": "multifold-napkins-white-spec-sheet.pdf",
+   "label": "Multifold · White"
+  },
+  {
+   "match": {
+    "napkin-type": "Single Fold",
+    "color": "White",
+    "pack-size": "4000/Case",
+    "ti-x-hi": "9 x 7",
+    "cases-pallets": "63"
+   },
+   "file": "single-fold-napkins-white-spec-sheet.pdf",
+   "label": "Single Fold · White"
+  },
+  {
+   "match": {
+    "napkin-type": "Multifold",
+    "color": "Kraft",
+    "pack-size": "4000/Case",
+    "ti-x-hi": "7 x 7",
+    "cases-pallets": "49"
+   },
+   "file": "multifold-napkins-kraft-spec-sheet.pdf",
+   "label": "Multifold · Kraft"
+  }
+ ],
+ "single-multi-and-c-fold-napkins": [
+  {
+   "match": {
+    "napkin-type": "Single Fold",
+    "color": "Kraft",
+    "pack-size": "4000/Case",
+    "ti-x-hi": "9 x 7",
+    "cases-pallets": "63"
+   },
+   "file": "single-fold-napkins-kraft-spec-sheet.pdf",
+   "label": "Single Fold · Kraft"
+  },
+  {
+   "match": {
+    "napkin-type": "Multifold",
+    "color": "White",
+    "pack-size": "4000/Case",
+    "ti-x-hi": "7 x 7",
+    "cases-pallets": "49"
+   },
+   "file": "multifold-napkins-white-spec-sheet.pdf",
+   "label": "Multifold · White"
+  },
+  {
+   "match": {
+    "napkin-type": "Single Fold",
+    "color": "White",
+    "pack-size": "4000/Case",
+    "ti-x-hi": "9 x 7",
+    "cases-pallets": "63"
+   },
+   "file": "single-fold-napkins-white-spec-sheet.pdf",
+   "label": "Single Fold · White"
+  },
+  {
+   "match": {
+    "napkin-type": "Multifold",
+    "color": "Kraft",
+    "pack-size": "4000/Case",
+    "ti-x-hi": "7 x 7",
+    "cases-pallets": "49"
+   },
+   "file": "multifold-napkins-kraft-spec-sheet.pdf",
+   "label": "Multifold · Kraft"
+  }
+ ],
+ "stretch-film": [
+  {
+   "match": {},
+   "file": "18-x1500x80g-spec-sheet.pdf",
+   "label": ""
+  }
+ ],
+ "synmax-vinyl-black-gloves": [
+  {
+   "match": {
+    "color": "Black",
+    "size": "Medium",
+    "weight": "3.5g",
+    "pack-configuration": "10/100 (100 gloves per box, 10 boxes per case)",
+    "ti-x-hi": "15 x 8",
+    "cases-pallets": "120"
+   },
+   "file": "black-synmax-vinyl-gloves-10-100-case-m-bvg-m1000-spec-sheet.pdf",
+   "label": "Black · Medium"
+  },
+  {
+   "match": {
+    "color": "Black",
+    "size": "Large",
+    "weight": "3.5g",
+    "pack-configuration": "10/100 (100 gloves per box, 10 boxes per case)",
+    "ti-x-hi": "15 x 8",
+    "cases-pallets": "120"
+   },
+   "file": "black-synmax-vinyl-gloves-10-100-case-l-bvg-l1000-spec-sheet.pdf",
+   "label": "Black · Large"
+  },
+  {
+   "match": {
+    "color": "Black",
+    "size": "Extra Large",
+    "weight": "3.5g",
+    "pack-configuration": "10/100 (100 gloves per box, 10 boxes per case)",
+    "ti-x-hi": "15 x 8",
+    "cases-pallets": "120"
+   },
+   "file": "black-synmax-vinyl-gloves-10-100-case-xl-bvg-xl1000-spec-sheet.pdf",
+   "label": "Black · Extra Large"
+  }
+ ],
+ "tall-fold-napkins": [
+  {
+   "match": {},
+   "file": "tall-fold-napkins-tfn-10000-spec-sheet.pdf",
+   "label": ""
+  }
+ ],
+ "trash-liners": [
+  {
+   "match": {
+    "capacity": "60 Gallon",
+    "size-dimensions": "38\" x 58\"",
+    "color": "Black",
+    "material": "LLDPE",
+    "thickness": "2.00 mil",
+    "pack-size": "100/Case",
+    "ti-x-hi": "8 x 11",
+    "cases-pallets": "88"
+   },
+   "file": "60gal-black-38x58-llpde-2-00-mil-spec-sheet.pdf",
+   "label": "60 Gallon · 38\" x 58\" · Black · LLDPE · 2.00 mil"
+  },
+  {
+   "match": {
+    "capacity": "60 Gallon",
+    "size-dimensions": "38\" x 58\"",
+    "color": "Black",
+    "material": "LLDPE",
+    "thickness": "1.25 mil",
+    "pack-size": "100/Case",
+    "ti-x-hi": "8 x 11",
+    "cases-pallets": "88"
+   },
+   "file": "60gal-black-38x58-llpde-1-25-mil-spec-sheet.pdf",
+   "label": "60 Gallon · 38\" x 58\" · Black · LLDPE · 1.25 mil"
+  },
+  {
+   "match": {
+    "capacity": "60 Gallon",
+    "size-dimensions": "38\" x 58\"",
+    "color": "Black",
+    "material": "LLDPE",
+    "thickness": "1.00 mil",
+    "pack-size": "100/Case",
+    "ti-x-hi": "8 x 11",
+    "cases-pallets": "88"
+   },
+   "file": "60gal-black-38x58-llpde-1-00-mil-spec-sheet.pdf",
+   "label": "60 Gallon · 38\" x 58\" · Black · LLDPE · 1.00 mil"
+  },
+  {
+   "match": {
+    "capacity": "60 Gallon",
+    "size-dimensions": "38\" x 58\"",
+    "color": "Black",
+    "material": "LLDPE",
+    "thickness": "1.50 mil",
+    "pack-size": "100/Case",
+    "ti-x-hi": "8 x 11",
+    "cases-pallets": "88"
+   },
+   "file": "60gal-black-38x58-llpde-1-50-mil-spec-sheet.pdf",
+   "label": "60 Gallon · 38\" x 58\" · Black · LLDPE · 1.50 mil"
+  }
+ ],
+ "vinyl-gloves": [
+  {
+   "match": {
+    "color": "Clear",
+    "size": "Medium",
+    "weight": "3.5g",
+    "pack-configuration": "10/100 (100 gloves per box, 10 boxes per case)",
+    "ti-x-hi": "15 x 8",
+    "cases-pallets": "120"
+   },
+   "file": "vinyl-gloves-clear-10-100-case-m-cvg-m-1000-spec-sheet.pdf",
+   "label": "Clear · Medium"
+  },
+  {
+   "match": {
+    "color": "Clear",
+    "size": "Large",
+    "weight": "3.5g",
+    "pack-configuration": "10/100 (100 gloves per box, 10 boxes per case)",
+    "ti-x-hi": "15 x 8",
+    "cases-pallets": "120"
+   },
+   "file": "vinyl-gloves-clear-10-100-case-l-cvg-l-1000-spec-sheet.pdf",
+   "label": "Clear · Large"
+  },
+  {
+   "match": {
+    "color": "Clear",
+    "size": "Extra Large",
+    "weight": "3.5g",
+    "pack-configuration": "10/100 (100 gloves per box, 10 boxes per case)",
+    "ti-x-hi": "15 x 8",
+    "cases-pallets": "120"
+   },
+   "file": "vinyl-gloves-clear-10-100-case-xl-cvg-xl-1000-spec-sheet.pdf",
+   "label": "Clear · Extra Large"
+  }
+ ]
+}
