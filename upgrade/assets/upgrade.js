@@ -512,19 +512,27 @@
     update();
   }
 
-  /* ---------- category filter: update the list in place instead of loading a new page ---------- */
+  /* ---------- category filter: update the list in place instead of loading a new page.
+     Taps toggle the chip at once; quick taps are combined into one update and the newest
+     choice always wins; the page keeps its position so nothing jumps under the finger. ---------- */
   function initFilterNav() {
     var section = document.querySelector('.wpc-filters-section.wpc-filter-product_cat');
     if (!section || !window.fetch || !window.DOMParser || !history.pushState) return;
-    var cache = {};
-    function linkFor(item) {
-      var input = item && item.querySelector('input[data-wpc-link]');
-      return input ? input.getAttribute('data-wpc-link') : null;
+    var cache = {}, timer = null, latest = 0, shownUrl = location.pathname;
+    function slugOf(item) {
+      var a = item.querySelector('a.wpc-filter-link');
+      return a ? a.textContent.replace(/\(\d+\)/, '').trim().toLowerCase().replace(/&/g, 'and').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') : '';
+    }
+    function selectedSlugs() {
+      return Array.prototype.map.call(document.querySelectorAll('.wpc-filter-product_cat .wpc-term-item.wpc-term-selected'), slugOf).filter(Boolean);
+    }
+    function urlFor(slugs) {
+      return slugs.length ? '/products/product_cat-' + slugs.slice().sort().join('-or-') + '/' : '/products/';
     }
     function get(url) {
       if (!cache[url]) cache[url] = fetch(url, { credentials: 'same-origin' }).then(function (r) {
         if (!r.ok) throw new Error(r.status); return r.text();
-      });
+      }).catch(function (err) { delete cache[url]; throw err; });
       return cache[url];
     }
     function wakeImages(root) {
@@ -533,51 +541,74 @@
         if (img.getAttribute('data-lazy-srcset')) img.srcset = img.getAttribute('data-lazy-srcset');
       });
     }
-    var busy = false;
-    function go(url, push, focusId) {
+    function setLoading(on) {
       var wrap = document.querySelector('.woocommerce-products-wrapper');
-      if (!wrap || busy) { location.href = url; return; }
-      busy = true; wrap.classList.add('cpp-loading'); wrap.setAttribute('aria-busy', 'true');
-      get(url).then(function (htmlText) {
-        var doc = new DOMParser().parseFromString(htmlText, 'text/html');
-        var newWrap = doc.querySelector('.woocommerce-products-wrapper');
-        var newSection = doc.querySelector('.wpc-filters-section.wpc-filter-product_cat');
-        if (!newWrap || !newSection) throw new Error('layout');
-        wrap.innerHTML = newWrap.innerHTML; wakeImages(wrap);
-        var cur = document.querySelector('.wpc-filters-section.wpc-filter-product_cat');
-        cur.innerHTML = newSection.innerHTML;
-        var hero = document.querySelector('.cpp-cat-hero'), newHero = doc.querySelector('.cpp-cat-hero');
-        if (hero && newHero) hero.outerHTML = newHero.outerHTML;
-        else if (hero) hero.remove();
-        else if (newHero) { var content = document.getElementById('content'); if (content) content.insertAdjacentHTML('afterbegin', newHero.outerHTML); }
-        document.title = doc.title;
-        if (push) history.pushState({ cppFilter: true }, '', url);
-        if (focusId) { var f = document.getElementById(focusId); if (f) f.focus({ preventScroll: true }); }
-        var top = wrap.getBoundingClientRect().top;
-        if (top < 0) window.scrollBy({ top: top - 90, behavior: 'smooth' });
-      }).catch(function () { location.href = url; })
-        .then(function () { busy = false; wrap.classList.remove('cpp-loading'); wrap.removeAttribute('aria-busy'); });
+      if (!wrap) return;
+      wrap.classList.toggle('cpp-loading', on);
+      if (on) wrap.setAttribute('aria-busy', 'true'); else wrap.removeAttribute('aria-busy');
+    }
+    function apply(htmlText, url, push, anchorSel) {
+      var doc = new DOMParser().parseFromString(htmlText, 'text/html');
+      var wrap = document.querySelector('.woocommerce-products-wrapper');
+      var newWrap = doc.querySelector('.woocommerce-products-wrapper');
+      var newSection = doc.querySelector('.wpc-filters-section.wpc-filter-product_cat');
+      if (!wrap || !newWrap || !newSection) throw new Error('layout');
+      // keep whatever the buyer tapped at the same place on screen
+      var anchor = (anchorSel && document.querySelector(anchorSel)) || document.querySelector('.wpc-filters-section.wpc-filter-product_cat');
+      var before = anchor ? anchor.getBoundingClientRect().top : 0;
+      wrap.innerHTML = newWrap.innerHTML; wakeImages(wrap);
+      document.querySelector('.wpc-filters-section.wpc-filter-product_cat').innerHTML = newSection.innerHTML;
+      var hero = document.querySelector('.cpp-cat-hero'), newHero = doc.querySelector('.cpp-cat-hero');
+      if (hero && newHero) hero.outerHTML = newHero.outerHTML;
+      else if (hero) hero.remove();
+      else if (newHero) { var content = document.getElementById('content'); if (content) content.insertAdjacentHTML('afterbegin', newHero.outerHTML); }
+      document.title = doc.title;
+      if (push) history.pushState({ cppFilter: true }, '', url);
+      shownUrl = url;
+      var anchor2 = (anchorSel && document.querySelector(anchorSel)) || document.querySelector('.wpc-filters-section.wpc-filter-product_cat');
+      if (anchor2) { var delta = anchor2.getBoundingClientRect().top - before; if (Math.abs(delta) > 1) window.scrollBy(0, delta); }
+    }
+    function load(url, push, anchorSel) {
+      var token = ++latest;
+      setLoading(true);
+      return get(url).then(function (htmlText) {
+        if (token !== latest) return;          // a newer choice is on its way: drop this one
+        apply(htmlText, url, push, anchorSel);
+        setLoading(false);
+      }).catch(function () { if (token === latest) location.href = url; });
     }
     document.addEventListener('click', function (e) {
       var item = e.target.closest && e.target.closest('.wpc-filter-product_cat .wpc-term-item');
       if (!item) return;
-      var url = linkFor(item);
-      if (!url) return;
       e.preventDefault(); e.stopImmediatePropagation();
-      var input = item.querySelector('input');
-      go(url, true, input && input.id);
+      // instant feedback: flip the chip now, load the list a moment later
+      var on = !item.classList.contains('wpc-term-selected');
+      item.classList.toggle('wpc-term-selected', on);
+      var input = item.querySelector('input'); if (input) input.checked = on;
+      var anchorSel = item.id ? '#' + item.id : null;
+      var target = urlFor(selectedSlugs());
+      setLoading(true);
+      get(target).catch(function () {});       // start fetching right away
+      clearTimeout(timer);
+      timer = setTimeout(function () {
+        if (target === shownUrl) { setLoading(false); return; }
+        load(target, true, anchorSel);
+      }, 220);
     }, true);
     // warm the cache so the switch feels instant
     ['pointerenter', 'touchstart', 'focusin'].forEach(function (ev) {
       document.addEventListener(ev, function (e) {
-        var item = e.target.closest && e.target.closest('.wpc-filter-product_cat .wpc-term-item');
-        var url = linkFor(item);
-        if (url) get(url).catch(function () { delete cache[url]; });
+        var item = e.target && e.target.closest && e.target.closest('.wpc-filter-product_cat .wpc-term-item');
+        if (!item) return;
+        var slugs = selectedSlugs(), me = slugOf(item), i = slugs.indexOf(me);
+        if (i >= 0) slugs.splice(i, 1); else slugs.push(me);
+        get(urlFor(slugs)).catch(function () {});
       }, { capture: true, passive: true });
     });
     history.replaceState({ cppFilter: true }, '', location.href);
-    window.addEventListener('popstate', function (e) { if (e.state && e.state.cppFilter) go(location.pathname, false); });
+    window.addEventListener('popstate', function (e) { if (e.state && e.state.cppFilter) load(location.pathname, false); });
   }
+
 
   /* ---------- credit application (Fluent Forms): its WordPress endpoint is gone, deliver it ourselves.
      The browser builds a branded PDF (with the tax permit merged in) and our /api/credit-application

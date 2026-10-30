@@ -313,21 +313,36 @@ CAT_HEADERS = {
 }
 
 
-def cat_header(slug, count):
-    name, line, photo, alt = CAT_HEADERS[slug]
+def cat_header(slug, count, spec=None):
+    name, line, photo, alt = spec or CAT_HEADERS[slug]
     img = ('<div class="cpp-cat-hero-media"><img src="/wp-content/uploads/2026/10/%s.webp" width="900" height="600" alt="%s" '
            'fetchpriority="high" decoding="async"></div>' % (photo, html.escape(alt))) if photo else ''
     return ('<section class="cpp-cat-hero%s" data-cpp-upgrade aria-labelledby="cpp-cat-title"><div class="cpp-cat-hero-in">'
             '<div class="cpp-cat-hero-copy">'
             '<nav class="cpp-cat-crumbs" aria-label="Breadcrumb"><a href="/">Home</a><span aria-hidden="true">/</span>'
             '<a href="/products/">Products</a><span aria-hidden="true">/</span><span aria-current="page">%s</span></nav>'
-            '<h1 id="cpp-cat-title">Wholesale %s</h1><p class="cpp-cat-line">%s</p>'
+            '<h1 id="cpp-cat-title">%s</h1><p class="cpp-cat-line">%s</p>'
             '<p class="cpp-cat-meta">%d products <span aria-hidden="true">·</span> Ships from Houston in 24–48 hrs</p>'
             '<div class="cpp-cat-actions"><a class="cpp-hbtn cpp-hbtn--main" href="/get-your-quote/">Request a Quote'
             '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>'
             '<a class="cpp-cat-tel" href="tel:+18449008804">or call (844) 900-8804</a></div>'
-            '</div>%s</div></section>') % (' cpp-cat-hero--photo' if photo else '', html.escape(name), html.escape(name),
-                                          html.escape(line), count, img)
+            '</div>%s</div></section>') % (' cpp-cat-hero--photo' if photo else '', html.escape(name),
+                                          html.escape(name if spec else 'Wholesale ' + name), html.escape(line), count, img)
+
+
+def combo_header_spec(url):
+    """Header text for the all-products page and multi-category filter pages, so the header
+    changes in place (instead of disappearing) when a buyer adds or removes a category."""
+    if url == '/products/':
+        return ('All Products', 'Food service packaging, paper, foil, gloves and janitorial supplies. Pick categories below to narrow the list.', None, None)
+    m = re.match(r'^/products/product_cat-([a-z-]+-or-[a-z-]+)/$', url)
+    if not m:
+        return None
+    names = [CAT_HEADERS[k][0] for k in m.group(1).split('-or-') if k in CAT_HEADERS]
+    if len(names) < 2:
+        return None
+    title = ' + '.join(names) if len(names) == 2 else ', '.join(names[:-1]) + ' & ' + names[-1]
+    return (title, 'Showing %d categories. Tap a category below to add or remove it.' % len(names), None, None)
 
 
 def close_open_styles(s):
@@ -589,6 +604,9 @@ def upgrade_html(path, snippets, search_items, sitemap):
                lambda m: m.group(1) + gloves + m.group(2) + (' elementor-item-active" aria-current="page' if active else '') + m.group(3) + 'Disposable Gloves</a>', s)
 
     s = filter_combo(s, url)
+    # variation gallery templates: the mirror glued the page path onto the image placeholders
+    # (src="/product/x/{{data.src}}"), so every image shown after picking a size or option 404'd
+    s = re.sub(r'((?:src|srcset|data-src|data-large_image|href)=")[^"{]*?(\{\{\s*data\.)', r'\1\2', s)
     s = close_open_styles(s)
     if url.startswith('/products/product_cat-') and '-or-' in url:
         s = set_robots(s, 'noindex, follow')  # filter combinations are not pages of their own
@@ -632,6 +650,9 @@ def upgrade_html(path, snippets, search_items, sitemap):
             t = 'Wholesale ' + cat.group(1).replace('-', ' ').title()
         if cat and '-or-' not in url and POLISH and cat.group(1) in CAT_HEADERS:
             h1 = cat_header(cat.group(1), s.count('class="product-card"'))
+            s = re.sub(r'(<div id="content"[^>]*>)', lambda m: m.group(1) + h1, s, count=1)
+        elif POLISH and combo_header_spec(url):
+            h1 = cat_header(None, s.count('class="product-card"'), combo_header_spec(url))
             s = re.sub(r'(<div id="content"[^>]*>)', lambda m: m.group(1) + h1, s, count=1)
         elif t:
             h1 = '<h1 class="cpp-sr-only">%s</h1>' % html.escape(t)
