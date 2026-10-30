@@ -185,28 +185,27 @@
       btn.disabled = on; btn.setAttribute('aria-busy', on ? 'true' : 'false');
       if (btnText) btnText.textContent = on ? 'Sending…' : original;
     }
-    // Backup path: a normal page submission to FormSubmit (no background request, no CORS);
-    // FormSubmit sends the visitor back here with ?sent=1.
-    function classicSubmit() {
-      var f = document.createElement('form');
-      f.method = 'POST'; f.action = 'https://formsubmit.co/' + EMAIL; f.style.display = 'none';
-      var all = {}; Object.keys(data).forEach(function (k) { all[k] = data[k]; });
-      all._next = location.origin + location.pathname + '?sent=1';
-      Object.keys(all).forEach(function (k) { var i = document.createElement('input'); i.type = 'hidden'; i.name = k; i.value = all[k]; f.appendChild(i); });
-      document.body.appendChild(f);
-      note(form, 'Sending\u2026');
-      HTMLFormElement.prototype.submit.call(f);
-    }
-    function fallback(reason) {
-      var href = 'mailto:' + EMAIL + '?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(lines.join('\n') + '\n\nSent from ' + location.href);
-      note(form, reason + ' Please <a href="' + href + '">email your message</a> instead, or call <a href="tel:+18449008804">' + PHONE + '</a>.', true);
+    // If the form service is unreachable, keep the visitor on our page and hand them the
+    // finished request as one-tap email / WhatsApp / text, so no request is lost.
+    function fallback() {
+      var text = subject + '\n\n' + lines.join('\n');
+      var mail = 'mailto:' + EMAIL + '?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(text + '\n\nSent from ' + location.href);
+      var wa = 'https://wa.me/17136975320?text=' + encodeURIComponent(text);
+      var sms = 'sms:+17136975320?&body=' + encodeURIComponent(text);
+      note(form, '<strong>Our online form isn\u2019t responding right now.</strong> Your request is ready \u2014 send it with one tap:' +
+        '<span class="cpp-fb-actions">' +
+        '<a class="cpp-fb-btn cpp-fb-btn--main" href="' + mail + '">Email it</a>' +
+        '<a class="cpp-fb-btn" href="' + wa + '" target="_blank" rel="noopener">WhatsApp</a>' +
+        '<a class="cpp-fb-btn" href="' + sms + '">Text</a>' +
+        '<button type="submit" class="cpp-fb-btn cpp-fb-retry">Try again</button></span>' +
+        '<span class="cpp-fb-call">Or call <a href="tel:+18449008804">' + PHONE + '</a></span>', true);
     }
     if (spam) { form.reset(); note(form, 'Thanks, your message was sent.'); return; }
     if (isQuote && !lines.length) { note(form, 'Please choose at least one product.', true); return; }
 
     setBusy(true);
     var ctrl = 'AbortController' in window ? new AbortController() : null;
-    var timer = setTimeout(function () { if (ctrl) ctrl.abort(); }, 30000);
+    var timer = setTimeout(function () { if (ctrl) ctrl.abort(); }, 15000);
     // Plain form encoding: a "simple" request, so the browser sends it without a CORS preflight
     var body = new URLSearchParams();
     Object.keys(data).forEach(function (k) { body.append(k, data[k]); });
@@ -228,10 +227,10 @@
           // FormSubmit needs the inbox owner to confirm once; the message is held until then
           note(form, 'Thanks, your message was received. It will be delivered as soon as the inbox is confirmed. For anything urgent call <a href="tel:+18449008804">' + PHONE + '</a>.');
         } else {
-          classicSubmit();
+          fallback();
         }
       })
-      .catch(function () { clearTimeout(timer); setBusy(false); classicSubmit(); });
+      .catch(function () { clearTimeout(timer); setBusy(false); fallback(); });
   }, true);
 
   /* ---------- form fields: right keyboard and autofill ---------- */
