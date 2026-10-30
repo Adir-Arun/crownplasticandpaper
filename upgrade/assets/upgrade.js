@@ -495,6 +495,73 @@
     update();
   }
 
+  /* ---------- category filter: update the list in place instead of loading a new page ---------- */
+  function initFilterNav() {
+    var section = document.querySelector('.wpc-filters-section.wpc-filter-product_cat');
+    if (!section || !window.fetch || !window.DOMParser || !history.pushState) return;
+    var cache = {};
+    function linkFor(item) {
+      var input = item && item.querySelector('input[data-wpc-link]');
+      return input ? input.getAttribute('data-wpc-link') : null;
+    }
+    function get(url) {
+      if (!cache[url]) cache[url] = fetch(url, { credentials: 'same-origin' }).then(function (r) {
+        if (!r.ok) throw new Error(r.status); return r.text();
+      });
+      return cache[url];
+    }
+    function wakeImages(root) {
+      root.querySelectorAll('img[data-lazy-src]').forEach(function (img) {
+        img.src = img.getAttribute('data-lazy-src');
+        if (img.getAttribute('data-lazy-srcset')) img.srcset = img.getAttribute('data-lazy-srcset');
+      });
+    }
+    var busy = false;
+    function go(url, push, focusId) {
+      var wrap = document.querySelector('.woocommerce-products-wrapper');
+      if (!wrap || busy) { location.href = url; return; }
+      busy = true; wrap.classList.add('cpp-loading'); wrap.setAttribute('aria-busy', 'true');
+      get(url).then(function (htmlText) {
+        var doc = new DOMParser().parseFromString(htmlText, 'text/html');
+        var newWrap = doc.querySelector('.woocommerce-products-wrapper');
+        var newSection = doc.querySelector('.wpc-filters-section.wpc-filter-product_cat');
+        if (!newWrap || !newSection) throw new Error('layout');
+        wrap.innerHTML = newWrap.innerHTML; wakeImages(wrap);
+        var cur = document.querySelector('.wpc-filters-section.wpc-filter-product_cat');
+        cur.innerHTML = newSection.innerHTML;
+        var hero = document.querySelector('.cpp-cat-hero'), newHero = doc.querySelector('.cpp-cat-hero');
+        if (hero && newHero) hero.outerHTML = newHero.outerHTML;
+        else if (hero) hero.remove();
+        else if (newHero) { var content = document.getElementById('content'); if (content) content.insertAdjacentHTML('afterbegin', newHero.outerHTML); }
+        document.title = doc.title;
+        if (push) history.pushState({ cppFilter: true }, '', url);
+        if (focusId) { var f = document.getElementById(focusId); if (f) f.focus({ preventScroll: true }); }
+        var top = wrap.getBoundingClientRect().top;
+        if (top < 0) window.scrollBy({ top: top - 90, behavior: 'smooth' });
+      }).catch(function () { location.href = url; })
+        .then(function () { busy = false; wrap.classList.remove('cpp-loading'); wrap.removeAttribute('aria-busy'); });
+    }
+    document.addEventListener('click', function (e) {
+      var item = e.target.closest && e.target.closest('.wpc-filter-product_cat .wpc-term-item');
+      if (!item) return;
+      var url = linkFor(item);
+      if (!url) return;
+      e.preventDefault(); e.stopImmediatePropagation();
+      var input = item.querySelector('input');
+      go(url, true, input && input.id);
+    }, true);
+    // warm the cache so the switch feels instant
+    ['pointerenter', 'touchstart', 'focusin'].forEach(function (ev) {
+      document.addEventListener(ev, function (e) {
+        var item = e.target.closest && e.target.closest('.wpc-filter-product_cat .wpc-term-item');
+        var url = linkFor(item);
+        if (url) get(url).catch(function () { delete cache[url]; });
+      }, { capture: true, passive: true });
+    });
+    history.replaceState({ cppFilter: true }, '', location.href);
+    window.addEventListener('popstate', function (e) { if (e.state && e.state.cppFilter) go(location.pathname, false); });
+  }
+
   /* ---------- init ---------- */
   function confirmClassicSend() {
     if (!/[?&]sent=1/.test(location.search)) return;
@@ -511,7 +578,7 @@
     enhanceAllSearch(); enhanceFields();
     if (started) return;  // WP Rocket re-fires DOMContentLoaded; set these up once
     started = true;
-    [initQuote, initQuoteButton, initSpecPrint, initToTop, initArticle, initProductBar, initStickyBar, initHome, confirmClassicSend].forEach(function (f) { try { f(); } catch (err) { if (window.console) console.warn('cpp', err); } });
+    [initQuote, initQuoteButton, initSpecPrint, initToTop, initArticle, initProductBar, initStickyBar, initHome, initFilterNav, confirmClassicSend].forEach(function (f) { try { f(); } catch (err) { if (window.console) console.warn('cpp', err); } });
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init); else init();
   // Elementor renders some widgets late; pick up search forms that appear afterwards.
