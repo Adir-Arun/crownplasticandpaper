@@ -579,26 +579,218 @@
     window.addEventListener('popstate', function (e) { if (e.state && e.state.cppFilter) go(location.pathname, false); });
   }
 
-  /* ---------- credit application (Fluent Forms): its WordPress endpoint is gone, deliver it ourselves ---------- */
+  /* ---------- credit application (Fluent Forms): its WordPress endpoint is gone, deliver it ourselves.
+     The browser builds a branded PDF (with the tax permit merged in) and our /api/credit-application
+     sender emails it with the original permit attached. If that sender is unavailable, the details still
+     go out through Web3Forms as text. ---------- */
+  var PDFLIB_URL = 'https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/dist/pdf-lib.min.js';
+  var CREDIT_API = '/api/credit-application/';
+  function loadScript(src) {
+    return new Promise(function (ok, fail) {
+      if (window.PDFLib) return ok();
+      var s = document.createElement('script'); s.src = src; s.async = true;
+      s.onload = function () { ok(); }; s.onerror = function () { fail(new Error('script')); };
+      document.head.appendChild(s);
+    });
+  }
+  function readAsArrayBuffer(file) {
+    return new Promise(function (ok, fail) { var r = new FileReader(); r.onload = function () { ok(r.result); }; r.onerror = fail; r.readAsArrayBuffer(file); });
+  }
+  function bufToB64(buf) {
+    var bytes = new Uint8Array(buf), bin = '', chunk = 0x8000;
+    for (var i = 0; i < bytes.length; i += chunk) bin += String.fromCharCode.apply(null, bytes.subarray(i, i + chunk));
+    return btoa(bin);
+  }
+  // phone photos can be 5-10 MB: scale to 2000 px JPEG so the email stays small and readable
+  function compressImage(file) {
+    return new Promise(function (ok) {
+      if (!/^image\//.test(file.type) || file.size < 900 * 1024) return ok(file);
+      var url = URL.createObjectURL(file), img = new Image();
+      img.onload = function () {
+        var scale = Math.min(1, 2000 / Math.max(img.naturalWidth, img.naturalHeight));
+        var c = document.createElement('canvas'); c.width = Math.round(img.naturalWidth * scale); c.height = Math.round(img.naturalHeight * scale);
+        c.getContext('2d').drawImage(img, 0, 0, c.width, c.height); URL.revokeObjectURL(url);
+        c.toBlob(function (blob) { ok(blob ? new File([blob], file.name.replace(/\.\w+$/, '') + '.jpg', { type: 'image/jpeg' }) : file); }, 'image/jpeg', 0.82);
+      };
+      img.onerror = function () { URL.revokeObjectURL(url); ok(file); };
+      img.src = url;
+    });
+  }
+  function pdfText(v) {
+    return String(v == null ? '' : v)
+      .replace(/[‘’]/g, "'").replace(/[“”]/g, '"').replace(/[–—]/g, '-').replace(/…/g, '...')
+      .replace(/[^\x20-\x7e\xa0-\xff]/g, '?');
+  }
+  // sections in page order: [{title, rows:[{label, value, name}]}]
+  function collectApplication(form) {
+    var sections = [], cur = { title: 'Application', rows: [] }; sections.push(cur);
+    form.querySelectorAll('h3, .ff-el-group').forEach(function (node) {
+      if (node.tagName === 'H3') {
+        var t = node.textContent.replace(/\s+/g, ' ').trim();
+        if (t) { cur = { title: t, rows: [] }; sections.push(cur); }
+        return;
+      }
+      if (node.querySelector('.ff-el-group')) return;
+      var l = node.querySelector('.ff-el-input--label label, .ff-el-input--label');
+      var label = l ? l.textContent.replace(/\*/g, '').replace(/\s+/g, ' ').trim() : '';
+      var vals = [], name = '';
+      node.querySelectorAll('input, select, textarea').forEach(function (el) {
+        if (['hidden', 'submit', 'button', 'file'].indexOf(el.type) >= 0) return;
+        if ((el.type === 'checkbox' || el.type === 'radio') && !el.checked) return;
+        var v = String(el.value || '').trim(); if (!v) return;
+        if (el.tagName === 'SELECT' && el.selectedIndex > -1) v = el.options[el.selectedIndex].text.trim();
+        if (el.name === 'terms-n-condition') { v = 'Agreed'; label = label || 'Terms and conditions'; }
+        name = name || el.name || ''; vals.push(v);
+      });
+      if (vals.length) cur.rows.push({ label: label || 'Field', value: vals.join(', '), name: name.replace(/\[\]$/, '') });
+    });
+    return sections.filter(function (s) { return s.rows.length; });
+  }
+  function buildApplicationPdf(sections, info, permits) {
+    var L = window.PDFLib, W = 612, H = 792, M = 48;
+    var NAVY = L.rgb(1 / 255, 20 / 255, 37 / 255), MUTED = L.rgb(86 / 255, 98 / 255, 117 / 255), LINE = L.rgb(0.88, 0.87, 0.85), AMBER = L.rgb(242 / 255, 181 / 255, 68 / 255);
+    return L.PDFDocument.create().then(function (doc) {
+      doc.setTitle('Credit Application - ' + pdfText(info.company)); doc.setAuthor('Crown Plastic & Paper'); doc.setCreator('crownplasticandpaper.com');
+      return Promise.all([doc.embedFont(L.StandardFonts.Helvetica), doc.embedFont(L.StandardFonts.HelveticaBold),
+        fetch('/apple-touch-icon.png').then(function (r) { return r.ok ? r.arrayBuffer() : null; }).catch(function () { return null; })])
+      .then(function (r) {
+        var font = r[0], bold = r[1];
+        return (r[2] ? doc.embedPng(r[2]).catch(function () { return null; }) : Promise.resolve(null)).then(function (logo) {
+          var page, y;
+          function wrap(text, f, size, maxW) {
+            var words = pdfText(text).split(/\s+/), lines = [], line = '';
+            words.forEach(function (w) { var t = line ? line + ' ' + w : w; if (f.widthOfTextAtSize(t, size) > maxW && line) { lines.push(line); line = w; } else line = t; });
+            if (line) lines.push(line); return lines.length ? lines : [''];
+          }
+          function header(first) {
+            page = doc.addPage([W, H]);
+            var hh = first ? 92 : 46;
+            page.drawRectangle({ x: 0, y: H - hh, width: W, height: hh, color: NAVY });
+            page.drawRectangle({ x: 0, y: H - hh - 3, width: W, height: 3, color: AMBER });
+            var tx = M;
+            if (logo) { var ls = first ? 44 : 26; page.drawImage(logo, { x: M, y: H - hh / 2 - ls / 2, width: ls, height: ls }); tx = M + ls + 12; }
+            if (first) {
+              page.drawText('CROWN PLASTIC & PAPER', { x: tx, y: H - 40, size: 15, font: bold, color: L.rgb(1, 1, 1) });
+              page.drawText('Credit Application', { x: tx, y: H - 60, size: 11, font: font, color: AMBER });
+              var right = ['Submitted ' + info.date, 'crownplasticandpaper.com'];
+              right.forEach(function (t, i) { var w = font.widthOfTextAtSize(t, 9); page.drawText(t, { x: W - M - w, y: H - 40 - i * 14, size: 9, font: font, color: L.rgb(0.85, 0.87, 0.9) }); });
+              y = H - hh - 30;
+            } else {
+              page.drawText('Credit Application  ·  ' + pdfText(info.company).replace(/·/g, ''), { x: tx, y: H - 29, size: 10, font: bold, color: L.rgb(1, 1, 1) });
+              y = H - hh - 28;
+            }
+          }
+          function need(h) { if (y - h < 64) header(false); }
+          header(true);
+          // summary card
+          var cardRows = [['Company', info.company], ['Contact', info.contact], ['Email', info.email], ['Phone', info.phone], ['EIN', info.ein], ['Business type', info.type]]
+            .filter(function (r) { return r[1]; });
+          var cardH = 22 + Math.ceil(cardRows.length / 2) * 30;
+          page.drawRectangle({ x: M, y: y - cardH, width: W - 2 * M, height: cardH, color: L.rgb(0.976, 0.972, 0.961), borderColor: LINE, borderWidth: 1 });
+          cardRows.forEach(function (r, i) {
+            var cx = M + 14 + (i % 2) * ((W - 2 * M) / 2), cy = y - 22 - Math.floor(i / 2) * 30;
+            page.drawText(pdfText(r[0]).toUpperCase(), { x: cx, y: cy, size: 7, font: bold, color: MUTED });
+            page.drawText(wrap(r[1], bold, 11, (W - 2 * M) / 2 - 28)[0], { x: cx, y: cy - 13, size: 11, font: bold, color: NAVY });
+          });
+          y -= cardH + 26;
+          var colW = (W - 2 * M - 24) / 2;
+          var SIGN = { 'signee_title': 1, 'signature_full_name': 1, 'terms-n-condition': 1 };
+          sections = sections.map(function (sec) { return { title: sec.title, rows: sec.rows.filter(function (r) { return !SIGN[r.name]; }) }; })
+            .filter(function (sec) { return sec.rows.length; });
+          sections.forEach(function (sec) {
+            need(60);
+            page.drawText(pdfText(sec.title).toUpperCase(), { x: M, y: y, size: 9.5, font: bold, color: NAVY });
+            page.drawRectangle({ x: M, y: y - 7, width: 26, height: 2, color: AMBER });
+            page.drawLine({ start: { x: M + 30, y: y - 6 }, end: { x: W - M, y: y - 6 }, thickness: 0.6, color: LINE });
+            y -= 24;
+            // references: one sub-block per reference
+            var rows = sec.rows, groups = [], g = null;
+            rows.forEach(function (r) {
+              var m = /^ref(\d)_/.exec(r.name || ''), key = m ? 'Reference ' + m[1] : '';
+              if (!g || g.key !== key) { g = { key: key, rows: [] }; groups.push(g); }
+              g.rows.push(r);
+            });
+            groups.forEach(function (grp) {
+              if (grp.key) { need(40); page.drawText(grp.key, { x: M, y: y, size: 9, font: bold, color: MUTED }); y -= 16; }
+              for (var i = 0; i < grp.rows.length; i += 2) {
+                var pair = grp.rows.slice(i, i + 2);
+                var long = pair.some(function (r) { return r.value.length > 60; });
+                var cells = long ? pair.map(function (r) { return [r]; }) : [pair];
+                cells.forEach(function (cellRows) {
+                  var lines = cellRows.map(function (r) { return wrap(r.value, font, 10, cellRows.length === 1 ? W - 2 * M : colW); });
+                  var h = 13 + Math.max.apply(null, lines.map(function (l) { return l.length; })) * 13 + 10;
+                  need(h);
+                  cellRows.forEach(function (r, k) {
+                    var x = M + k * (colW + 24);
+                    page.drawText(pdfText(r.label).toUpperCase(), { x: x, y: y, size: 7, font: bold, color: MUTED });
+                    lines[k].forEach(function (ln, j) { page.drawText(ln, { x: x, y: y - 13 - j * 13, size: 10, font: font, color: NAVY }); });
+                  });
+                  y -= h;
+                });
+              }
+              y -= 4;
+            });
+            y -= 10;
+          });
+          // signature block (the Agreement & Terms section)
+          need(96);
+          page.drawText('AGREEMENT & TERMS', { x: M, y: y, size: 9.5, font: bold, color: NAVY });
+          page.drawRectangle({ x: M, y: y - 7, width: 26, height: 2, color: AMBER });
+          page.drawLine({ start: { x: M + 30, y: y - 6 }, end: { x: W - M, y: y - 6 }, thickness: 0.6, color: LINE });
+          y -= 22;
+          page.drawRectangle({ x: M, y: y - 52, width: W - 2 * M, height: 52, borderColor: NAVY, borderWidth: 1 });
+          page.drawText('ELECTRONIC SIGNATURE', { x: M + 14, y: y - 18, size: 7, font: bold, color: MUTED });
+          page.drawText(wrap((info.signer || '-') + (info.signerTitle ? ', ' + info.signerTitle : '') + ' - signed online ' + info.date, bold, 11, W - 2 * M - 28)[0], { x: M + 14, y: y - 34, size: 11, font: bold, color: NAVY });
+          page.drawText('Terms and conditions: ' + (info.terms ? 'agreed' : 'not confirmed'), { x: M + 14, y: y - 46, size: 8, font: font, color: MUTED });
+          y -= 70;
+          // attachments: merge a PDF permit's pages, draw a photo permit on its own page
+          var chain = Promise.resolve();
+          permits.forEach(function (p) {
+            chain = chain.then(function () {
+              if (p.type === 'application/pdf') {
+                return L.PDFDocument.load(p.buf, { ignoreEncryption: true }).then(function (src) {
+                  return doc.copyPages(src, src.getPageIndices()).then(function (pages) { pages.forEach(function (pg) { doc.addPage(pg); }); });
+                }).catch(function () { /* unreadable PDF: still attached to the email */ });
+              }
+              var embed = /png$/.test(p.type) ? doc.embedPng(p.buf) : doc.embedJpg(p.buf);
+              return embed.then(function (img) {
+                header(false);
+                page.drawText('ATTACHMENT  ·  ' + pdfText(p.name).toUpperCase(), { x: M, y: y, size: 8, font: bold, color: MUTED });
+                var maxW = W - 2 * M, maxH = y - 60, s = Math.min(maxW / img.width, maxH / img.height, 1);
+                page.drawImage(img, { x: M + (maxW - img.width * s) / 2, y: y - 14 - img.height * s, width: img.width * s, height: img.height * s });
+              }).catch(function () { /* e.g. HEIC: still attached to the email */ });
+            });
+          });
+          return chain.then(function () {
+            var pages = doc.getPages();
+            pages.forEach(function (pg, i) {
+              var t = 'Crown Plastic & Paper  ·  7350 Langfield Rd, Houston, TX 77092  ·  (844) 900-8804';
+              pg.drawText(t, { x: M, y: 28, size: 7.5, font: font, color: MUTED });
+              var n = 'Page ' + (i + 1) + ' of ' + pages.length, w = font.widthOfTextAtSize(n, 7.5);
+              pg.drawText(n, { x: pg.getWidth() - M - w, y: 28, size: 7.5, font: font, color: MUTED });
+            });
+            return doc.save();
+          });
+        });
+      });
+    });
+  }
+
   function initFluentForms() {
     var forms = document.querySelectorAll('form.frm-fluent-form');
     if (!forms.length) return;
-    var MAX_FILE = 5 * 1024 * 1024;
-    function groupLabel(g) {
-      var l = g.querySelector('.ff-el-input--label label, .ff-el-input--label');
-      return l ? l.textContent.replace(/\*/g, '').replace(/\s+/g, ' ').trim() : '';
-    }
+    var MAX_FILE = 3 * 1024 * 1024;   // after compression; keeps the request under the 4.5 MB limit
     forms.forEach(function (form) {
       // The plugin uploads files the moment they are picked, to an endpoint that no longer exists:
-      // keep the file in the form and show its name instead.
+      // keep the files in the form and list them instead.
       form.querySelectorAll('input[type="file"]').forEach(function (inp) {
-        inp.removeAttribute('multiple');
+        inp.setAttribute('accept', 'application/pdf,image/*');
         var out = document.createElement('div'); out.className = 'cpp-ff-files'; out.setAttribute('aria-live', 'polite');
         (inp.closest('.ff-el-input--content') || inp.parentNode).appendChild(out);
         inp.addEventListener('change', function (e) {
           e.stopImmediatePropagation();
-          var f = inp.files && inp.files[0];
-          out.textContent = f ? 'Attached: ' + f.name + ' (' + Math.max(1, Math.round(f.size / 1024)) + ' KB)' + (f.size > MAX_FILE ? ' — over 5 MB, please email it instead' : '') : '';
+          var list = Array.prototype.slice.call(inp.files || []);
+          out.textContent = list.length ? 'Attached: ' + list.map(function (f) { return f.name + ' (' + Math.max(1, Math.round(f.size / 1024)) + ' KB)'; }).join(', ') : '';
         }, true);
       });
     });
@@ -607,7 +799,6 @@
       if (!form.matches || !form.matches('form.frm-fluent-form')) return;
       e.preventDefault(); e.stopImmediatePropagation();
       if (form.dataset.cppSending) return;
-      // required fields (the plugin marks them with aria-required, not "required")
       var missing = null;
       form.querySelectorAll('[aria-required="true"]').forEach(function (el) {
         var empty = (el.type === 'checkbox') ? !form.querySelector('[name="' + el.name + '"]:checked') : !String(el.value || '').trim();
@@ -615,66 +806,76 @@
         if (empty && !missing) missing = el;
       });
       if (missing) { missing.focus(); note(form, 'Please fill in the highlighted required fields.', true); return; }
-      var fields = {}, lines = [], email = '', company = '', files = [];
-      form.querySelectorAll('.ff-el-group').forEach(function (g) {
-        if (g.querySelector('.ff-el-group')) return;  // only innermost groups
-        var label = groupLabel(g);
-        var vals = [];
-        g.querySelectorAll('input, select, textarea').forEach(function (el) {
-          if (el.type === 'hidden' || el.type === 'submit' || el.type === 'button') return;
-          if (el.type === 'file') return;
-          if ((el.type === 'checkbox' || el.type === 'radio') && !el.checked) return;
-          var v = String(el.value || '').trim(); if (!v) return;
-          if (el.tagName === 'SELECT' && el.selectedIndex > -1) v = el.options[el.selectedIndex].text.trim();
-          if (el.type === 'email' && !email) email = v;
-          if (el.name === 'company_name') company = v;
-          if (el.name === 'terms-n-condition') v = 'Agreed';
-          vals.push(v);
-        });
-        if (!vals.length) return;
-        var key = label || 'Field', i = 2; while (fields[key] !== undefined) key = (label || 'Field') + ' ' + i++;
-        fields[key] = vals.join(', '); lines.push(key + ': ' + fields[key]);
-      });
-      form.querySelectorAll('input[type="file"]').forEach(function (inp) { if (inp.files) for (var k = 0; k < inp.files.length; k++) files.push(inp.files[k]); });
-      if (files.length) { fields['Attached documents'] = files.map(function (f) { return f.name; }).join(', '); lines.push('Attached documents: ' + fields['Attached documents']); }
-      var subject = 'Credit application' + (company ? ' from ' + company : '');
-      fields['Sent from'] = location.href.split('#')[0];
+
+      var sections = collectApplication(form);
+      var val = function (n) { var el = form.querySelector('[name="' + n + '"]'); if (!el) return ''; if (el.tagName === 'SELECT' && el.selectedIndex > -1) return el.options[el.selectedIndex].text.trim(); return String(el.value || '').trim(); };
+      var now = new Date();
+      var info = {
+        company: val('company_name'), email: val('email'), phone: val('phone_number'), ein: val('ein'), type: val('business_type'),
+        contact: val('signature_full_name'), signer: val('signature_full_name'), signerTitle: val('signee_title'),
+        terms: !!form.querySelector('[name="terms-n-condition"]:checked'),
+        date: (function () { try { return now.toLocaleString('en-US', { timeZone: 'America/Chicago', month: 'short', day: 'numeric', year: 'numeric', hour: 'numeric', minute: '2-digit', timeZoneName: 'short' }); } catch (e) { return now.toLocaleString('en-US'); } })()
+      };
+      var files = [];
+      form.querySelectorAll('input[type="file"]').forEach(function (inp) { Array.prototype.forEach.call(inp.files || [], function (f) { files.push(f); }); });
+      var lines = []; sections.forEach(function (s) { lines.push('', s.title.toUpperCase()); s.rows.forEach(function (r) { lines.push(r.label + ': ' + r.value); }); });
+      var subject = 'Credit application' + (info.company ? ' from ' + info.company : '');
       var btn = form.querySelector('[type="submit"]'), btnLabel = btn ? btn.innerHTML : '';
-      function busy(on) { if (on) form.dataset.cppSending = '1'; else delete form.dataset.cppSending; if (btn) { btn.disabled = on; btn.innerHTML = on ? 'Sending…' : btnLabel; } }
-      function build(withFiles) {
+      function busy(on, label) { if (on) form.dataset.cppSending = '1'; else delete form.dataset.cppSending; if (btn) { btn.disabled = on; btn.innerHTML = on ? (label || 'Sending…') : btnLabel; } }
+      var mailDocs = 'mailto:' + EMAIL + '?subject=' + encodeURIComponent('Tax permit for ' + subject) + '&body=' + encodeURIComponent('Attached is our tax resale certificate / tax permit.\n\n' + (info.company ? 'Company: ' + info.company + '\n' : '') + (info.email ? 'Email: ' + info.email : ''));
+      function success(permitDelivered) {
+        busy(false); form.reset(); form.querySelectorAll('.cpp-ff-files').forEach(function (o) { o.textContent = ''; });
+        var msg = '<strong>Thanks, your credit application was sent.</strong> Our team will review it and contact you' + (info.email ? ' at ' + info.email : '') + '.';
+        if (!permitDelivered) msg += ' To complete it, please <a href="' + mailDocs + '">email your tax permit</a> to ' + EMAIL + '.';
+        note(form, msg);
+        var n = form.querySelector('.cpp-form-note'); if (n) n.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+      // path 1: branded PDF + permit through our own sender
+      function viaOwnSender() {
+        busy(true, 'Preparing your application…');
+        return Promise.all([loadScript(PDFLIB_URL), Promise.all(files.map(compressImage))]).then(function (r) {
+          var ready = r[1].filter(function (f) { return f.size <= MAX_FILE; });
+          return Promise.all(ready.map(function (f) { return readAsArrayBuffer(f).then(function (buf) { return { name: f.name, type: f.type || 'application/octet-stream', buf: buf }; }); }))
+            .then(function (permits) {
+              return buildApplicationPdf(sections, info, permits).then(function (bytes) {
+                busy(true, 'Sending…');
+                var payload = {
+                  company: info.company, email: info.email, website: (form.querySelector('[name="cpp_website"]') || {}).value || '',
+                  summary: [{ label: 'Company', value: info.company }, { label: 'Contact', value: info.signer + (info.signerTitle ? ', ' + info.signerTitle : '') },
+                            { label: 'Email', value: info.email }, { label: 'Phone', value: info.phone }, { label: 'EIN', value: info.ein }, { label: 'Business type', value: info.type }],
+                  pdf: bufToB64(bytes),
+                  files: permits.map(function (p) { return { name: p.name, type: p.type, data: bufToB64(p.buf) }; })
+                };
+                var ctrl = 'AbortController' in window ? new AbortController() : null;
+                var t = setTimeout(function () { if (ctrl) ctrl.abort(); }, 60000);
+                return fetch(CREDIT_API, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload), signal: ctrl ? ctrl.signal : undefined })
+                  .then(function (res) { clearTimeout(t); return res.json().catch(function () { return {}; }).then(function (j) { if (!res.ok || !j.ok) throw new Error(j.error || res.status); }); },
+                        function (err) { clearTimeout(t); throw err; })
+                  .then(function () { return permits.length === files.length && files.length > 0; });
+              });
+            });
+        });
+      }
+      // path 2: details as text through Web3Forms (no attachments on the free plan)
+      function viaWeb3Forms() {
+        busy(true);
         var fd = new FormData();
         fd.append('access_key', W3F_KEY); fd.append('subject', subject + ' - crownplasticandpaper.com'); fd.append('from_name', 'Crown website');
-        if (email) fd.append('replyto', email);
-        Object.keys(fields).forEach(function (k) { fd.append(k, fields[k]); });
-        if (withFiles) files.forEach(function (f, n) { if (f.size <= MAX_FILE) fd.append(n ? 'attachment_' + (n + 1) : 'attachment', f, f.name); });
-        return fd;
+        if (info.email) fd.append('replyto', info.email);
+        sections.forEach(function (s) { s.rows.forEach(function (r) { var k = s.title + ' - ' + r.label, i = 2; while (fd.has(k)) k = s.title + ' - ' + r.label + ' ' + i++; fd.append(k, r.value); }); });
+        if (files.length) fd.append('Tax permit', files.map(function (f) { return f.name; }).join(', ') + ' (not attached - ask the applicant to email it)');
+        fd.append('Sent from', location.href.split('#')[0]);
+        return fetch('https://api.web3forms.com/submit', { method: 'POST', body: fd })
+          .then(function (r) { return r.json().catch(function () { return {}; }); })
+          .then(function (res) { if (!res || !res.success) throw new Error('web3forms'); return false; });
       }
-      function send(fd) {
-        var ctrl = 'AbortController' in window ? new AbortController() : null;
-        var t = setTimeout(function () { if (ctrl) ctrl.abort(); }, 45000);
-        return fetch('https://api.web3forms.com/submit', { method: 'POST', body: fd, signal: ctrl ? ctrl.signal : undefined })
-          .then(function (r) { clearTimeout(t); return r.json().catch(function () { return {}; }); }, function (err) { clearTimeout(t); throw err; })
-          .then(function (res) { if (!res || !res.success) throw new Error((res && res.message) || 'failed'); return res; });
-      }
-      var mailDocs = 'mailto:' + EMAIL + '?subject=' + encodeURIComponent('Documents for ' + subject) + '&body=' + encodeURIComponent('Attached are the documents for our credit application.\n\n' + (company ? 'Company: ' + company + '\n' : '') + (email ? 'Email: ' + email : ''));
-      busy(true);
-      var hadFiles = W3F_FILES && files.some(function (f) { return f.size <= MAX_FILE; });
-      var tooBig = files.some(function (f) { return f.size > MAX_FILE; });
-      (hadFiles ? send(build(true)).then(function () { return true; }, function () { return send(build(false)).then(function () { return false; }); })
-                : send(build(false)).then(function () { return !files.length; }))
-        .then(function (filesDelivered) {
-          busy(false); form.reset(); form.querySelectorAll('.cpp-ff-files').forEach(function (o) { o.textContent = ''; });
-          var msg = '<strong>Thanks, your credit application was sent.</strong> Our team will review it and contact you' + (email ? ' at ' + email : '') + '.';
-          if (files.length && (!filesDelivered || tooBig)) msg += ' To complete it, please <a href="' + mailDocs + '">email your documents</a> to ' + EMAIL + '.';
-          note(form, msg);
-          form.querySelector('.cpp-form-note').scrollIntoView({ behavior: 'smooth', block: 'center' });
-        })
+      viaOwnSender().catch(function (err) { if (window.console) console.warn('cpp credit sender', err); return viaWeb3Forms(); })
+        .then(success)
         .catch(function () {
           busy(false);
-          var text = subject + '\n\n' + lines.join('\n');
           note(form, '<strong>Our online form isn’t responding right now.</strong> Your application is ready — ' +
-            '<a href="mailto:' + EMAIL + '?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(text) + '">email it with one tap</a>' +
-            (files.length ? ' and attach your documents' : '') + ', or call <a href="tel:+18449008804">' + PHONE + '</a>.', true);
+            '<a href="mailto:' + EMAIL + '?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(subject + '\n' + lines.join('\n')) + '">email it with one tap</a>' +
+            (files.length ? ' and attach your tax permit' : '') + ', or call <a href="tel:+18449008804">' + PHONE + '</a>.', true);
         });
     }, true);
   }
