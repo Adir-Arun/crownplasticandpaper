@@ -125,7 +125,7 @@
   var FORM_ENDPOINT = 'https://formsubmit.co/ajax/' + EMAIL;
   // Web3Forms is the primary delivery path once its access key (public by design) is set;
   // FormSubmit stays as the automatic backup.
-  var W3F_KEY = '';
+  var W3F_KEY = 'ccf6d55e-e535-42d9-acd7-f01ec08d8e8a';
   function fieldLabel(el) {
     var id = el.id && document.querySelector('label[for="' + el.id + '"]');
     var t = (id && id.textContent) || el.getAttribute('aria-label') || el.placeholder || el.name || 'Field';
