@@ -270,3 +270,10 @@ button.cpp-totop:hover { background: var(--cpp-teal); }
   background: var(--cpp-navy); color: #fff; padding: 14px 18px; border-radius: 12px; box-shadow: 0 12px 32px -10px rgba(1, 20, 37, .5);
   font: 15px/1.45 "Satoshi", system-ui, sans-serif; transition: opacity 300ms ease, transform 300ms var(--cpp-ease); }
 .cpp-toast.is-out { opacity: 0; transform: translate(-50%, -8px); pointer-events: none; }
+
+/* form service fallback: one-tap ways to send the finished request */
+.cpp-form-note .cpp-fb-actions { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0 8px; }
+.cpp-form-note .cpp-fb-btn { display: inline-flex; align-items: center; justify-content: center; min-height: 44px; padding: 0 16px; border-radius: 4px; border: 1px solid #011425; background: #fff; color: #011425 !important; font: inherit; font-weight: 700; font-size: 15px; text-decoration: none !important; cursor: pointer; }
+.cpp-form-note .cpp-fb-btn--main { background: #011425; color: #fff !important; }
+.cpp-form-note .cpp-fb-retry { border-style: dashed; }
+.cpp-form-note .cpp-fb-call { display: block; font-size: 14px; }
