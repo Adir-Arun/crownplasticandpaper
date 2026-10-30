@@ -453,6 +453,7 @@
   /* ---------- product page: printable spec sheet ---------- */
   function initSpecPrint() {
     if (!/^\/product\//.test(location.pathname)) return;
+    if (window.CPP_SPECS && window.CPP_SPECS.length) return initSpecSheets();
     var h = Array.prototype.find.call(document.querySelectorAll('.elementor-heading-title'), function (x) { return x.textContent.trim() === 'Specifications'; });
     if (!h) return;
     var b = document.createElement('button');
@@ -466,6 +467,89 @@
     ph.className = 'cpp-print-head';
     ph.innerHTML = '<strong>Crown Plastic &amp; Paper</strong><span>' + PHONE + ' · ' + EMAIL + ' · crownplasticandpaper.com</span>';
     document.body.insertBefore(ph, document.body.firstChild);
+  }
+
+  /* ---------- product spec sheets: the PDF for the size/option the buyer picks ---------- */
+  function initSpecSheets() {
+    // natural order: 1/4 lb, 1/2 lb, 1 lb ... 8oz, 12oz, 16oz ... S, M, L, XL
+    var SIZE_WORD = { 'small': 1, 'medium': 2, 'large': 3, 'extra large': 4 };
+    var sizeKey = function (label) {
+      var l = String(label || '').toLowerCase();
+      var frac = /^(\d+)\/(\d+)/.exec(l); if (frac) return +frac[1] / +frac[2];
+      var n = /^(\d+(?:\.\d+)?)/.exec(l); if (n) return +n[1];
+      for (var w in SIZE_WORD) if (l.indexOf(w) >= 0 && !(w === 'large' && l.indexOf('extra large') >= 0)) return 1000 + SIZE_WORD[w];
+      return 2000;
+    };
+    var specs = window.CPP_SPECS.slice().sort(function (a, b) {
+      var d = sizeKey(a.label) - sizeKey(b.label);
+      return d || String(a.label).localeCompare(String(b.label), 'en', { numeric: true });
+    });
+    var h = Array.prototype.find.call(document.querySelectorAll('.elementor-heading-title'), function (x) { return x.textContent.trim() === 'Specifications'; });
+    var anchor = h ? h.closest('.elementor-widget') : document.querySelector('form.variations_form, .product_title');
+    if (!anchor) return;
+    var title = (document.querySelector('.product_title, h1') || {}).textContent || 'Product';
+    title = title.replace(/\s+/g, ' ').trim();
+    var icon = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M12 18v-6M9 15l3 3 3-3"/></svg>';
+    var box = document.createElement('div');
+    box.className = 'cpp-specs';
+    var list = specs.map(function (sp) {
+      return '<li><a href="' + sp.url + '" target="_blank" rel="noopener">' + icon + '<span>' + (sp.label || title) + '</span><em>PDF</em></a></li>';
+    }).join('');
+    box.innerHTML =
+      '<a class="cpp-specs-main" target="_blank" rel="noopener">' + icon + '<span class="cpp-specs-txt"><strong>Download Spec Sheet</strong><small></small></span></a>' +
+      '<p class="cpp-specs-hint"></p>' +
+      (specs.length > 1 ? '<details class="cpp-specs-all"><summary>All spec sheets for this product (' + specs.length + ')</summary><ul>' + list + '</ul></details>' : '');
+    anchor.parentNode.insertBefore(box, anchor.nextSibling);
+    var main = box.querySelector('.cpp-specs-main'), small = main.querySelector('small'), hint = box.querySelector('.cpp-specs-hint');
+    // the sidebar's "Product Specification Sheet (PDF)" line opens the real sheet
+    Array.prototype.forEach.call(document.querySelectorAll('.elementor-icon-list-item'), function (li) {
+      if (!/product specification sheet/i.test(li.textContent)) return;
+      li.classList.add('cpp-doc-link'); li.setAttribute('role', 'link'); li.tabIndex = 0;
+      var go = function () {
+        if (main.getAttribute('href')) { window.open(main.href, '_blank', 'noopener'); return; }
+        var all = box.querySelector('.cpp-specs-all'); if (all) all.open = true;
+        box.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      };
+      li.addEventListener('click', go);
+      li.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); go(); } });
+    });
+    var form = document.querySelector('form.variations_form');
+    if (!form && specs.length > 1) {          // several sheets but nothing to choose: show them all
+      main.style.display = 'none';
+      var all = box.querySelector('.cpp-specs-all'); if (all) all.open = true;
+      return;
+    }
+    function chosen() {
+      var out = {};
+      if (form) form.querySelectorAll('select[name^="attribute_"]').forEach(function (sel) { if (sel.value) out[sel.name.replace(/^attribute_/, '')] = sel.value; });
+      return out;
+    }
+    var last = null;
+    function update() {
+      var c = chosen(), sig = JSON.stringify(c);
+      if (sig === last) return; last = sig;
+      var hits = specs.filter(function (sp) {
+        return Object.keys(c).every(function (k) { return !(k in sp.match) || sp.match[k] === c[k]; });
+      });
+      // several options can share one sheet (e.g. pallet counts): de-duplicate by file
+      var seen = {}; hits = hits.filter(function (sp) { if (seen[sp.url]) return false; seen[sp.url] = 1; return true; });
+      if (hits.length === 1) {
+        main.href = hits[0].url; main.classList.remove('is-off'); main.removeAttribute('aria-disabled');
+        small.textContent = hits[0].label || title;
+        hint.textContent = '';
+      } else {
+        main.removeAttribute('href'); main.classList.add('is-off'); main.setAttribute('aria-disabled', 'true');
+        small.textContent = hits.length ? 'Choose a size or option above' : 'Not available for this option';
+        hint.textContent = hits.length ? '' : 'Ask us for this spec sheet: ' + PHONE;
+      }
+    }
+    update();
+    if (form) {
+      form.addEventListener('change', function () { setTimeout(update, 0); }, true);
+      form.addEventListener('click', function () { setTimeout(update, 60); setTimeout(update, 400); }, true);
+      // swatch plugins set the menus through jQuery, which fires no native event: check now and then
+      setInterval(function () { if (!document.hidden) update(); }, 700);
+    }
   }
 
   /* ---------- back to top ---------- */

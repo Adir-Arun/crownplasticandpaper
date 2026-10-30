@@ -362,6 +362,20 @@ def close_open_styles(s):
     return ''.join(out)
 
 
+SPEC_MAP_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'assets', 'spec-map.json')
+SPEC_MAP = json.load(open(SPEC_MAP_PATH, encoding='utf-8')) if os.path.exists(SPEC_MAP_PATH) else {}
+
+
+def spec_script(url):
+    """Per-product list of spec sheet PDFs for upgrade.js (matched to the size/option picked)."""
+    m = re.match(r'^/product/([a-z0-9-]+)/$', url)
+    entries = SPEC_MAP.get(m.group(1)) if m else None
+    if not entries:
+        return ''
+    data = [{'match': e['match'], 'url': '/spec-sheets/' + e['file'], 'label': e['label']} for e in entries]
+    return '<script>window.CPP_SPECS=%s;</script>' % json.dumps(data, ensure_ascii=False).replace('</', '<\\/')
+
+
 def filter_combo(s, url):
     """Multi-category filter pages (/products/product_cat-a-or-b/) were saved with every
     category on them: keep only the categories in the URL."""
@@ -749,7 +763,7 @@ def upgrade_html(path, snippets, search_items, sitemap):
     if POLISH:
         head += '<link rel="stylesheet" href="/upgrade/polish.css">'
     s = s.replace('</head>', head + '</head>', 1)
-    tail = snippets['bar'] + '<script src="/upgrade/upgrade.js" defer></script>'
+    tail = snippets['bar'] + spec_script(url) + '<script src="/upgrade/upgrade.js" defer></script>'
     s = s.replace('</body>', tail + '</body>', 1)
     s = re.sub(r'href="(?:\.\./)*/?login/"', 'href="/contact-us/"', s)  # hidden old Login button: no such page
     open(path, 'w', encoding='utf-8').write(s)
@@ -855,6 +869,12 @@ def main():
     print('sitemap: %d urls' % len(urls))
     for name in os.listdir(os.path.join(ASSETS, 'icons')):
         shutil.copy(os.path.join(ASSETS, 'icons', name), os.path.join(SITE, name))
+    spec_src = os.path.join(ASSETS, 'spec-sheets')
+    if os.path.isdir(spec_src):
+        spec_dir = os.path.join(SITE, 'spec-sheets')
+        os.makedirs(spec_dir, exist_ok=True)
+        for name in os.listdir(spec_src):
+            shutil.copy(os.path.join(spec_src, name), os.path.join(spec_dir, name))
     photo_dir = os.path.join(SITE, 'wp-content', 'uploads', '2026', '10')
     os.makedirs(photo_dir, exist_ok=True)
     for name in os.listdir(os.path.join(ASSETS, 'photos')):
