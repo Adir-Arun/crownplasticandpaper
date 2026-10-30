@@ -123,6 +123,9 @@
 
   /* ---------- forms: delivered by FormSubmit (formsubmit.co) to the sales inbox ---------- */
   var FORM_ENDPOINT = 'https://formsubmit.co/ajax/' + EMAIL;
+  // Web3Forms is the primary delivery path once its access key (public by design) is set;
+  // FormSubmit stays as the automatic backup.
+  var W3F_KEY = '';
   function fieldLabel(el) {
     var id = el.id && document.querySelector('label[for="' + el.id + '"]');
     var t = (id && id.textContent) || el.getAttribute('aria-label') || el.placeholder || el.name || 'Field';
@@ -204,33 +207,46 @@
     if (isQuote && !lines.length) { note(form, 'Please choose at least one product.', true); return; }
 
     setBusy(true);
-    var ctrl = 'AbortController' in window ? new AbortController() : null;
-    var timer = setTimeout(function () { if (ctrl) ctrl.abort(); }, 15000);
-    // Plain form encoding: a "simple" request, so the browser sends it without a CORS preflight
-    var body = new URLSearchParams();
-    Object.keys(data).forEach(function (k) { body.append(k, data[k]); });
-    fetch(FORM_ENDPOINT, {
-      method: 'POST',
-      headers: { 'Accept': 'application/json' },
-      body: body,
-      signal: ctrl ? ctrl.signal : undefined
-    }).then(function (r) { return r.json().catch(function () { return {}; }); })
-      .then(function (res) {
-        clearTimeout(timer); setBusy(false);
-        if (res && (res.success === true || res.success === 'true')) {
-          form.reset();
-          if (isQuick) { note(form, '<strong>Thanks, your request was sent.</strong> Our sales team will email pricing to ' + email + '.'); return; }
-          if (isQuote) { resetQuoteLines(form); note(form, '<strong>Thanks, your quote request was sent.</strong> Our sales team will reply to ' + email + ' with pricing.'); return; }
-          note(form, isNewsletter ? 'Thanks for subscribing. We\u2019ll send product and inventory updates to ' + email + '.'
-            : 'Thanks, your message was sent. Our team will get back to you soon.');
-        } else if (res && /activat/i.test(res.message || '')) {
-          // FormSubmit needs the inbox owner to confirm once; the message is held until then
-          note(form, 'Thanks, your message was received. It will be delivered as soon as the inbox is confirmed. For anything urgent call <a href="tel:+18449008804">' + PHONE + '</a>.');
-        } else {
-          fallback();
-        }
-      })
-      .catch(function () { clearTimeout(timer); setBusy(false); fallback(); });
+    function done(res) {
+      setBusy(false);
+      form.reset();
+      if (isQuick) { note(form, '<strong>Thanks, your request was sent.</strong> Our sales team will email pricing to ' + email + '.'); return; }
+      if (isQuote) { resetQuoteLines(form); note(form, '<strong>Thanks, your quote request was sent.</strong> Our sales team will reply to ' + email + ' with pricing.'); return; }
+      note(form, isNewsletter ? 'Thanks for subscribing. We\u2019ll send product and inventory updates to ' + email + '.'
+        : 'Thanks, your message was sent. Our team will get back to you soon.');
+    }
+    function post(url, opts, ms) {
+      var ctrl = 'AbortController' in window ? new AbortController() : null;
+      var timer = setTimeout(function () { if (ctrl) ctrl.abort(); }, ms);
+      opts.signal = ctrl ? ctrl.signal : undefined;
+      return fetch(url, opts).then(function (r) { clearTimeout(timer); return r.json().catch(function () { return {}; }); },
+                                   function (err) { clearTimeout(timer); throw err; });
+    }
+    function viaFormSubmit() {
+      // Plain form encoding: a "simple" request, so the browser sends it without a CORS preflight
+      var body = new URLSearchParams();
+      Object.keys(data).forEach(function (k) { body.append(k, data[k]); });
+      return post(FORM_ENDPOINT, { method: 'POST', headers: { 'Accept': 'application/json' }, body: body }, 12000)
+        .then(function (res) {
+          if (res && (res.success === true || res.success === 'true')) return done(res);
+          if (res && /activat/i.test(res.message || '')) {
+            setBusy(false);
+            note(form, 'Thanks, your message was received. It will be delivered as soon as the inbox is confirmed. For anything urgent call <a href="tel:+18449008804">' + PHONE + '</a>.');
+            return;
+          }
+          throw new Error('formsubmit');
+        });
+    }
+    function viaWeb3Forms() {
+      var payload = { access_key: W3F_KEY, subject: data._subject, from_name: 'Crown website' };
+      if (email) payload.replyto = email;
+      Object.keys(data).forEach(function (k) { if (k.charAt(0) !== '_') payload[k] = data[k]; });
+      return post('https://api.web3forms.com/submit', {
+        method: 'POST', headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' }, body: JSON.stringify(payload)
+      }, 12000).then(function (res) { if (res && res.success) return done(res); throw new Error('web3forms'); });
+    }
+    (W3F_KEY ? viaWeb3Forms().catch(viaFormSubmit) : viaFormSubmit())
+      .catch(function () { setBusy(false); fallback(); });
   }, true);
 
   /* ---------- form fields: right keyboard and autofill ---------- */
