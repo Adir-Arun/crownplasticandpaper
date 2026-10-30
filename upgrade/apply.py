@@ -376,6 +376,73 @@ def spec_script(url):
     return '<script>window.CPP_SPECS=%s;</script>' % json.dumps(data, ensure_ascii=False).replace('</', '<\\/')
 
 
+_FAKE_IMAGES = None
+
+
+def fake_images():
+    """Image files the mirror saved as web pages (the server returned an HTML page instead of the picture)."""
+    global _FAKE_IMAGES
+    if _FAKE_IMAGES is None:
+        _FAKE_IMAGES = set()
+        up = os.path.join(SITE, 'wp-content', 'uploads')
+        for d, _, names in os.walk(up):
+            for n in names:
+                if not re.search(r'\.(png|jpe?g|gif|webp)$', n, re.I):
+                    continue
+                p = os.path.join(d, n)
+                try:
+                    with open(p, 'rb') as fh:
+                        head = fh.read(64).lstrip().lower()
+                except OSError:
+                    continue
+                if head.startswith(b'<!doctype html') or head.startswith(b'<html'):
+                    _FAKE_IMAGES.add('/' + os.path.relpath(p, SITE).replace(os.sep, '/'))
+    return _FAKE_IMAGES
+
+
+def image_ok(url):
+    if not isinstance(url, str):
+        return True
+    m = re.match(r'^(?:https?://(?:www\.)?crownplasticandpaper\.com)?(/wp-content/[^?#]+)$', url)
+    if not m:
+        return True
+    path = m.group(1)
+    return path not in fake_images() and os.path.exists(os.path.join(SITE, path.lstrip('/')))
+
+
+def prune_ld_images(s):
+    """Structured data must not point Google at images that are missing or not images."""
+    def clean(node):
+        if isinstance(node, list):
+            out = []
+            for x in node:
+                if isinstance(x, str) and not image_ok(x):
+                    continue
+                if isinstance(x, dict) and x.get('@type') == 'ImageObject' and not image_ok(x.get('contentUrl') or x.get('url')):
+                    continue
+                out.append(clean(x))
+            return out
+        if isinstance(node, dict):
+            out = {}
+            for k, v in node.items():
+                if k in ('image', 'logo', 'thumbnailUrl', 'contentUrl', 'url') and isinstance(v, str) and not image_ok(v) and re.search(r'\.(png|jpe?g|gif|webp)$', v, re.I):
+                    continue
+                out[k] = clean(v)
+            return out
+        return node
+
+    def repl(m):
+        try:
+            data = json.loads(m.group(2))
+        except ValueError:
+            return m.group(0)
+        new = clean(data)
+        if new == data:
+            return m.group(0)
+        return m.group(1) + json.dumps(new, ensure_ascii=False) + m.group(3)
+    return re.sub(r'(<script type="application/ld\+json"[^>]*>)(.*?)(</script>)', repl, s, flags=re.S)
+
+
 def filter_combo(s, url):
     """Multi-category filter pages (/products/product_cat-a-or-b/) were saved with every
     category on them: keep only the categories in the URL."""
@@ -622,6 +689,12 @@ def upgrade_html(path, snippets, search_items, sitemap):
     # (src="/product/x/{{data.src}}"), so every image shown after picking a size or option 404'd
     s = re.sub(r'((?:src|srcset|data-src|data-large_image|href)=")[^"{]*?(\{\{\s*data\.)', r'\1\2', s)
     s = close_open_styles(s)
+    s = prune_ld_images(s)
+    # blog author box: the avatar file was saved as a web page; use the Crown logo tile
+    s = re.sub(r'(?:(?:\.\./)+|/)?wp-content/uploads/2026/02/cropped-fav-1(?:-\d+x\d+)?\.png(?:\.webp)?', '/icon-512.png', s)
+    # gallery slides with no picture attached (Latex Gloves 1/2) showed empty boxes
+    s = re.sub(r'<div class="wvg-gallery-image"><div><div class="wvg-single-gallery-image-container"><img\b[^>]*\ssrc="index\.html"[^>]*>(?:<noscript>.*?</noscript>)?</div></div></div>', '', s, flags=re.S)
+    s = re.sub(r'<div class="wvg-gallery-thumbnail-image"><div>(?:<div>)?<img\b[^>]*\ssrc="index\.html"[^>]*>(?:<noscript>.*?</noscript>)?(?:</div>)?</div></div>', '', s, flags=re.S)
     if url.startswith('/products/product_cat-') and '-or-' in url:
         s = set_robots(s, 'noindex, follow')  # filter combinations are not pages of their own
 

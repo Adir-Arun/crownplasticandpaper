@@ -605,3 +605,9 @@ h1.elementor-heading-title, h2.elementor-heading-title { font-weight: 700 !impor
 .cpp-specs-all li a:hover span { text-decoration: underline; text-underline-offset: 3px; }
 @media print { .cpp-specs { display: none !important; } }
 .cpp-doc-link { cursor: pointer; } .cpp-doc-link:hover .elementor-icon-list-text { text-decoration: underline; text-underline-offset: 3px; }
+
+/* product gallery: white boxes with a hairline (product photos are shot on white), tighter corners */
+.woo-variation-gallery-slider { background: #fff !important; border: 1px solid var(--cpp-line); border-radius: var(--cpp-r-card) !important; }
+.wvg-gallery-thumbnail-image { background: #fff !important; border: 1px solid var(--cpp-line); border-radius: var(--cpp-r-ctl) !important; }
+.slick-current .wvg-gallery-thumbnail-image, .wvg-gallery-thumbnail-image.slick-current { border-color: var(--cpp-navy) !important; box-shadow: inset 0 0 0 1px var(--cpp-navy); }
+.wvg-gallery-thumbnail-image.slick-current, .wvg-gallery-thumbnail-image:hover { border-color: var(--cpp-navy); }
