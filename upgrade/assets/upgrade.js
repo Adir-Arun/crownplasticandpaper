@@ -126,6 +126,8 @@
   // Web3Forms is the primary delivery path once its access key (public by design) is set;
   // FormSubmit stays as the automatic backup.
   var W3F_KEY = 'ccf6d55e-e535-42d9-acd7-f01ec08d8e8a';
+  // Attachments need Web3Forms Pro; on the free plan a submission with a file is silently dropped
+  var W3F_FILES = false;
   function fieldLabel(el) {
     var id = el.id && document.querySelector('label[for="' + el.id + '"]');
     var t = (id && id.textContent) || el.getAttribute('aria-label') || el.placeholder || el.name || 'Field';
@@ -656,7 +658,7 @@
       }
       var mailDocs = 'mailto:' + EMAIL + '?subject=' + encodeURIComponent('Documents for ' + subject) + '&body=' + encodeURIComponent('Attached are the documents for our credit application.\n\n' + (company ? 'Company: ' + company + '\n' : '') + (email ? 'Email: ' + email : ''));
       busy(true);
-      var hadFiles = files.some(function (f) { return f.size <= MAX_FILE; });
+      var hadFiles = W3F_FILES && files.some(function (f) { return f.size <= MAX_FILE; });
       var tooBig = files.some(function (f) { return f.size > MAX_FILE; });
       (hadFiles ? send(build(true)).then(function () { return true; }, function () { return send(build(false)).then(function () { return false; }); })
                 : send(build(false)).then(function () { return !files.length; }))
