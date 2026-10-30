@@ -267,7 +267,9 @@
 
   /* ---------- carousels: load images in carousel slides (lazy-load misses the copies) ---------- */
   function loadCarouselImages() {
-    document.querySelectorAll('.swiper img[data-lazy-src], .elementor-loop-container img[data-lazy-src], .e-n-carousel img[data-lazy-src]').forEach(function (img) {
+    document.querySelectorAll('.swiper img[data-lazy-src], .elementor-loop-container img[data-lazy-src], .e-n-carousel img[data-lazy-src], ' +
+      '.slick-slider img[data-lazy-src], .slick-track img[data-lazy-src], .woo-variation-gallery-wrapper img[data-lazy-src], .wvg-gallery-thumbnail-image img[data-lazy-src], ' +
+      '.product-you-may-also-need img[data-lazy-src]').forEach(function (img) {
       var src = img.getAttribute('data-lazy-src');
       if (img.getAttribute('data-lazy-srcset')) img.setAttribute('srcset', img.getAttribute('data-lazy-srcset'));
       if (img.getAttribute('data-lazy-sizes')) img.setAttribute('sizes', img.getAttribute('data-lazy-sizes'));
@@ -1056,5 +1058,29 @@
   window.addEventListener('load', function () {
     setTimeout(function () { enhanceAllSearch(); loadCarouselImages(); }, 400);
     setTimeout(loadCarouselImages, 1800);  // carousels add their slide copies after start-up
+    // safety net: lazy images inside sideways-scrolling rows never enter the viewport vertically
+    setTimeout(function () {
+      document.querySelectorAll('img[data-lazy-src]').forEach(function (img) {
+        for (var el = img.parentElement, i = 0; el && i < 8; el = el.parentElement, i++) {
+          var ox = getComputedStyle(el).overflowX;
+          if ((ox === 'auto' || ox === 'scroll' || ox === 'hidden') && el.scrollWidth > el.clientWidth + 4) {
+            img.src = img.getAttribute('data-lazy-src');
+            if (img.getAttribute('data-lazy-srcset')) img.srcset = img.getAttribute('data-lazy-srcset');
+            img.removeAttribute('data-lazy-src'); img.removeAttribute('data-lazy-srcset');
+            img.classList.add('entered', 'lazyloaded');
+            break;
+          }
+        }
+      });
+    }, 2500);
+    // carousels (and the product gallery after a size is picked) keep adding slide copies that carry the
+    // lazy placeholder; give them their real image as soon as they appear
+    if (window.MutationObserver) {
+      var queued = false;
+      new MutationObserver(function () {
+        if (queued) return; queued = true;
+        requestAnimationFrame(function () { queued = false; loadCarouselImages(); });
+      }).observe(document.body, { childList: true, subtree: true });
+    }
   });
 })();
