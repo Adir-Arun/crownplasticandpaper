@@ -44,7 +44,8 @@ def recolor(s):
 
 
 POLISH = True  # visual polish layer (upgrade/assets/polish.css); set False to switch it off
-ORIGIN = 'https://www.crownplasticandpaper.com'
+ORIGIN = 'https://crownplasticandpaper.com'  # primary host; www and crownpaperandplastic.com 308 here
+INDEXNOW_KEY = '4926503e2eb4d675df74dc7347df8da2'
 
 PHONE_TEXT = '(844) 900-0084'
 PHONE_TEL = 'tel:+18449000084'
@@ -714,8 +715,13 @@ def upgrade_html(path, snippets, search_items, sitemap):
     s = re.sub(r'href="([^"#?:]*?)index\.html(#[^"]*)?"',
                lambda m: 'href="%s"' % m.group(2) if not m.group(1) and m.group(2) and len(m.group(2)) > 1
                else 'href="%s%s"' % (m.group(1) or './', m.group(2) or ''), s)
+    s = re.sub(r'(https?:)?//www\.crownplasticandpaper\.com', lambda m: ORIGIN if m.group(1) else '//crownplasticandpaper.com', s)
+    s = s.replace('http://crownplasticandpaper.com', ORIGIN)
+    s = re.sub(r'(%2F%2F|\\/\\/)www\.crownplasticandpaper\.com', r'\1crownplasticandpaper.com', s, flags=re.I)  # encoded / JSON-escaped
     canonical = ORIGIN + url
     s = re.sub(r'<link rel="canonical" href="[^"]*"', '<link rel="canonical" href="%s"' % canonical, s)
+    if not re.search(r'<link rel=["\']canonical["\']', s):  # 9 pages had none
+        s = s.replace('</head>', '<link rel="canonical" href="%s" />\n</head>' % canonical, 1)
     s = re.sub(r'<meta property="og:url" content="[^"]*"', '<meta property="og:url" content="%s"' % canonical, s)
     s = re.sub(r'(<meta (?:property|name)="(?:og:image|twitter:image)(?::secure_url)?" content=")/', r'\1' + ORIGIN + '/', s)
 
@@ -876,7 +882,8 @@ def upgrade_html(path, snippets, search_items, sitemap):
     s = re.sub(r'href="(?:\.\./)*/?login/"', 'href="/contact-us/"', s)  # hidden old Login button: no such page
     open(path, 'w', encoding='utf-8').write(s)
     if os.path.basename(path) == 'index.html' and indexable(s, url):
-        mod = re.search(r'<meta property="article:modified_time" content="([^"]{10})', s)
+        mod = (re.search(r'<meta property="(?:article:modified_time|og:updated_time)" content="([^"]+)"', s)
+               or re.search(r'"dateModified":\s*"([^"]+)"', s))
         sitemap.append((url, mod.group(1) if mod else None))
 
     # --- search index -------------------------------------------------------------
@@ -966,7 +973,30 @@ def main():
         open(home, 'w', encoding='utf-8').write(hs.replace('<!--cpp-bestsellers-->', ''.join(cards)))
 
     # sitemap.xml and robots.txt (WordPress's were not part of the copy)
-    urls = sorted(sitemap, key=lambda x: (x[0] != '/', x[0].count('/'), x[0]))
+    # Pages with no date of their own (category and list pages) take the newest date of the
+    # products or articles they link to.
+    dated = {u: m for u, m in sitemap if m}
+    filled = []
+    for u, m in sitemap:
+        if not m:
+            try:
+                page = open(os.path.join(SITE, u.lstrip('/'), 'index.html'), encoding='utf-8', errors='ignore').read()
+            except OSError:
+                page = ''
+            linked = set(re.findall(r'href="(?:%s)?(/[^"#?]*/)"' % re.escape(ORIGIN), page))
+            linked |= {'/' + os.path.normpath(os.path.join(u, h)).strip('/') + '/' for h in re.findall(r'href="((?:\.\./)+[^"#?:]*/)"', page)}
+            articles = {g[1] for g in GUIDES}
+            cards = re.findall(r'class="product-card">\s*<a href="[^"]*?(/product/[a-z0-9-]+/)"', page)
+            if cards:            # category and shop pages: only the products in their own grid
+                pick = set(cards)
+            elif u == '/':
+                pick = set()
+            else:                # blog list pages: only the articles they list
+                pick = {x for x in linked if x in articles}
+            dates = sorted(dated[x] for x in pick if x in dated and x != u)
+            m = dates[-1] if dates else max(dated.values())
+        filled.append((u, m))
+    urls = sorted(filled, key=lambda x: (x[0] != '/', x[0].count('/'), x[0]))
     with open(os.path.join(SITE, 'sitemap.xml'), 'w', encoding='utf-8') as f:
         f.write('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n')
         for u, mod in urls:
@@ -974,6 +1004,8 @@ def main():
         f.write('</urlset>\n')
     with open(os.path.join(SITE, 'robots.txt'), 'w', encoding='utf-8') as f:
         f.write(geo.ROBOTS)
+    with open(os.path.join(SITE, INDEXNOW_KEY + '.txt'), 'w', encoding='utf-8') as f:
+        f.write(INDEXNOW_KEY)
     cats = []
     for i in uniq:
         if i['k'] != 'Category':
