@@ -10,7 +10,7 @@ ORIGIN = 'https://www.crownplasticandpaper.com'
 FACTS = {
     'name': 'Crown Plastic & Paper',
     'phone': '(844) 900-0084', 'phone_e164': '+18449000084',
-    'text': '(713) 697-5320', 'whatsapp': '(713) 597-5320',
+    'text': '(713) 597-5320', 'whatsapp': '(713) 597-5320',
     'email': 'info@crownplasticandpaper.com',
     'street': '7350 Langfield Rd', 'city': 'Houston', 'region': 'TX', 'zip': '77092',
     'terms': 'Net 30 after credit approval', 'since': '2021',
@@ -29,8 +29,8 @@ QUICK_ANSWER = (
 # Vague FAQ answers on the WordPress pages -> specific, quotable ones (same questions).
 FAQ_REWRITES = {
     'You can place an order by contacting our sales team directly via phone, email, or through our website.':
-        'Send your product list through the Get a Quote form, call %s, text %s, WhatsApp %s, or email %s. '
-        'You get one wholesale quote for the whole list.' % (F['phone'], F['text'], F['whatsapp'], F['email']),
+        'Send your product list through the Get a Quote form, call %s, text or WhatsApp %s, or email %s. '
+        'You get one wholesale quote for the whole list.' % (F['phone'], F['whatsapp'], F['email']),
     'Yes, we specialize in wholesale distribution and provide competitive pricing for bulk orders.':
         'Yes. Pricing is by the case and pallet in three tiers: %s. Mixed products can share a pallet.' % F['tiers'],
     'Yes, credit terms may be available for approved business accounts.':
@@ -247,7 +247,7 @@ def llms_txt(categories, products, guides, spec_map, full=False):
            '## Facts', '',
            '- Business: wholesale distributor of disposable food service packaging and janitorial supplies',
            '- Warehouse: %s, %s, %s %s, USA (%s)' % (F['street'], F['city'], F['region'], F['zip'], F['warehouse']),
-           '- Phone: %s · Text: %s · WhatsApp: %s · Email: %s' % (F['phone'], F['text'], F['whatsapp'], F['email']),
+           '- Phone: %s · Text and WhatsApp: %s · Email: %s' % (F['phone'], F['whatsapp'], F['email']),
            '- Customers: distributors, wholesalers, restaurant groups, caterers, schools, hospitals, cash and carry; %s states' % F['states'],
            '- In business since: %s' % F['since'],
            '- Mixed products can share an order and pallet',

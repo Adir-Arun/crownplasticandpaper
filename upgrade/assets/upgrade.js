@@ -196,7 +196,7 @@
       var text = subject + '\n\n' + lines.join('\n');
       var mail = 'mailto:' + EMAIL + '?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(text + '\n\nSent from ' + location.href);
       var wa = 'https://wa.me/17135975320?text=' + encodeURIComponent(text);
-      var sms = 'sms:+17136975320?&body=' + encodeURIComponent(text);
+      var sms = 'sms:+17135975320?&body=' + encodeURIComponent(text);
       note(form, '<strong>Our online form isn\u2019t responding right now.</strong> Your request is ready \u2014 send it with one tap:' +
         '<span class="cpp-fb-actions">' +
         '<a class="cpp-fb-btn cpp-fb-btn--main" href="' + mail + '">Email it</a>' +
@@ -416,7 +416,7 @@
       x.innerHTML = '<p>Need pricing for a full supply list?</p>' +
         '<a class="cpp-btn cpp-btn--solid" href="/get-your-quote/">Request a Quote<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>' +
         '<a class="cpp-btn cpp-btn--line" href="https://heyzine.com/flip-book/0ee04dad9c.html#page/13" target="_blank" rel="noopener">View 2026 Catalog</a>' +
-        '<p class="cpp-cardx-text">Prefer to text? <a href="sms:+17136975320">(713) 697-5320</a> · <a href="https://wa.me/17135975320?text=Hi%20Crown%2C%20I%27d%20like%20a%20quote%20for%3A%20" target="_blank" rel="noopener">WhatsApp</a></p>';
+        '<p class="cpp-cardx-text">Prefer to text? <a href="sms:+17135975320">(713) 597-5320</a> · <a href="https://wa.me/17135975320?text=Hi%20Crown%2C%20I%27d%20like%20a%20quote%20for%3A%20" target="_blank" rel="noopener">WhatsApp</a></p>';
       card.appendChild(x);
     }
   }
