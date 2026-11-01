@@ -13,7 +13,7 @@ FACTS = {
     'text': '(713) 697-5320', 'whatsapp': '(713) 597-5320',
     'email': 'info@crownplasticandpaper.com',
     'street': '7350 Langfield Rd', 'city': 'Houston', 'region': 'TX', 'zip': '77092',
-    'min_order': '$4,000', 'terms': 'Net 30 after credit approval',
+    'terms': 'Net 30 after credit approval', 'since': '2021',
     'tiers': 'Houston pick-up, delivered 6 pallets, and delivered 12 pallets',
     'ship': '24–48 hours', 'warehouse': '60,000 sq ft', 'states': '25+',
 }
@@ -23,8 +23,8 @@ QUICK_ANSWER = (
     'Crown Plastic & Paper is a Houston, Texas wholesale distributor of food service disposables: cups, '
     'containers, foil pans, napkins, gloves, bags and janitorial supplies, sold by the case and pallet to '
     'distributors, restaurants and food service businesses in %s states. Orders ship from a %s Houston '
-    'warehouse in %s. The minimum order is %s (mixed products count), with %s.'
-    % (F['states'], F['warehouse'], F['ship'], F['min_order'], F['terms']))
+    'warehouse in %s, and approved accounts get Net 30 terms. In business since %s.'
+    % (F['states'], F['warehouse'], F['ship'], F['since']))
 
 # Vague FAQ answers on the WordPress pages -> specific, quotable ones (same questions).
 FAQ_REWRITES = {
@@ -32,8 +32,7 @@ FAQ_REWRITES = {
         'Send your product list through the Get a Quote form, call %s, text %s, WhatsApp %s, or email %s. '
         'You get one wholesale quote for the whole list.' % (F['phone'], F['text'], F['whatsapp'], F['email']),
     'Yes, we specialize in wholesale distribution and provide competitive pricing for bulk orders.':
-        'Yes. Pricing is by the case and pallet in three tiers: %s. The minimum order is %s, and mixed '
-        'products count toward it.' % (F['tiers'], F['min_order']),
+        'Yes. Pricing is by the case and pallet in three tiers: %s. Mixed products can share a pallet.' % F['tiers'],
     'Yes, credit terms may be available for approved business accounts.':
         'Yes. Approved business accounts get Net 30 terms. Apply with the online credit application; you can '
         'attach your tax resale certificate there.',
@@ -63,7 +62,7 @@ ORG_LD = {
          'logo': ORIGIN + '/icon-512.png', 'telephone': '+1-844-900-0084', 'email': F['email'],
          'address': {'@type': 'PostalAddress', 'streetAddress': F['street'], 'addressLocality': F['city'],
                      'addressRegion': F['region'], 'postalCode': F['zip'], 'addressCountry': 'US'},
-         'description': QUICK_ANSWER},
+         'foundingDate': F['since'], 'description': QUICK_ANSWER},
         {'@type': 'WebSite', '@id': ORIGIN + '/#website', 'url': ORIGIN + '/', 'name': F['name'],
          'publisher': {'@id': ORIGIN + '/#org'}},
     ],
@@ -163,8 +162,7 @@ def spec_table(slug, entries, title):
         facts.append(('Case pack', ', '.join(packs)))
     if pallets:
         facts.append(('Cases per pallet', str(pallets[0]) if len(pallets) == 1 else '%d–%d' % (pallets[0], pallets[-1])))
-    facts += [('Ships from', 'Houston, TX in %s' % F['ship']), ('Minimum order', '%s, mixed products' % F['min_order']),
-              ('Terms', F['terms'])]
+    facts += [('Ships from', 'Houston, TX in %s' % F['ship']), ('Terms', F['terms'])]
     dl = ''.join('<div><dt>%s</dt><dd>%s</dd></div>' % (html.escape(a), html.escape(b)) for a, b in facts)
     return ('<section class="cpp-skus" data-cpp-upgrade aria-labelledby="cpp-skus-title">'
             '<h2 id="cpp-skus-title" class="cpp-skus-h">%s at a glance</h2><dl class="cpp-facts">%s</dl>'
@@ -195,8 +193,8 @@ def category_block(cat_name, products):
         lines = '; '.join('%s: %s' % (n, ', '.join(sz[:8]) + (' and more' if len(sz) > 8 else '')) for n, u, sz in with_sizes[:6])
         qa.append(('What %s sizes do you stock?' % cat_name.lower(), '%s. Every size has its own spec sheet on the product page.' % lines))
     qa += [
-        ('What is the minimum order?', 'The minimum order is %s. You can mix %s with any other Crown products to reach it.'
-         % (F['min_order'], cat_name.lower())),
+        ('Can I mix products in one order?', 'Yes. You can combine %s with any other Crown products on the same order and pallet.'
+         % cat_name.lower()),
         ('How is wholesale pricing set?', 'By the case and pallet, in three tiers: %s. Request a quote with your list to get pallet pricing.' % F['tiers']),
         ('How fast do orders ship?', 'Orders typically ship from our Houston, TX warehouse in %s, by LTL freight to customers in %s states. '
          'Houston-area customers can also pick up.' % (F['ship'], F['states'])),
@@ -212,9 +210,9 @@ def category_block(cat_name, products):
 
 
 FACT_STRIP = ('<ul class="cpp-cat-facts" aria-label="Ordering at a glance">'
-              '<li><b>%s</b> minimum, mixed products</li><li><b>Net 30</b> after credit approval</li>'
-              '<li><b>Ships in %s</b> from Houston</li><li><b>3 price tiers</b> pick-up, 6 or 12 pallets</li></ul>'
-              ) % (F['min_order'], F['ship'])
+              '<li><b>Net 30</b> after credit approval</li><li><b>Ships in %s</b> from Houston</li>'
+              '<li><b>3 price tiers</b> pick-up, 6 or 12 pallets</li><li><b>Mixed pallets</b> welcome</li></ul>'
+              ) % F['ship']
 
 
 # ---------------------------------------------------------------------------------------------------
@@ -251,7 +249,8 @@ def llms_txt(categories, products, guides, spec_map, full=False):
            '- Warehouse: %s, %s, %s %s, USA (%s)' % (F['street'], F['city'], F['region'], F['zip'], F['warehouse']),
            '- Phone: %s · Text: %s · WhatsApp: %s · Email: %s' % (F['phone'], F['text'], F['whatsapp'], F['email']),
            '- Customers: distributors, wholesalers, restaurant groups, caterers, schools, hospitals, cash and carry; %s states' % F['states'],
-           '- Minimum order: %s (mixed products count)' % F['min_order'],
+           '- In business since: %s' % F['since'],
+           '- Mixed products can share an order and pallet',
            '- Pricing: by case and pallet, three tiers: %s; quote on request, no public prices' % F['tiers'],
            '- Terms: %s' % F['terms'],
            '- Shipping: typically ships from Houston in %s; LTL freight nationwide; Houston pick-up available' % F['ship'],
