@@ -2,7 +2,7 @@
 (function () {
   'use strict';
   var EMAIL = 'info@crownplasticandpaper.com';
-  var PHONE = '(844) 900-8804';
+  var PHONE = '(844) 900-0084';
   var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   /* ---------- shipping map: draw routes when it scrolls into view ---------- */
@@ -84,7 +84,7 @@
         return '<a role="option" id="' + id + '-' + i + '" aria-selected="false" href="' + esc(it.u) + '">' +
           (it.i ? '<img src="' + esc(it.i) + '" alt="" loading="lazy" decoding="async">' : '<span></span>') +
           '<span><b>' + esc(it.n) + '</b><small>' + esc(it.k) + '</small></span></a>';
-      }).join('') : '<div class="cpp-empty">No products match “' + esc(q) + '”. Try another word, or call <a href="tel:+18449008804">' + PHONE + '</a>.</div>';
+      }).join('') : '<div class="cpp-empty">No products match “' + esc(q) + '”. Try another word, or call <a href="tel:+18449000084">' + PHONE + '</a>.</div>';
       list.hidden = false; input.setAttribute('aria-expanded', 'true');
     }
     function move(d) {
@@ -203,7 +203,7 @@
         '<a class="cpp-fb-btn" href="' + wa + '" target="_blank" rel="noopener">WhatsApp</a>' +
         '<a class="cpp-fb-btn" href="' + sms + '">Text</a>' +
         '<button type="submit" class="cpp-fb-btn cpp-fb-retry">Try again</button></span>' +
-        '<span class="cpp-fb-call">Or call <a href="tel:+18449008804">' + PHONE + '</a></span>', true);
+        '<span class="cpp-fb-call">Or call <a href="tel:+18449000084">' + PHONE + '</a></span>', true);
     }
     if (spam) { form.reset(); note(form, 'Thanks, your message was sent.'); return; }
     if (isQuote && !lines.length) { note(form, 'Please choose at least one product.', true); return; }
@@ -233,7 +233,7 @@
           if (res && (res.success === true || res.success === 'true')) return done(res);
           if (res && /activat/i.test(res.message || '')) {
             setBusy(false);
-            note(form, 'Thanks, your message was received. It will be delivered as soon as the inbox is confirmed. For anything urgent call <a href="tel:+18449008804">' + PHONE + '</a>.');
+            note(form, 'Thanks, your message was received. It will be delivered as soon as the inbox is confirmed. For anything urgent call <a href="tel:+18449000084">' + PHONE + '</a>.');
             return;
           }
           throw new Error('formsubmit');
@@ -434,7 +434,7 @@
         '<a href="/products/" tabindex="-1">Products</a><a href="/products/product_cat-gloves/" tabindex="-1">Disposable Gloves</a>' +
         '<a href="https://heyzine.com/flip-book/0ee04dad9c.html#page/13" target="_blank" rel="noopener" tabindex="-1">Catalog</a>' +
         '<a href="/about-us/" tabindex="-1">About Us</a><a href="/contact-us/" tabindex="-1">Contact</a></nav>' +
-      '<a class="cpp-sticky-tel" href="tel:+18449008804" tabindex="-1">' + PHONE + '</a>' +
+      '<a class="cpp-sticky-tel" href="tel:+18449000084" tabindex="-1">' + PHONE + '</a>' +
       '<a class="cpp-sticky-wa" href="https://wa.me/17135975320?text=Hi%20Crown%2C%20I%27d%20like%20a%20quote%20for%3A%20" target="_blank" rel="noopener" tabindex="-1">WhatsApp</a>' +
       '<a class="cpp-sticky-cta" href="/get-your-quote/" tabindex="-1"' + (name ? ' data-cpp-product-quote' : '') + '>' +
         (name ? '<span>Quote ' + name.replace(/[<&]/g, '') + '</span>' : 'Get a Quote') + '</a></div>';
@@ -881,7 +881,7 @@
           return chain.then(function () {
             var pages = doc.getPages();
             pages.forEach(function (pg, i) {
-              var t = 'Crown Plastic & Paper  ·  7350 Langfield Rd, Houston, TX 77092  ·  (844) 900-8804';
+              var t = 'Crown Plastic & Paper  ·  7350 Langfield Rd, Houston, TX 77092  ·  (844) 900-0084';
               pg.drawText(t, { x: M, y: 28, size: 7.5, font: font, color: MUTED });
               var n = 'Page ' + (i + 1) + ' of ' + pages.length, w = font.widthOfTextAtSize(n, 7.5);
               pg.drawText(n, { x: pg.getWidth() - M - w, y: 28, size: 7.5, font: font, color: MUTED });
@@ -992,7 +992,7 @@
           busy(false);
           note(form, '<strong>Our online form isn’t responding right now.</strong> Your application is ready — ' +
             '<a href="mailto:' + EMAIL + '?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(subject + '\n' + lines.join('\n')) + '">email it with one tap</a>' +
-            (files.length ? ' and attach your tax permit' : '') + ', or call <a href="tel:+18449008804">' + PHONE + '</a>.', true);
+            (files.length ? ' and attach your tax permit' : '') + ', or call <a href="tel:+18449000084">' + PHONE + '</a>.', true);
         });
     }, true);
   }
