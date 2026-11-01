@@ -774,7 +774,7 @@ def upgrade_html(path, snippets, search_items, sitemap):
             sp = section_span(s, 'a0d096e')
             if sp:
                 s = s[:sp[1]] + geo.category_block(CAT_HEADERS[cm.group(1)][0], prods) + s[sp[1]:]
-    if re.search(r'<meta property="article:published_time"', s) and indexable(s, url) and url.count('/') == 2 \
+    if re.search(r'<meta property="article:section"', s) and indexable(s, url) and url.count('/') == 2 \
             and url not in ('/applications/', '/contact-us/', '/get-your-quote/', '/about-us/', '/faqs/', '/business-partnership/'):
         t = re.search(r'<h1[^>]*>(.*?)</h1>', s, re.S)
         if t:
