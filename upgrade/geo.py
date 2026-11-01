@@ -4,7 +4,7 @@ import html
 import json
 import re
 
-ORIGIN = 'https://www.crownplasticandpaper.com'
+ORIGIN = 'https://crownplasticandpaper.com'
 
 # Single source of truth for every fact the site states.
 FACTS = {
