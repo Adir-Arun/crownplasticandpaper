@@ -15,6 +15,10 @@ import shutil
 import sys
 import urllib.parse
 
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import geo  # noqa: E402
+GUIDES = []
+
 SITE = sys.argv[1] if len(sys.argv) > 1 else 'site'
 HERE = os.path.dirname(os.path.abspath(__file__))
 ASSETS = os.path.join(HERE, 'assets')
@@ -42,8 +46,8 @@ def recolor(s):
 POLISH = True  # visual polish layer (upgrade/assets/polish.css); set False to switch it off
 ORIGIN = 'https://www.crownplasticandpaper.com'
 
-PHONE_TEXT = '(844) 900-8804'
-PHONE_TEL = 'tel:+18449008804'
+PHONE_TEXT = '(844) 900-0084'
+PHONE_TEL = 'tel:+18449000084'
 EMAIL = 'info@crownplasticandpaper.com'
 CATALOG = 'https://heyzine.com/flip-book/0ee04dad9c.html#page/13'
 YEAR = '2026'
@@ -78,7 +82,7 @@ BUSINESS_LD = {
     'name': 'Crown Plastic & Paper',
     'url': ORIGIN + '/',
     'logo': ORIGIN + '/wp-content/uploads/2026/01/icn_crown_logo.svg',
-    'telephone': '+1-844-900-8804',
+    'telephone': '+1-844-900-0084',
     'email': EMAIL,
     'address': {'@type': 'PostalAddress', 'streetAddress': '7350 Langfield Rd', 'addressLocality': 'Houston',
                 'addressRegion': 'TX', 'postalCode': '77092', 'addressCountry': 'US'},
@@ -252,7 +256,7 @@ def faq_ld(s):
         q = re.search(r'e-n-accordion-item-title-text">(.*?)</div>', m.group(1), re.S)
         a = m.group(1).split('</summary>', 1)[-1]
         q, a = strip_tags(q.group(1)) if q else '', strip_tags(a)
-        if q and a and q not in [i['name'] for i in items]:
+        if q and a and q.rstrip().endswith('?') and q not in [i['name'] for i in items]:
             items.append({'@type': 'Question', 'name': html.unescape(q),
                           'acceptedAnswer': {'@type': 'Answer', 'text': html.unescape(a)}})
     if not items:
@@ -322,10 +326,10 @@ def cat_header(slug, count, spec=None):
             '<nav class="cpp-cat-crumbs" aria-label="Breadcrumb"><a href="/">Home</a><span aria-hidden="true">/</span>'
             '<a href="/products/">Products</a><span aria-hidden="true">/</span><span aria-current="page">%s</span></nav>'
             '<h1 id="cpp-cat-title">%s</h1><p class="cpp-cat-line">%s</p>'
-            '<p class="cpp-cat-meta">%d products <span aria-hidden="true">·</span> Ships from Houston in 24–48 hrs</p>'
+            '<p class="cpp-cat-meta">%d products</p>' + geo.FACT_STRIP +
             '<div class="cpp-cat-actions"><a class="cpp-hbtn cpp-hbtn--main" href="/get-your-quote/">Request a Quote'
             '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>'
-            '<a class="cpp-cat-tel" href="tel:+18449008804">or call (844) 900-8804</a></div>'
+            '<a class="cpp-cat-tel" href="tel:+18449000084">or call (844) 900-0084</a></div>'
             '</div>%s</div></section>') % (' cpp-cat-hero--photo' if photo else '', html.escape(name),
                                           html.escape(name if spec else 'Wholesale ' + name), html.escape(line), count, img)
 
@@ -469,7 +473,7 @@ def section_span(s, el_id):
 
 
 HOME_FAQ = ['How can I place an order?', 'Do you offer bulk pricing?', 'Do you supply eco-friendly or compostable products?',
-            'Where do you deliver?', 'How long does delivery take?']
+            'Where do you deliver?', 'How long does delivery take?', 'Do you offer credit terms?']
 BEST_SELLERS = ['pet-cups', 'portion-cups', 'deli-containers', 'round-foil-pans', 'blue-nitrile-gloves', 'paper-bags',
                 'dinner-napkins', 'trash-liners']
 
@@ -484,8 +488,12 @@ def home_faq(s):
     items.sort(key=lambda x: HOME_FAQ.index(x[0]))
     rows = ''.join('<details class="cpp-faq-item"%s><summary>%s<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></summary><p>%s</p></details>'
                    % (' open' if i == 0 else '', html.escape(html.unescape(q)), html.escape(html.unescape(a))) for i, (q, a) in enumerate(items))
+    data = {'@context': 'https://schema.org', '@type': 'FAQPage', 'mainEntity': [
+        {'@type': 'Question', 'name': html.unescape(q), 'acceptedAnswer': {'@type': 'Answer', 'text': html.unescape(a)}} for q, a in items]}
+    rows += geo.ld(data)
     return ('<section class="cpp-faq" data-cpp-upgrade aria-labelledby="cpp-faq-title"><div class="cpp-wrap">'
-            '<h2 id="cpp-faq-title">Frequently Asked Questions</h2><div class="cpp-faq-list">%s</div>'
+            '<h2 id="cpp-faq-title">Frequently Asked Questions</h2>'
+            '<p class="cpp-faq-lead">' + html.escape(geo.QUICK_ANSWER) + '</p><div class="cpp-faq-list">%s</div>'
             '<p class="cpp-faq-more"><a href="/faqs/">See all questions<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></p>'
             '</div></section>') % rows
 
@@ -639,17 +647,19 @@ def upgrade_html(path, snippets, search_items, sitemap):
     url = page_url(path)
 
     # --- content consistency -------------------------------------------------
-    # The WordPress site shows two wrong numbers (900-0084 and 900-8801); the real one is 900-8804.
-    s = re.sub(r'\(844\) 900-(?:0084|8801)', PHONE_TEXT, s)
+    # One phone number everywhere: (844) 900-0084 (the WordPress pages also showed 900-8801).
+    s = re.sub(r'\(844\) 900-(?:8801|8804)', PHONE_TEXT, s)
     s = re.sub(r'tel:[^"]*?844[^"]*?900(?:%20|[-. ])?(?:0084|8801|8804)', PHONE_TEL, s)
     s = re.sub(r'href="tell?:[^"]*?844[^"]*?900[^"]*?(?:0084|8801|8804)"', 'href="%s"' % PHONE_TEL, s)
-    s = re.sub(r'844-900-(?:0084|8801)', '844-900-8804', s)  # plain text and schema.org "telephone"
+    s = re.sub(r'844-900-(?:8801|8804)', '844-900-0084', s)  # plain text and schema.org "telephone"
+    s = geo.faq_rewrite(s)
     s = re.sub(r'Sales@www\.crownplasticandpaper\.com', EMAIL, s, flags=re.I)
     s = re.sub(r'sales@arunlimitedsupply\.com', EMAIL, s, flags=re.I)  # header link went to AR's inbox
     s = rebrand(s)
     s = recolor(s)
     s = fix_ldjson(s)
     s = seo(s, url)
+    s = geo.org_ld(s)
     s = s.replace('@www.crownplasticandpaper.com', '@crownplasticandpaper.com')
     s = s.replace('Copyright © 2025 AR Unlimited Supply', 'Copyright © %s Crown Plastic &#038; Paper' % YEAR)
     s = re.sub(r'Copyright © 2025 Crown', 'Copyright © %s Crown' % YEAR, s)
@@ -744,6 +754,31 @@ def upgrade_html(path, snippets, search_items, sitemap):
         elif t:
             h1 = '<h1 class="cpp-sr-only">%s</h1>' % html.escape(t)
             s = re.sub(r'(<div id="content"[^>]*>)', r'\1' + h1, s, count=1)
+
+    # --- GEO: real spec tables on product pages, buyer FAQ on category pages -----------------
+    if POLISH:
+        pm = re.match(r'^/product/([a-z0-9-]+)/$', url)
+        if pm and pm.group(1) in SPEC_MAP:
+            t = re.search(r'<h1[^>]*>(.*?)</h1>', s, re.S)
+            title = strip_tags(t.group(1)) if t else pm.group(1).replace('-', ' ').title()
+            block = geo.spec_table(pm.group(1), SPEC_MAP[pm.group(1)], html.unescape(title))
+            if block:
+                s = geo.insert_after_specs_heading(s, block, div_span)
+        cm = re.match(r'^/products/product_cat-([a-z-]+)/$', url)
+        if cm and '-or-' not in url and cm.group(1) in CAT_HEADERS:
+            prods = []
+            for m in re.finditer(r'<div class="product-card">\s*<a href="[^"]*?/product/([a-z0-9-]+)/"[^>]*>.*?woocommerce-loop-product__title">([^<]*)<', s, re.S):
+                slug, name = m.group(1), html.unescape(m.group(2)).strip()
+                if slug not in [x[1] for x in prods]:
+                    prods.append((name, slug, geo.product_sizes(SPEC_MAP.get(slug, []))))
+            sp = section_span(s, 'a0d096e')
+            if sp:
+                s = s[:sp[1]] + geo.category_block(CAT_HEADERS[cm.group(1)][0], prods) + s[sp[1]:]
+    if re.search(r'<meta property="article:published_time"', s) and indexable(s, url) and url.count('/') == 2 \
+            and url not in ('/applications/', '/contact-us/', '/get-your-quote/', '/about-us/', '/faqs/', '/business-partnership/'):
+        t = re.search(r'<h1[^>]*>(.*?)</h1>', s, re.S)
+        if t:
+            GUIDES.append((html.unescape(strip_tags(t.group(1))), url, ''))
 
     # --- performance -----------------------------------------------------------
     s = webp_swap(s, os.path.dirname(path))
@@ -938,7 +973,19 @@ def main():
             f.write('  <url><loc>%s%s</loc>%s</url>\n' % (ORIGIN, html.escape(u), '<lastmod>%s</lastmod>' % mod if mod else ''))
         f.write('</urlset>\n')
     with open(os.path.join(SITE, 'robots.txt'), 'w', encoding='utf-8') as f:
-        f.write('User-agent: *\nAllow: /\nDisallow: /upgrade/search-index.json\n\nSitemap: %s/sitemap.xml\n' % ORIGIN)
+        f.write(geo.ROBOTS)
+    cats = []
+    for i in uniq:
+        if i['k'] != 'Category':
+            continue
+        slug = i['u'].split('product_cat-')[-1].strip('/')
+        name, line = CAT_HEADERS[slug][:2] if slug in CAT_HEADERS else (i['n'], i.get('d', ''))
+        cats.append((name, i['u'], line))
+    prods = sorted([(i['n'], i['u'], i.get('d', '')) for i in uniq if i['k'] == 'Product'], key=lambda x: x[0])
+    guides = sorted(set(GUIDES), key=lambda x: x[0])
+    for name, full in (('llms.txt', False), ('llms-full.txt', True)):
+        with open(os.path.join(SITE, name), 'w', encoding='utf-8') as f:
+            f.write(geo.llms_txt(cats, prods, guides, SPEC_MAP, full))
     print('sitemap: %d urls' % len(urls))
     for name in os.listdir(os.path.join(ASSETS, 'icons')):
         shutil.copy(os.path.join(ASSETS, 'icons', name), os.path.join(SITE, name))
