@@ -150,6 +150,96 @@
       "source": "/wp-login.php",
       "destination": "/",
       "permanent": true
+    },
+    {
+      "source": "/locations/arkansas/",
+      "destination": "/locations/arkansas/little-rock/",
+      "permanent": true
+    },
+    {
+      "source": "/locations/arkansas",
+      "destination": "/locations/arkansas/little-rock/",
+      "permanent": true
+    },
+    {
+      "source": "/locations/georgia/",
+      "destination": "/locations/georgia/atlanta/",
+      "permanent": true
+    },
+    {
+      "source": "/locations/georgia",
+      "destination": "/locations/georgia/atlanta/",
+      "permanent": true
+    },
+    {
+      "source": "/locations/alabama/",
+      "destination": "/locations/alabama/birmingham/",
+      "permanent": true
+    },
+    {
+      "source": "/locations/alabama",
+      "destination": "/locations/alabama/birmingham/",
+      "permanent": true
+    },
+    {
+      "source": "/locations/mississippi/",
+      "destination": "/locations/mississippi/jackson/",
+      "permanent": true
+    },
+    {
+      "source": "/locations/mississippi",
+      "destination": "/locations/mississippi/jackson/",
+      "permanent": true
+    },
+    {
+      "source": "/locations/arizona/",
+      "destination": "/locations/arizona/phoenix/",
+      "permanent": true
+    },
+    {
+      "source": "/locations/arizona",
+      "destination": "/locations/arizona/phoenix/",
+      "permanent": true
+    },
+    {
+      "source": "/locations/new-mexico/",
+      "destination": "/locations/new-mexico/albuquerque/",
+      "permanent": true
+    },
+    {
+      "source": "/locations/new-mexico",
+      "destination": "/locations/new-mexico/albuquerque/",
+      "permanent": true
+    },
+    {
+      "source": "/locations/colorado/",
+      "destination": "/locations/colorado/denver/",
+      "permanent": true
+    },
+    {
+      "source": "/locations/colorado",
+      "destination": "/locations/colorado/denver/",
+      "permanent": true
+    },
+    {
+      "source": "/locations/nevada/",
+      "destination": "/locations/nevada/las-vegas/",
+      "permanent": true
+    },
+    {
+      "source": "/locations/nevada",
+      "destination": "/locations/nevada/las-vegas/",
+      "permanent": true
+    },
+    {
+      "source": "/locations/illinois/",
+      "destination": "/locations/illinois/chicago/",
+      "permanent": true
+    },
+    {
+      "source": "/locations/illinois",
+      "destination": "/locations/illinois/chicago/",
+      "permanent": true
     }
   ]
 }

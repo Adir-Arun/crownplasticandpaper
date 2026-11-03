@@ -641,3 +641,43 @@ h1.elementor-heading-title, h2.elementor-heading-title { font-weight: 700 !impor
 .cpp-skus-table td a { color: var(--cpp-navy) !important; font-weight: 700; text-decoration: underline; text-underline-offset: 3px; }
 @media (max-width: 560px) { .cpp-facts { grid-template-columns: 1fr; } .cpp-facts div:nth-child(2) { border-top: 1px solid var(--cpp-line); } .cpp-facts div:nth-child(even) { border-left: 0; } }
 @media print { .cpp-skus-scroll { overflow: visible; border: 0; } }
+
+/* =========================================================================
+   Location pages
+   ========================================================================= */
+.cpp-map__areas { display: inline-block; margin: 14px 0 0 16px; color: inherit !important; font-weight: 600; text-decoration: underline; text-underline-offset: 4px; }
+.cpp-loc { font-family: "Satoshi", system-ui, sans-serif; color: var(--cpp-navy); padding: clamp(32px, 4vw, 56px) 0 8px; }
+.cpp-loc .cpp-wrap { max-width: 900px; }
+.cpp-loc-sec { margin: 0 0 clamp(32px, 4vw, 48px); }
+.cpp-loc-sec h2 { font-size: clamp(22px, 2.2vw, 28px) !important; font-weight: 700 !important; letter-spacing: -0.015em; margin: 0 0 14px !important; color: var(--cpp-navy) !important; }
+.cpp-loc-sec p { font-size: 17px; line-height: 1.65; color: #334155; margin: 0 0 12px !important; text-wrap: pretty; }
+.cpp-loc-sec a { color: var(--cpp-navy); }
+.cpp-loc-prods { list-style: none; margin: 0 0 12px; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+.cpp-loc-prods li { margin: 0; }
+.cpp-loc-prods a { display: flex; flex-direction: column; gap: 3px; padding: 14px 16px; border: 1px solid var(--cpp-line); border-radius: var(--cpp-r-card); background: #fff; text-decoration: none !important; color: var(--cpp-navy) !important; min-height: 44px; transition: border-color 160ms ease; }
+.cpp-loc-prods a:hover { border-color: var(--cpp-navy); }
+.cpp-loc-prods b { font-size: 16px; }
+.cpp-loc-prods span { font-size: 13px; color: #566275; }
+.cpp-loc-more { font-weight: 700; text-underline-offset: 4px; }
+.cpp-loc-steps { margin: 0; padding-left: 22px; display: grid; gap: 8px; font-size: 17px; line-height: 1.55; color: #334155; }
+.cpp-loc-steps b { color: var(--cpp-navy); }
+.cpp-loc-near { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 8px; }
+.cpp-loc-near li { margin: 0; }
+.cpp-loc-near a { display: inline-flex; align-items: center; min-height: 40px; padding: 0 14px; border: 1px solid #C9CFD8; border-radius: var(--cpp-r-ctl); font-weight: 600; font-size: 15px; text-decoration: none !important; background: #fff; }
+.cpp-loc-near a:hover { border-color: var(--cpp-navy); }
+.cpp-loc-near span { display: none; }
+.cpp-loc-notes { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; }
+.cpp-loc-notes li { margin: 0; padding: 14px 16px; border-left: 3px solid var(--cpp-amber); background: #F9F8F5; font-size: 16px; line-height: 1.6; color: #334155; }
+.cpp-loc-notes li b { color: var(--cpp-navy); }
+.cpp-loc-note { font-size: 14px !important; color: #566275 !important; margin-top: 10px !important; }
+.cpp-loc-states { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px 24px; }
+.cpp-loc-state h3 { font-size: 15px !important; font-weight: 700 !important; letter-spacing: .06em; text-transform: uppercase; margin: 0 0 8px !important; padding-bottom: 6px; border-bottom: 2px solid var(--cpp-navy); color: var(--cpp-navy) !important; }
+.cpp-loc-state h3 a { color: inherit; text-decoration: none; }
+.cpp-loc-state ul { list-style: none; margin: 0; padding: 0; }
+.cpp-loc-state li { margin: 0; display: flex; justify-content: space-between; gap: 8px; padding: 7px 0; border-bottom: 1px solid var(--cpp-line); font-size: 15px; }
+.cpp-loc-state li a { color: var(--cpp-navy); font-weight: 600; text-decoration: none; }
+.cpp-loc-state li a:hover { text-decoration: underline; }
+.cpp-loc-state li span { color: #566275; font-size: 13px; white-space: nowrap; }
+.cpp-loc .cpp-faq, .cpp-loc + .cpp-cat-faq { padding-top: 8px; }
+@media (max-width: 1024px) { .cpp-loc-states { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 640px) { .cpp-loc-prods, .cpp-loc-states { grid-template-columns: 1fr; } .cpp-map__areas { margin-left: 0; display: block; } }

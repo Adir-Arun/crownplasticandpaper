@@ -17,7 +17,9 @@ import urllib.parse
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import geo  # noqa: E402
+import locations  # noqa: E402
 GUIDES = []
+LOCATION_URLS = []
 
 SITE = sys.argv[1] if len(sys.argv) > 1 else 'site'
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -448,6 +450,29 @@ def prune_ld_images(s):
     return re.sub(r'(<script type="application/ld\+json"[^>]*>)(.*?)(</script>)', repl, s, flags=re.S)
 
 
+def render_location(shell, url, title, desc, body):
+    """Put a location page into a finished page's header/footer shell."""
+    m = re.search(r'<div id="content"[^>]*>', shell)
+    start = m.start()
+    end = div_span(shell, start)[1]
+    page = shell[:m.end()] + body + '</div>' + shell[end:]
+    page = re.sub(r'<script type="application/ld\+json"[^>]*>.*?</script>\s*', '', page, flags=re.S)
+    page = geo.org_ld(page)
+    page = re.sub(r'<title>.*?</title>', '<title>%s</title>' % html.escape(title), page, count=1, flags=re.S)
+    page = re.sub(r'<meta name="description" content="[^"]*"', '<meta name="description" content="%s"' % html.escape(desc), page, count=1)
+    for prop, val in (('og:title', title), ('og:description', desc), ('og:url', ORIGIN + url)):
+        page = re.sub(r'<meta property="%s" content="[^"]*"' % prop, '<meta property="%s" content="%s"' % (prop, html.escape(val)), page, count=1)
+    page = re.sub(r'<meta name="twitter:(title|description)" content="[^"]*"',
+                  lambda k: '<meta name="twitter:%s" content="%s"' % (k.group(1), html.escape(title if k.group(1) == 'title' else desc)), page)
+    page = re.sub(r'<link rel="canonical" href="[^"]*"', '<link rel="canonical" href="%s"' % (ORIGIN + url), page, count=1)
+    page = set_robots(page, INDEX_ROBOTS)
+    page = re.sub(r'<meta property="og:type" content="[^"]*"', '<meta property="og:type" content="website"', page, count=1)
+    page = re.sub(r'<meta property="article:[^>]*>\s*', '', page)
+    # the shell comes from /faqs/ (one level deep): its "../x" links mean "/x" from any depth
+    page = re.sub(r'(?<=["\'(\s,=])\.\./(?!\.\./)', '/', page)
+    return page
+
+
 def filter_combo(s, url):
     """Multi-category filter pages (/products/product_cat-a-or-b/) were saved with every
     category on them: keep only the categories in the URL."""
@@ -654,6 +679,8 @@ def upgrade_html(path, snippets, search_items, sitemap):
     s = re.sub(r'href="tell?:[^"]*?844[^"]*?900[^"]*?(?:0084|8801|8804)"', 'href="%s"' % PHONE_TEL, s)
     s = re.sub(r'844-900-(?:8801|8804)', '844-900-0084', s)  # plain text and schema.org "telephone"
     s = geo.faq_rewrite(s)
+    s = re.sub(r'(<li class="menu-item[^"]*menu-item-5750"><a href="[^"]*" class="elementor-item"[^>]*>Latest Insights</a></li>)',
+               r'\1<li class="menu-item cpp-menu-locations"><a href="/locations/" class="elementor-item">Service Areas</a></li>', s)
     s = re.sub(r'Sales@www\.crownplasticandpaper\.com', EMAIL, s, flags=re.I)
     s = re.sub(r'sales@arunlimitedsupply\.com', EMAIL, s, flags=re.I)  # header link went to AR's inbox
     s = rebrand(s)
@@ -972,6 +999,33 @@ def main():
                          % (it['u'], it['i'], html.escape(it['n']), html.escape(it['n']), urllib.parse.quote(it['n'])))
         open(home, 'w', encoding='utf-8').write(hs.replace('<!--cpp-bestsellers-->', ''.join(cards)))
 
+    # --- location pages (service areas) -------------------------------------------------------
+    LOCATION_URLS[:] = []
+    shell_path = os.path.join(SITE, 'faqs', 'index.html')
+    if POLISH and os.path.exists(shell_path):
+        shell = open(shell_path, encoding='utf-8').read()
+        prodmap = {i['u'].strip('/').split('/')[-1]: (i['n'], i['u'], i.get('d', '')) for i in uniq if i['k'] == 'Product'}
+        pages_, redirects_, locs_ = locations.all_pages(prodmap, ORIGIN, lambda slug: geo.product_sizes(SPEC_MAP.get(slug, [])))
+        for url_, title_, desc_, body_ in pages_:
+            d = os.path.join(SITE, url_.strip('/'))
+            os.makedirs(d, exist_ok=True)
+            page_ = render_location(shell, url_, title_, desc_, body_)
+            if url_ == '/locations/texas/houston/':   # the warehouse page carries the business listing
+                page_ = page_.replace('</head>', '<script type="application/ld+json">%s</script>\n</head>' % json.dumps(BUSINESS_LD, ensure_ascii=False), 1)
+            with open(os.path.join(d, 'index.html'), 'w', encoding='utf-8') as f:
+                f.write(page_)
+            sitemap.append((url_, locations.UPDATED))
+            LOCATION_URLS.append((url_, title_))
+        # states with a single city have no hub page: send that address to the city
+        for old_, new_ in redirects_:
+            d = os.path.join(SITE, old_.strip('/'))
+            os.makedirs(d, exist_ok=True)
+            with open(os.path.join(d, 'index.html'), 'w', encoding='utf-8') as f:
+                f.write('<!doctype html><meta charset="utf-8"><title>Moved</title><link rel="canonical" href="%s%s">'
+                        '<meta name="robots" content="noindex, follow"><meta http-equiv="refresh" content="0; url=%s">'
+                        '<a href="%s">%s</a>' % (ORIGIN, new_, new_, new_, new_))
+        print('location pages: %d (+%d state redirects)' % (len(pages_), len(redirects_)))
+
     # sitemap.xml and robots.txt (WordPress's were not part of the copy)
     # Pages with no date of their own (category and list pages) take the newest date of the
     # products or articles they link to.
@@ -1016,8 +1070,12 @@ def main():
     prods = sorted([(i['n'], i['u'], i.get('d', '')) for i in uniq if i['k'] == 'Product'], key=lambda x: x[0])
     guides = sorted(set(GUIDES), key=lambda x: x[0])
     for name, full in (('llms.txt', False), ('llms-full.txt', True)):
+        text = geo.llms_txt(cats, prods, guides, SPEC_MAP, full)
+        if LOCATION_URLS:
+            text += '\n## Service areas (shipped from Houston)\n\n' + '\n'.join(
+                '- [%s](%s%s)' % (t.split(' | ')[0].replace('Wholesale Food Service Disposables in ', ''), ORIGIN, u) for u, t in LOCATION_URLS) + '\n'
         with open(os.path.join(SITE, name), 'w', encoding='utf-8') as f:
-            f.write(geo.llms_txt(cats, prods, guides, SPEC_MAP, full))
+            f.write(text)
     print('sitemap: %d urls' % len(urls))
     for name in os.listdir(os.path.join(ASSETS, 'icons')):
         shutil.copy(os.path.join(ASSETS, 'icons', name), os.path.join(SITE, name))
