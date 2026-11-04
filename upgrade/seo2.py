@@ -316,7 +316,11 @@ def add_footer_band(s, band):
 
 
 # ---------------------------------------------------------------- images: alt text, dimensions, image sitemap
-from PIL import Image as _PIL   # noqa: E402
+try:
+    from PIL import Image as _PIL   # noqa: E402
+except ImportError:                 # the Vercel build image has no Pillow: use the committed size table
+    _PIL = None
+_DIM_TABLE = json.load(open(os.path.join(os.path.dirname(__file__), 'assets', 'image-dims.json')))
 
 FILENAME_ALT = re.compile(r'(^img[ _]|\bimg\b|\.png|\.jpe?g|\.webp|^[A-Za-z]{1,3}\d+$|^\d+x\d+$|^image$|shamerock|handy wacks)', re.I)
 DECORATIVE_ALT = {'arrow', 'Back'}
@@ -338,8 +342,12 @@ def _local_dims(site, src):
             if vb:
                 dims = (round(float(vb.group(1))), round(float(vb.group(2))))
         else:
-            with _PIL.open(path) as im:
-                dims = im.size
+            rel = os.path.relpath(path, site)
+            if rel in _DIM_TABLE:
+                dims = tuple(_DIM_TABLE[rel])
+            elif _PIL:
+                with _PIL.open(path) as im:
+                    dims = im.size
     except Exception:
         dims = None
     _DIMS[path] = dims
