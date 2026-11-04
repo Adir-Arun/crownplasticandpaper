@@ -4,9 +4,10 @@ import html
 import json
 import re
 
+import location_data
 from location_data import TEXAS, METROS, STATES
 
-UPDATED = '2026-11-03'           # bump when location_data.py changes (used as sitemap lastmod)
+UPDATED = '2026-11-04'           # bump when location_data.py changes (used as sitemap lastmod)
 MIN_STATE_CITIES = 2             # states with fewer cities get no hub page (their city is the page)
 
 E = html.escape
@@ -123,6 +124,10 @@ def city_page(l, locs, groups, products, origin, spec_sizes):
         facts = [('%s miles' % format(l.miles, ','), 'from Houston'), (t, 'typical transit'), ('LTL freight', 'pallets and mixed pallets'), ('Net 30', 'after credit approval')]
     h1 = 'Wholesale Food Service Disposables in %s, %s' % (l.name, l.st)
     out = [hero(crumb_html, h1, lead, facts), '<div class="cpp-loc" data-cpp-upgrade><div class="cpp-wrap">']
+
+    local = location_data.LOCAL.get(l.slug)
+    if local:
+        out.append('<section class="cpp-loc-sec"><h2>Food service supply in %s</h2>%s</section>' % (E(l.name), ''.join('<p>%s</p>' % E(x) for x in local)))
 
     # shipping facts
     rows = [('Ships from', 'Crown warehouse, 7350 Langfield Rd, Houston, TX 77092'),

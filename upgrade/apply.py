@@ -19,8 +19,20 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import geo  # noqa: E402
 import locations  # noqa: E402
 import catalog_page  # noqa: E402
+import guides  # noqa: E402
+import industries  # noqa: E402
+import seo2  # noqa: E402
+import location_data  # noqa: E402
 GUIDES = []
 LOCATION_URLS = []
+GUIDE_URLS = []
+SITE_UPDATED = '2026-11-04'
+FOOTER_BAND = seo2.footer_band(
+    [('/locations/texas/%s/' % c if c in location_data.TEXAS else '/locations/%s/%s/' % (location_data.STATES[location_data.METROS[c][1]][1], c),
+      '%s, %s' % ((location_data.TEXAS.get(c) or location_data.METROS[c])[0], (location_data.TEXAS.get(c) or location_data.METROS[c])[1]))
+     for c in location_data.INDEXED_CITIES if c != 'houston'],
+    [('/guides/%s/' % g, n) for g, n, _ in guides.GUIDES],
+    [('/industries/%s/' % i['slug'], i['name']) for i in industries.INDUSTRIES])
 
 SITE = sys.argv[1] if len(sys.argv) > 1 else 'site'
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -111,13 +123,19 @@ INDEX_PAGES = {'/choosing-the-right-food-packaging-for-your-business/',
                '/why-bulk-purchasing-saves-money-for-food-businesses/'}
 # Two products shared one title; the latex page carried the nitrile copy.
 FIX_TITLES = {
+    '/': ('Buy Wholesale Foodservice Supplies | Bulk Plastic Cups & Containers',
+          'Houston wholesale distributor of food service disposables: cups, deli containers, foil pans, gloves, napkins and bags '
+          'by the case or pallet. Ships in 24–48h, Net 30. Call (844) 900-0084.'),
+    '/product/pet-cups/': ('Buy Clear PET Plastic Cups Wholesale | PET Drink Cups Bulk',
+                           'Clear PET plastic cups wholesale from 9oz to 32oz, 1,000 per case (32oz: 500). Rims of 92mm, 98mm and 107mm '
+                           'for iced coffee, tea and smoothies. Ships from Houston in 24–48 hours.'),
     '/product/latex-gloves/': ('Disposable Latex Gloves | Wholesale Bulk Supply USA',
                                'Disposable latex gloves in bulk cases for food handling, janitorial and commercial use. '
                                'Wholesale pricing from Crown Plastic & Paper in Houston, TX.'),
 }
 DEFAULT_OG_IMAGE = ORIGIN + '/wp-content/uploads/2026/01/img_crown_The_Trusted_Choice_of_Distributors.png'
 INDEX_ROBOTS = 'follow, index, max-snippet:-1, max-video-preview:-1, max-image-preview:large'
-SITEMAP_SKIP = re.compile(r'^/product/single-fold-napkins/|^/(?:\d{4}/|category/[^/]+/page/|products/page/|blog/page/|feed/)|-or-|-[23]/$')
+SITEMAP_SKIP = re.compile(r'^/shop/|^/product/single-fold-napkins/|^/(?:\d{4}/|category/[^/]+/page/|products/page/|blog/page/|feed/)|-or-|-[23]/$')
 
 
 def set_robots(s, value):
@@ -457,8 +475,8 @@ def render_location(shell, url, title, desc, body):
     m = re.search(r'<div id="content"[^>]*>', shell)
     start = m.start()
     end = div_span(shell, start)[1]
-    page = shell[:m.end()] + body + '</div>' + shell[end:]
-    page = re.sub(r'<script type="application/ld\+json"[^>]*>.*?</script>\s*', '', page, flags=re.S)
+    strip_ld = lambda x: re.sub(r'<script type="application/ld\+json"[^>]*>.*?</script>\s*', '', x, flags=re.S)
+    page = strip_ld(shell[:m.end()]) + body + '</div>' + strip_ld(shell[end:])
     page = geo.org_ld(page)
     page = re.sub(r'<title>.*?</title>', '<title>%s</title>' % html.escape(title), page, count=1, flags=re.S)
     page = re.sub(r'<meta name="description" content="[^"]*"', '<meta name="description" content="%s"' % html.escape(desc), page, count=1)
@@ -472,7 +490,7 @@ def render_location(shell, url, title, desc, body):
     page = re.sub(r'<meta property="article:[^>]*>\s*', '', page)
     # the shell comes from /faqs/ (one level deep): its "../x" links mean "/x" from any depth
     page = re.sub(r'(?<=["\'(\s,=])\.\./(?!\.\./)', '/', page)
-    return page
+    return seo2.fix_images(seo2.faqs(page, url, SPEC_MAP), url, SITE)
 
 
 def filter_combo(s, url):
@@ -683,7 +701,9 @@ def upgrade_html(path, snippets, search_items, sitemap):
     s = CATALOG_OLD_RE.sub('href="%s"' % CATALOG, s)   # the flipbook now lives on our own domain
     s = geo.faq_rewrite(s)
     s = re.sub(r'(<li class="menu-item[^"]*menu-item-5750"><a href="[^"]*" class="elementor-item"[^>]*>Latest Insights</a></li>)',
-               r'\1<li class="menu-item cpp-menu-locations"><a href="/locations/" class="elementor-item">Service Areas</a></li>', s)
+               r'\1<li class="menu-item cpp-menu-locations"><a href="/locations/" class="elementor-item">Service Areas</a></li>'
+               r'<li class="menu-item cpp-menu-guides"><a href="/guides/" class="elementor-item">Size Guides</a></li>'
+               r'<li class="menu-item cpp-menu-industries"><a href="/industries/" class="elementor-item">Who We Supply</a></li>', s)
     s = re.sub(r'Sales@www\.crownplasticandpaper\.com', EMAIL, s, flags=re.I)
     s = re.sub(r'sales@arunlimitedsupply\.com', EMAIL, s, flags=re.I)  # header link went to AR's inbox
     s = rebrand(s)
@@ -732,7 +752,7 @@ def upgrade_html(path, snippets, search_items, sitemap):
     s = close_open_styles(s)
     s = prune_ld_images(s)
     # blog author box: the avatar file was saved as a web page; use the Crown logo tile
-    s = re.sub(r'(?:(?:\.\./)+|/)?wp-content/uploads/2026/02/cropped-fav-1(?:-\d+x\d+)?\.png(?:\.webp)?', '/icon-512.png', s)
+    s = re.sub(r'(?:(?:\.\./)+|/)?wp-content/uploads/2026/02/cropped-fav-1(?:-\d+x\d+)?\.png(?:\.webp)?(?:\.html)?', '/icon-512.png', s)
     # gallery slides with no picture attached (Latex Gloves 1/2) showed empty boxes
     s = re.sub(r'<div class="wvg-gallery-image"><div><div class="wvg-single-gallery-image-container"><img\b[^>]*\ssrc="index\.html"[^>]*>(?:<noscript>.*?</noscript>)?</div></div></div>', '', s, flags=re.S)
     s = re.sub(r'<div class="wvg-gallery-thumbnail-image"><div>(?:<div>)?<img\b[^>]*\ssrc="index\.html"[^>]*>(?:<noscript>.*?</noscript>)?(?:</div>)?</div></div>', '', s, flags=re.S)
@@ -902,6 +922,18 @@ def upgrade_html(path, snippets, search_items, sitemap):
                '/wp-content/uploads/2026/10/crown-customers-wholesalers.webp', s)
     s = re.sub(r'(crown-customers-wholesalers\.webp) \d+w(?:, [^"]*)?"', r'\1 540w"', s)
 
+    # --- Nov 2026 SEO/GEO spec: one business entity, FAQs, related products, blog -> product links, footer links
+    if POLISH:
+        s = seo2.normalize_ld(s, url)
+        s = seo2.faqs(s, url, SPEC_MAP)
+        s = seo2.related(s, url)
+        s = seo2.blog_links(s, url)
+        s = seo2.add_footer_band(s, FOOTER_BAND)
+        s = seo2.fix_images(s, url, SITE)
+        if url == '/':
+            s = s.replace('</head>', '<link rel="preload" as="image" href="/wp-content/uploads/2026/10/crown-warehouse-aisle-1600.webp" '
+                          'imagesrcset="/wp-content/uploads/2026/10/crown-warehouse-aisle-800.webp 800w, /wp-content/uploads/2026/10/crown-warehouse-aisle-1600.webp 1600w" imagesizes="100vw" fetchpriority="high">\n</head>', 1)
+
     # --- injected layer ---------------------------------------------------------
     head = ('<link rel="stylesheet" href="/upgrade/upgrade.css" %s>' % MARK)
     if POLISH:
@@ -914,7 +946,10 @@ def upgrade_html(path, snippets, search_items, sitemap):
     if os.path.basename(path) == 'index.html' and indexable(s, url):
         mod = (re.search(r'<meta property="(?:article:modified_time|og:updated_time)" content="([^"]+)"', s)
                or re.search(r'"dateModified":\s*"([^"]+)"', s))
-        sitemap.append((url, mod.group(1) if mod else None))
+        lm = mod.group(1) if mod else None
+        if POLISH and (url == '/' or url.startswith('/product/') or url in seo2.TOUCHED):
+            lm = max(lm or '', SITE_UPDATED)    # content changed in this build
+        sitemap.append((url, lm))
 
     # --- search index -------------------------------------------------------------
     kind = None
@@ -955,6 +990,7 @@ def main():
     if not os.path.isdir(SITE):
         print('no site dir: %s' % SITE)
         return 1
+    seo2.init(SITE)
     snippets = {
         'map': open(os.path.join(ASSETS, 'map-section.html'), encoding='utf-8').read(),
         'bar': open(os.path.join(ASSETS, 'action-bar.html'), encoding='utf-8').read(),
@@ -1004,6 +1040,7 @@ def main():
 
     # --- location pages (service areas) -------------------------------------------------------
     LOCATION_URLS[:] = []
+    GUIDE_URLS[:] = []
     shell_path = os.path.join(SITE, 'faqs', 'index.html')
     if POLISH and os.path.exists(shell_path):
         shell = open(shell_path, encoding='utf-8').read()
@@ -1013,12 +1050,15 @@ def main():
             d = os.path.join(SITE, url_.strip('/'))
             os.makedirs(d, exist_ok=True)
             page_ = render_location(shell, url_, title_, desc_, body_)
-            if url_ == '/locations/texas/houston/':   # the warehouse page carries the business listing
-                page_ = page_.replace('</head>', '<script type="application/ld+json">%s</script>\n</head>' % json.dumps(BUSINESS_LD, ensure_ascii=False), 1)
+            parts_ = url_.strip('/').split('/')
+            weak_ = len(parts_) == 3 and parts_[2] not in location_data.INDEXED_CITIES
+            if weak_:   # P1: near-duplicate city copy stays out of Google until it has its own copy
+                page_ = set_robots(page_, 'noindex, follow')
             with open(os.path.join(d, 'index.html'), 'w', encoding='utf-8') as f:
                 f.write(page_)
-            sitemap.append((url_, locations.UPDATED))
-            LOCATION_URLS.append((url_, title_))
+            if not weak_:
+                sitemap.append((url_, locations.UPDATED))
+                LOCATION_URLS.append((url_, title_))
         # states with a single city have no hub page: send that address to the city
         for old_, new_ in redirects_:
             d = os.path.join(SITE, old_.strip('/'))
@@ -1028,6 +1068,36 @@ def main():
                         '<meta name="robots" content="noindex, follow"><meta http-equiv="refresh" content="0; url=%s">'
                         '<a href="%s">%s</a>' % (ORIGIN, new_, new_, new_, new_))
         print('location pages: %d (+%d state redirects)' % (len(pages_), len(redirects_)))
+
+    # --- /guides/ (size charts from our spec sheets) and /industries/ (who we supply) -----------
+    if POLISH and os.path.exists(shell_path):
+        spec_all = {k: v for k, v in SPEC_MAP.items()}
+        made = guides.all_pages(spec_all, prodmap, ORIGIN) + industries.all_pages(prodmap, ORIGIN)
+        for url_, title_, desc_, body_ in made:
+            d = os.path.join(SITE, url_.strip('/'))
+            os.makedirs(d, exist_ok=True)
+            with open(os.path.join(d, 'index.html'), 'w', encoding='utf-8') as f:
+                f.write(render_location(shell, url_, title_, desc_, body_))
+            sitemap.append((url_, guides.UPDATED))
+            GUIDE_URLS.append((url_, title_.split(' | ')[0]))
+        # product pages point to the size chart that covers them
+        linked = 0
+        for slug, (gurl, gname) in guides.PRODUCT_GUIDE.items():
+            pp = os.path.join(SITE, 'product', slug, 'index.html')
+            if not os.path.exists(pp):
+                continue
+            ps = open(pp, encoding='utf-8').read()
+            if 'cpp-guide-link' in ps:
+                continue
+            i = ps.find('cpp-skus-table')
+            j = ps.find('</table>', i) if i >= 0 else -1
+            if j < 0:
+                continue
+            j += len('</table>')
+            ps = ps[:j] + '<p class="cpp-guide-link">Compare every size: <a href="%s">%s chart</a></p>' % (gurl, html.escape(gname)) + ps[j:]
+            open(pp, 'w', encoding='utf-8').write(ps)
+            linked += 1
+        print('guides + industries: %d pages, %d product pages linked to a size chart' % (len(made), linked))
 
     # --- /catalog/: the product catalog as a flipbook on our own domain --------------------------
     cat_src = os.path.join(ASSETS, 'catalog')
@@ -1072,9 +1142,11 @@ def main():
         filled.append((u, m))
     urls = sorted(filled, key=lambda x: (x[0] != '/', x[0].count('/'), x[0]))
     with open(os.path.join(SITE, 'sitemap.xml'), 'w', encoding='utf-8') as f:
-        f.write('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n')
+        f.write('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" '
+                'xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">\n')
         for u, mod in urls:
-            f.write('  <url><loc>%s%s</loc>%s</url>\n' % (ORIGIN, html.escape(u), '<lastmod>%s</lastmod>' % mod if mod else ''))
+            imgs = ''.join('<image:image><image:loc>%s</image:loc></image:image>' % html.escape(src) for src, _ in seo2.IMAGES.get(u, []))
+            f.write('  <url><loc>%s%s</loc>%s%s</url>\n' % (ORIGIN, html.escape(u), '<lastmod>%s</lastmod>' % mod if mod else '', imgs))
         f.write('</urlset>\n')
     with open(os.path.join(SITE, 'robots.txt'), 'w', encoding='utf-8') as f:
         f.write(geo.ROBOTS)
@@ -1088,9 +1160,23 @@ def main():
         name, line = CAT_HEADERS[slug][:2] if slug in CAT_HEADERS else (i['n'], i.get('d', ''))
         cats.append((name, i['u'], line))
     prods = sorted([(i['n'], i['u'], i.get('d', '')) for i in uniq if i['k'] == 'Product'], key=lambda x: x[0])
-    guides = sorted(set(GUIDES), key=lambda x: x[0])
+    articles_ = sorted(set(GUIDES), key=lambda x: x[0])
     for name, full in (('llms.txt', False), ('llms-full.txt', True)):
-        text = geo.llms_txt(cats, prods, guides, SPEC_MAP, full)
+        text = geo.llms_txt(cats, prods, articles_, SPEC_MAP, full)
+        if GUIDE_URLS:
+            text += '\n## Size guides and who we supply\n\n' + '\n'.join('- [%s](%s%s)' % (t, ORIGIN, u) for u, t in GUIDE_URLS) + '\n'
+        text += ('\n## Key pages\n\n'
+                 '- [Products](%(o)s/products/): full catalog by category\n'
+                 '- [Service areas](%(o)s/locations/): cities and transit times\n'
+                 '- [Houston](%(o)s/locations/texas/houston/)\n'
+                 '- [About](%(o)s/about-us/)\n'
+                 '- [Contact / quote](%(o)s/contact-us/)\n'
+                 '\n## Related\n\n'
+                 '- Sister company: AR Unlimited Supply LLC, https://arunlimitedsupply.com/ (same address)\n') % {'o': ORIGIN}
+        if full:
+            qa_ = seo2.BASE_FAQ + [seo2.SISTER] + guides.FAQS
+            text += '\n## Frequently asked questions\n\n' + '\n'.join('Q: %s\nA: %s\n' % (q, a) for q, a in qa_)
+        text += '\n## Catalog\n\n- [2026 product catalog (flipbook)](%s/catalog/) · [PDF](%s/catalog/crown-product-catalog-2026.pdf)\n' % (ORIGIN, ORIGIN)
         if LOCATION_URLS:
             text += '\n## Service areas (shipped from Houston)\n\n' + '\n'.join(
                 '- [%s](%s%s)' % (t.split(' | ')[0].replace('Wholesale Food Service Disposables in ', ''), ORIGIN, u) for u, t in LOCATION_URLS) + '\n'

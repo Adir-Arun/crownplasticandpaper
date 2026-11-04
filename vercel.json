@@ -77,6 +77,16 @@
   "trailingSlash": true,
   "redirects": [
     {
+      "source": "/shop/",
+      "destination": "/products/",
+      "permanent": true
+    },
+    {
+      "source": "/shop",
+      "destination": "/products/",
+      "permanent": true
+    },
+    {
       "source": "/cost-effective-dinner-napkin-solutions-for-restaurants-and-catering-businesses-:n(2|3)/",
       "destination": "/cost-effective-dinner-napkin-solutions-for-restaurants-and-catering-businesses/",
       "permanent": true
