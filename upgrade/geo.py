@@ -58,10 +58,18 @@ def faq_rewrite(s):
 ORG_LD = {
     '@context': 'https://schema.org',
     '@graph': [
-        {'@type': 'Organization', '@id': ORIGIN + '/#org', 'name': F['name'], 'url': ORIGIN + '/',
-         'logo': ORIGIN + '/icon-512.png', 'telephone': '+1-844-900-0084', 'email': F['email'],
+        {'@type': ['Organization', 'WholesaleStore'], '@id': ORIGIN + '/#org', 'name': F['name'],
+         'legalName': 'Crown Paper And Plastic Inc',
+         'alternateName': ['Crown Paper And Plastic Inc', 'Crown Plastic and Paper'],
+         'url': ORIGIN + '/', 'logo': ORIGIN + '/icon-512.png',
+         'image': ORIGIN + '/wp-content/uploads/2026/01/img_crown_The_Trusted_Choice_of_Distributors.png',
+         'telephone': '+1-844-900-0084', 'email': F['email'],
          'address': {'@type': 'PostalAddress', 'streetAddress': F['street'], 'addressLocality': F['city'],
                      'addressRegion': F['region'], 'postalCode': F['zip'], 'addressCountry': 'US'},
+         'geo': {'@type': 'GeoCoordinates', 'latitude': 29.8506, 'longitude': -95.5017},
+         'areaServed': [{'@type': 'State', 'name': 'Texas'}, {'@type': 'Country', 'name': 'United States'}],
+         'knowsAbout': ['food service disposables', 'deli containers', 'foil pans', 'nitrile gloves', 'plastic cups', 'takeout packaging'],
+         'sameAs': ['https://www.cybo.com/US-biz/crown-paper-and-plastic-inc'],
          'foundingDate': F['since'], 'description': QUICK_ANSWER},
         {'@type': 'WebSite', '@id': ORIGIN + '/#website', 'url': ORIGIN + '/', 'name': F['name'],
          'publisher': {'@id': ORIGIN + '/#org'}},
@@ -70,7 +78,7 @@ ORG_LD = {
 
 
 def org_ld(s):
-    if '"WebSite"' in s or '</head>' not in s:
+    if '/#website"' in s or '</head>' not in s:
         return s
     return s.replace('</head>', '<script type="application/ld+json">%s</script>\n</head>' % json.dumps(ORG_LD, ensure_ascii=False), 1)
 

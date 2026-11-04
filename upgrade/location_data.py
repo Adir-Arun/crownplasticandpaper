@@ -306,3 +306,64 @@ METROS = {
                 ['black-containers', 'deli-containers', 'paper-bags', 'checker-deli-paper-wrap', 'black-nitrile-gloves'],
                 ['st-louis', 'kansas-city', 'nashville']),
 }
+
+
+# ------------------------------------------------------------------------------------------------
+# P1 (Nov 2026 audit): only the strongest location pages stay in Google, each with its own copy.
+# Every other city page is noindex,follow and left out of the sitemap until it gets unique copy.
+INDEXED_CITIES = ['houston', 'dallas', 'fort-worth', 'austin', 'san-antonio', 'new-orleans', 'atlanta']
+
+LOCAL = {
+    'houston': [
+        'Our warehouse sits at 7350 Langfield Rd (77092), inside Beltway 8 just off US-290 in northwest Houston. Houston restaurants, '
+        'taquerias, caterers and food trucks can pick up the same day they order, or we deliver across Harris, Fort Bend and Montgomery '
+        'counties, typically the next business day.',
+        'Because there is no freight leg, Houston buyers can order tighter: a few cases of gloves and to-go containers this week, a pallet of '
+        'cups next week. Pick-up orders are staged at the dock, so send your list ahead and drive in when it is ready.',
+        'Distributors based in Houston use us as a second warehouse. Mixed pallets go out on your truck or ours, and the same spec sheets '
+        'you see on the product pages (case pack, Ti × Hi, cases per pallet) come with every quote.',
+    ],
+    'dallas': [
+        'Dallas orders ride I-45 North, about 240 miles from our Houston dock, so a pallet that leaves on Monday is usually at a Dallas '
+        'County receiving door on Tuesday. That makes Houston a practical second source for Dallas distributors when a national supplier '
+        'runs short.',
+        'Restaurants in Deep Ellum, Bishop Arts and Uptown, and the many restaurant groups headquartered in the metro, tend to order mixed '
+        'pallets: black-base to-go containers, PET cups and deli containers on one load. Plan State Fair concessions (late September to '
+        'October) two weeks out; that is when cups, gloves and paper bags are tightest across North Texas.',
+    ],
+    'fort-worth': [
+        'Fort Worth is about 265 miles from our warehouse by I-45 North and I-20 West. Most Tarrant County deliveries arrive the business '
+        'day after the order ships, and many Fort Worth accounts share a truck with Dallas and Arlington stops.',
+        'Stockyards steakhouses, barbecue joints and the food halls downtown and on Magnolia Avenue run through foil pans, red plaid boat '
+        'trays and gloves. Rodeo caterers usually book a full pallet of round foil pans and plates ahead of the Fort Worth Stock Show '
+        '(January to February) so they are not chasing stock mid-run.',
+    ],
+    'austin': [
+        'Austin is the shortest out-of-town run we make: about 165 miles west on US-290, usually next-day delivery to Travis County. '
+        'Food-trailer parks in East Austin and on South Congress buy small and often, so mixed orders by the case suit them better than '
+        'full pallets of one item.',
+        'The products that move here are hinged containers (black and PFAS-free bagasse), PET cups for coffee and tea, checkered deli paper '
+        'for barbecue, and portion cups for salsa and queso. For SXSW in March and Austin City Limits in October, order two weeks ahead.',
+    ],
+    'san-antonio': [
+        'San Antonio is about 200 miles west on I-10, so Bexar County deliveries typically land the business day after the order ships. '
+        'Taquerias, tortilla makers and Tex-Mex kitchens are the core of our San Antonio orders: pop-up foil sheets for tacos and '
+        'breakfast burritos, checkered deli paper, portion cups and interfold napkins.',
+        'Large kitchens that serve the military bases and River Walk hotels order by the pallet. Fiesta in April is the busiest stretch; '
+        'restaurants that stock a pallet of foil sheets and portion cups in March avoid rush freight.',
+    ],
+    'new-orleans': [
+        'New Orleans is 350 miles east of our warehouse on I-10. LTL freight usually reaches Orleans and Jefferson parishes in one to two '
+        'business days, and Baton Rouge stops share the same route.',
+        'Crawfish boils, po-boy shops and caterers drive demand for round foil pans, red plaid boat trays and checkered deli paper, and the '
+        'convention and festival calendar adds PET cups and trash liners in volume. Most New Orleans buyers book a pallet ahead of Mardi '
+        'Gras (January to February) and another before Jazz Fest in late April.',
+    ],
+    'atlanta': [
+        'Atlanta is our longest regular lane in the Southeast: about 790 miles on I-10, I-65 and I-85, typically two to three business '
+        'days by LTL freight from Houston. Because of the transit, Atlanta accounts usually order full or mixed pallets and keep two to '
+        'three weeks of their fastest movers on hand.',
+        'Restaurant groups, airport concessions and convention caterers in Fulton County order black-base to-go containers, PET cups, '
+        'cutlery kits and deli containers. A 6- or 12-pallet order moves into a lower price tier, which offsets most of the extra freight.',
+    ],
+}
