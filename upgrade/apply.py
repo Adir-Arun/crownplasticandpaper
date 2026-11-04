@@ -18,6 +18,7 @@ import urllib.parse
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import geo  # noqa: E402
 import locations  # noqa: E402
+import catalog_page  # noqa: E402
 GUIDES = []
 LOCATION_URLS = []
 
@@ -52,7 +53,8 @@ INDEXNOW_KEY = '4926503e2eb4d675df74dc7347df8da2'
 PHONE_TEXT = '(844) 900-0084'
 PHONE_TEL = 'tel:+18449000084'
 EMAIL = 'info@crownplasticandpaper.com'
-CATALOG = 'https://heyzine.com/flip-book/0ee04dad9c.html#page/13'
+CATALOG = '/catalog/'
+CATALOG_OLD_RE = re.compile(r'href="https://(?:heyzine\.com/flip-book/0ee04dad9c\.html[^"]*|1drv\.ms/b/c/a9c21038c70541e1/[^"]*)"((?:\s+(?:target="_blank"|rel="[^"]*"))*)')
 YEAR = '2026'
 
 # Where the placeholder links (originally "#") should point, by link text.
@@ -604,7 +606,7 @@ def fix_placeholders(s):
         tail = s[m.end():m.end() + 900]
         text = strip_tags(tail.split('</a>', 1)[0].split('>', 1)[-1]).lower()
         if 'catalog' in text:
-            return 'href="%s" target="_blank" rel="noopener"' % CATALOG
+            return 'href="%s"' % CATALOG
         if text == 'home':  # product-page breadcrumb
             return 'href="/"'
         for key, target in PLACEHOLDER_TARGETS.items():
@@ -678,6 +680,7 @@ def upgrade_html(path, snippets, search_items, sitemap):
     s = re.sub(r'tel:[^"]*?844[^"]*?900(?:%20|[-. ])?(?:0084|8801|8804)', PHONE_TEL, s)
     s = re.sub(r'href="tell?:[^"]*?844[^"]*?900[^"]*?(?:0084|8801|8804)"', 'href="%s"' % PHONE_TEL, s)
     s = re.sub(r'844-900-(?:8801|8804)', '844-900-0084', s)  # plain text and schema.org "telephone"
+    s = CATALOG_OLD_RE.sub('href="%s"' % CATALOG, s)   # the flipbook now lives on our own domain
     s = geo.faq_rewrite(s)
     s = re.sub(r'(<li class="menu-item[^"]*menu-item-5750"><a href="[^"]*" class="elementor-item"[^>]*>Latest Insights</a></li>)',
                r'\1<li class="menu-item cpp-menu-locations"><a href="/locations/" class="elementor-item">Service Areas</a></li>', s)
@@ -1025,6 +1028,23 @@ def main():
                         '<meta name="robots" content="noindex, follow"><meta http-equiv="refresh" content="0; url=%s">'
                         '<a href="%s">%s</a>' % (ORIGIN, new_, new_, new_, new_))
         print('location pages: %d (+%d state redirects)' % (len(pages_), len(redirects_)))
+
+    # --- /catalog/: the product catalog as a flipbook on our own domain --------------------------
+    cat_src = os.path.join(ASSETS, 'catalog')
+    if POLISH and os.path.exists(shell_path) and os.path.isdir(cat_src):
+        cat_dir = os.path.join(SITE, 'catalog')
+        os.makedirs(os.path.join(cat_dir, 'pages'), exist_ok=True)
+        for name in os.listdir(os.path.join(cat_src, 'pages')):
+            shutil.copy(os.path.join(cat_src, 'pages', name), os.path.join(cat_dir, 'pages', name))
+        for name in ('catalog.css', 'catalog.js', 'page-flip.min.js', 'crown-product-catalog-2026.pdf'):
+            shutil.copy(os.path.join(cat_src, name), os.path.join(cat_dir, name))
+        page_ = render_location(shell, catalog_page.URL, catalog_page.TITLE, catalog_page.DESC,
+                                catalog_page.body(catalog_page.load(ASSETS), ORIGIN))
+        page_ = re.sub(r'<meta property="og:image" content="[^"]*"', '<meta property="og:image" content="%s/catalog/pages/page-01-l.webp"' % ORIGIN, page_, count=1)
+        with open(os.path.join(cat_dir, 'index.html'), 'w', encoding='utf-8') as f:
+            f.write(page_)
+        sitemap.append((catalog_page.URL, catalog_page.UPDATED))
+        print('catalog: /catalog/ flipbook (%d pages)' % len(catalog_page.load(ASSETS)))
 
     # sitemap.xml and robots.txt (WordPress's were not part of the copy)
     # Pages with no date of their own (category and list pages) take the newest date of the
