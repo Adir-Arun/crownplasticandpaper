@@ -312,6 +312,7 @@ METROS = {
 # P1 (Nov 2026 audit): only the strongest location pages stay in Google, each with its own copy.
 # Every other city page is noindex,follow and left out of the sitemap until it gets unique copy.
 INDEXED_CITIES = ['houston', 'dallas', 'fort-worth', 'austin', 'san-antonio', 'new-orleans', 'atlanta']
+FOOTER_CITIES = list(INDEXED_CITIES)   # the biggest markets, linked from every page's footer
 
 LOCAL = {
     'houston': [
@@ -367,3 +368,248 @@ LOCAL = {
         'cutlery kits and deli containers. A 6- or 12-pallet order moves into a lower price tier, which offsets most of the extra freight.',
     ],
 }
+
+# Unique local copy for the rest of the city pages (Nov 2026): routes, transit and counties from the data
+# above; the ordering notes are written for each market so no two pages read alike.
+LOCAL.update({
+    'katy': [
+        'Katy is about 30 miles west of our Langfield Rd warehouse on I-10, so deliveries across the Harris, Fort Bend and Waller county parts of '
+        'Katy usually land the next business day. Many Katy restaurants skip freight entirely and pick up on their way into Houston.',
+        'Katy Asian Town and the family restaurants along the Grand Parkway and I-10 order PET cups for boba and tea, hinged containers and portion '
+        'cups. Schools and youth sports programs in the Katy area buy school trays and dinner napkins in volume before back-to-school in August.',
+    ],
+    'sugar-land': [
+        'Sugar Land sits 20 miles southwest of our warehouse on US-59 / I-69, about half an hour away, and Fort Bend County orders typically '
+        'arrive the next business day. Houston pick-up is just as easy for Sugar Land buyers who pass through the city.',
+        'The South Asian, Chinese, Vietnamese and Nigerian kitchens along the US-59 corridor run on deli containers, black-base to-go containers '
+        'and portion cups for sauces and chutneys. Caterers who cover weddings and Town Square festival weekends add cutlery kits and interfold '
+        'napkins to the same order.',
+    ],
+    'the-woodlands': [
+        'The Woodlands is 30 miles north of our warehouse on I-45, roughly 40 minutes, and Montgomery County deliveries are usually next-day. '
+        'Restaurants on Market Street, the Waterway and Hughes Landing often combine a delivery with neighboring Conroe or Spring stops.',
+        'Coffee shops and fast-casual concepts here order PET cups and matching 98mm lids, black-base containers and beverage napkins. Concert '
+        'season at the Cynthia Woods Mitchell Pavilion (spring to fall) is when cups and cutlery kits move fastest.',
+    ],
+    'pasadena': [
+        'Pasadena is 15 miles east of our warehouse on TX-225, one of the shortest delivery runs we make, typically next business day. Plants '
+        'along the Houston Ship Channel and the Port of Houston corridor are a big part of the local demand.',
+        'Plant cafeterias and crew caterers order blue nitrile gloves, hinged containers, food film, C-fold towels and heavy trash liners. During '
+        'plant turnarounds, usually spring and fall, crew meal counts jump overnight; a mixed pallet staged a week ahead keeps the line running.',
+    ],
+    'pearland': [
+        'Pearland is about 18 miles south of our warehouse via TX-288, around 25 minutes, so Brazoria County orders usually arrive the next '
+        'business day or can be picked up in Houston the same day.',
+        'New restaurant pads along Broadway and Shadow Creek Ranch keep opening, and new openings tend to standardize on one container and cup '
+        'program from day one. Pearland caterers and church kitchens buy round plates, dinner napkins, deli containers and trash liners by the case.',
+    ],
+    'baytown': [
+        'Baytown is 30 miles east on I-10, about 35 minutes from our warehouse, covering the Harris and Chambers county sides of the city with '
+        'next-day delivery. Refinery and petrochemical sites set the rhythm of local orders.',
+        'Industrial cafeterias and contractors order black nitrile gloves, hinged meal containers, kitchen roll towels, stretch film and trash '
+        'liners. Turnaround seasons and summer boating traffic on Trinity Bay both lift volumes, so Baytown buyers often keep a reserve pallet.',
+    ],
+    'conroe': [
+        'Conroe, the Montgomery County seat, is about 40 miles north on I-45, under an hour from our dock, with next-business-day delivery. '
+        'Lake Conroe marinas and the historic downtown restaurant district are the two main buyer groups.',
+        'Summer lake season (May to September) is when PET cups, beverage napkins, paper bags and trash liners move fastest; restaurants along '
+        'the I-45 growth corridor add black-base to-go containers. Ordering before Memorial Day avoids the summer rush.',
+    ],
+    'league-city': [
+        'League City is 28 miles south of our warehouse on I-45, about 35 minutes, and Galveston County deliveries are typically next-day. '
+        'Kemah Boardwalk, Clear Lake marinas and NASA-area offices are all within the same delivery loop.',
+        'Seafood restaurants here use round foil pans, red plaid boat trays, checkered deli paper and food film. Summer boardwalk season is the '
+        'peak, and during hurricane season (June to November) many kitchens keep an extra week of disposables on hand.',
+    ],
+    'galveston': [
+        'Galveston is about 50 miles from our warehouse, I-45 South to the causeway, roughly an hour, with next-business-day delivery to the '
+        'island. Seawall Boulevard, The Strand and the cruise terminal set the pace.',
+        'Beach-season seafood shacks and snack stands go through boat trays, checkered deli paper, portion cups for cocktail and tartar sauce, '
+        'PET cups and trash liners. Mardi Gras Galveston in February and the summer beach season are the peaks; storm season means stocking ahead.',
+    ],
+    'beaumont': [
+        'Beaumont is 85 miles east of our warehouse on I-10, about an hour and a half, and Jefferson County orders usually arrive in one '
+        'business day. Port Arthur and Orange in the Golden Triangle share the same route.',
+        'Cajun and Creole kitchens use round foil pans, deep steam table pans and red plaid boat trays, especially in crawfish season each spring. '
+        'Refinery turnarounds add crew catering, black nitrile gloves and trash liners on short notice.',
+    ],
+    'college-station': [
+        'College Station is about 95 miles from our warehouse via US-290 and TX-6, roughly an hour and 45 minutes, and Brazos County orders '
+        'typically arrive in one business day.',
+        'Texas A&M game weekends can double a restaurant\'s volume overnight. Northgate bars and tailgate caterers order PET cups, boat trays, '
+        'round plates, cutlery kits and trash liners. Book football-season stock in August, and again before graduation weekends.',
+    ],
+    'arlington': [
+        'Arlington is about 255 miles north via I-45 and I-20, roughly four hours, and Tarrant County deliveries usually arrive one business day '
+        'after the order ships, often on the same truck as Dallas and Fort Worth stops.',
+        'The entertainment district around AT&T Stadium, Globe Life Field and Six Flags runs on concessions: PET cups and lids, red plaid boat '
+        'trays, beverage napkins and trash liners. Football, baseball and summer park seasons overlap, so most Arlington buyers order year-round.',
+    ],
+    'plano': [
+        'Plano is about 260 miles north of Houston via I-45 and US-75, about four hours, and Collin County orders typically arrive in one '
+        'business day.',
+        'Corporate campuses around Legacy West drive office catering: cutlery kits, black-base containers, deli containers, interfold napkins and '
+        'PET cups. Holiday catering season and the Plano Balloon Festival in September are the busiest times to plan for.',
+    ],
+    'el-paso': [
+        'El Paso is our longest run inside Texas: about 745 miles west on I-10, typically two to three business days by LTL freight. Because of the '
+        'distance, El Paso accounts usually order full or mixed pallets on a set schedule.',
+        'Mexican restaurants and burrito shops order pop-up foil sheets, hinged containers, portion cups for salsa and paper bags; Fort Bliss '
+        'contractors and caterers add black nitrile gloves. Order ahead of the summer heat and the holiday season.',
+    ],
+    'corpus-christi': [
+        'Corpus Christi is about 210 miles southwest via US-59 / I-69 and US-77, three and a half hours, and Nueces County deliveries usually '
+        'arrive in one business day.',
+        'Gulf seafood restaurants and North Padre Island beach traffic drive orders for boat trays, round foil pans, checkered deli paper, PET cups '
+        'and trash liners. Spring break and summer are the peaks; during hurricane season kitchens keep an extra pallet on hand.',
+    ],
+    'mcallen': [
+        'McAllen, in Hidalgo County, is about 350 miles from Houston via US-59 / I-69 and US-77, roughly five and a half hours, with one to two '
+        'business days in transit.',
+        'Rio Grande Valley kitchens use pop-up foil sheets for tacos and breakfast burritos, black-base to-go containers, portion cups for salsa and '
+        'dinner napkins. Winter Texan season (November to March) is the peak, so most McAllen buyers stock up in October.',
+    ],
+    'laredo': [
+        'Laredo is about 315 miles southwest via US-59 / I-69W, roughly five hours, and Webb County orders take one to two business days.',
+        'As the busiest inland port in the U.S., Laredo has as many warehouse and trucking buyers as restaurants: stretch film, black nitrile '
+        'gloves and paper bags go out alongside hinged containers and foil sheets. February\'s Washington\'s Birthday Celebration is the local peak.',
+    ],
+    'lubbock': [
+        'Lubbock is about 520 miles northwest via US-290 and US-84, roughly eight hours, with one to two business days of transit to Lubbock '
+        'County.',
+        'Texas Tech game days and the South Plains harvest season shape demand. Restaurants and caterers order PET cups, boat trays, round plates, '
+        'trash liners and black nitrile gloves; a mixed pallet before football season covers most of the fall.',
+    ],
+    'waco': [
+        'Waco is about 185 miles northwest of our warehouse via TX-6, roughly three hours, and McLennan County deliveries usually arrive in one '
+        'business day.',
+        'Baylor game days and visitors to Magnolia Market keep downtown restaurants busy. They order PET cups, black-base containers, paper bags, '
+        'cutlery kits and trash liners; spring tourism season is the time to stock up.',
+    ],
+    'baton-rouge': [
+        'Baton Rouge is about 270 miles east on I-10, roughly four hours, and East Baton Rouge Parish orders usually arrive in one business day, '
+        'often on the same run as New Orleans deliveries.',
+        'LSU tailgates and plant turnarounds are the two big swings. Caterers order red plaid boat trays, round foil pans, PET cups, black nitrile '
+        'gloves and trash liners; booking football-season stock in August keeps game weekends covered.',
+    ],
+    'oklahoma-city': [
+        'Oklahoma City is about 440 miles north via I-45 and I-35, roughly six and a half hours, with one to two business days of transit to '
+        'Oklahoma County.',
+        'Steakhouses, barbecue joints and the Bricktown entertainment district order black-base to-go containers, round foil pans, PET cups and '
+        'paper bags, plus black nitrile gloves for the line. Thunder season and the State Fair of Oklahoma in September are the peaks.',
+    ],
+    'tulsa': [
+        'Tulsa is about 490 miles north via US-59 and US-69, roughly seven and a half hours, and Tulsa County orders take one to two business '
+        'days.',
+        'Route 66 diners, barbecue and the Brady and Blue Dome districts buy hinged containers, PET cups, deli containers, dinner napkins and '
+        'trash liners. Summer festivals and holiday catering are the busy stretches.',
+    ],
+    'little-rock': [
+        'Little Rock is about 440 miles northeast via US-59 / I-69 and I-30, roughly six and a half hours, with one to two business days of '
+        'transit to Pulaski County.',
+        'Catfish and barbecue restaurants, River Market caterers and school cafeterias order black-base containers, round foil pans, dinner '
+        'napkins, school trays and trash liners. Razorback football weekends and holiday catering are the peaks.',
+    ],
+    'memphis': [
+        'Memphis is about 560 miles from Houston via I-30 and I-40, roughly eight and a half hours, typically two to three business days by LTL '
+        'freight to Shelby County.',
+        'Barbecue is the core of Memphis demand: round foil pans, deep steam table pans, red plaid boat trays, checkered deli paper and black '
+        'nitrile gloves. Memphis in May, home of the World Championship Barbecue Cooking Contest, is the month to have a full pallet staged.',
+    ],
+    'nashville': [
+        'Nashville is about 780 miles northeast via I-10, I-12, I-59 and I-65, roughly 11 and a half hours, with two to three business days of '
+        'transit to Davidson County.',
+        'Hot chicken spots and Broadway honky-tonks order hinged containers, boat trays, PET cups, beverage napkins and trash liners. Summer '
+        'tourism and CMA Fest in June are the peaks; because of the transit, most Nashville accounts keep two to three weeks of stock.',
+    ],
+    'birmingham': [
+        'Birmingham is about 670 miles east via I-10, I-12 and I-59, roughly 10 hours, typically two to three business days to Jefferson County.',
+        'Barbecue with white sauce and meat-and-three diners drive orders for round foil pans, black-base containers and dinner napkins; schools '
+        'and church kitchens add school trays and trash liners. Fall football season is the peak.',
+    ],
+    'jackson': [
+        'Jackson is about 440 miles east via I-10 and I-55, roughly six and a half hours, with one to two business days of transit to Hinds County.',
+        'Soul food, catfish and barbecue restaurants order round foil pans, black-base containers and dinner napkins; school and institutional '
+        'kitchens buy school trays and trash liners. Back-to-school and holiday catering are the busy seasons.',
+    ],
+    'orlando': [
+        'Orlando is about 965 miles from Houston via I-10 and I-75, roughly 14 hours, typically three to four business days by LTL freight to '
+        'Orange County. Orlando accounts almost always order full or mixed pallets.',
+        'Theme-park-area restaurants, resorts and convention caterers order PET cups and lids, black-base containers, paper bags and trash '
+        'liners. Spring break, summer and the winter holidays are all peak seasons, so plan orders two to three weeks out.',
+    ],
+    'tampa': [
+        'Tampa is about 1,000 miles east via I-10 and I-75, roughly 15 hours, with three to four business days of transit to Hillsborough County.',
+        'Ybor City sandwich shops wrap Cubans in checkered deli paper; seafood restaurants add boat trays and hinged containers, and stadium and '
+        'cruise-season catering adds PET cups and trash liners. Snowbird season and Gasparilla in January are the peaks.',
+    ],
+    'jacksonville': [
+        'Jacksonville is about 870 miles east on I-10, roughly 13 hours, typically two to three business days to Duval County.',
+        'Seafood restaurants, naval-base contractors and beach-town kitchens order boat trays, round foil pans, black-base containers, trash liners '
+        'and black nitrile gloves. Summer beach season and the Florida-Georgia game in the fall are the peaks.',
+    ],
+    'miami': [
+        'Miami is our longest Southeast lane: about 1,185 miles via I-10 and I-75, roughly 17 hours, three to four business days by LTL freight to '
+        'Miami-Dade County.',
+        'Cafecito windows and Cuban and Latin American bakeries order portion cups, bakery tissue, checkered deli paper and PET cups; nightlife and '
+        'cruise-port kitchens add black-base containers. Winter season (December to April) and Art Basel in December are the peaks.',
+    ],
+    'charlotte': [
+        'Charlotte is about 1,035 miles northeast via I-10, I-65 and I-85, roughly 15 hours, with three to four business days of transit to '
+        'Mecklenburg County.',
+        'Banking-district office catering runs on cutlery kits, black-base containers and PET cups; race weeks at Charlotte Motor Speedway in May '
+        'and October add boat trays and trash liners. Most Charlotte accounts order full pallets on a schedule.',
+    ],
+    'raleigh': [
+        'Raleigh is about 1,180 miles from Houston via I-10, I-65, I-85 and I-40, roughly 17 hours, typically three to four business days to Wake '
+        'County.',
+        'University dining, tech-campus catering and eastern North Carolina whole-hog barbecue drive orders for round foil pans, school trays, '
+        'black-base containers, cutlery kits and dinner napkins. College sports seasons and graduation are the peaks.',
+    ],
+    'greensboro': [
+        'Greensboro is about 1,110 miles northeast via I-10, I-65 and I-85, roughly 16 hours, with three to four business days of transit to '
+        'Guilford County.',
+        'Lexington-style barbecue nearby and the logistics and furniture economy shape demand: round foil pans, black-base containers, PET cups, '
+        'trash liners and C-fold towels. The High Point furniture market in April and October brings event catering.',
+    ],
+    'phoenix': [
+        'Phoenix is about 1,175 miles west on I-10 across Texas and New Mexico, roughly 17 hours, typically three to four business days to '
+        'Maricopa County.',
+        'Sonoran-style Mexican restaurants use pop-up foil sheets and hinged containers; resorts and spring-training concessions add PET cups and '
+        'lids and paper bags. Spring training (February to March) and the winter resort season are the peaks.',
+    ],
+    'albuquerque': [
+        'Albuquerque is about 840 miles northwest via US-287 and I-40, roughly 13 hours, with two to three business days of transit to '
+        'Bernalillo County.',
+        'New Mexican kitchens built on red and green chile order pop-up foil sheets, portion cups, hinged containers and paper bags; I-40 travel '
+        'stops add PET cups. The International Balloon Fiesta in October is the single biggest week of the year.',
+    ],
+    'denver': [
+        'Denver is about 1,030 miles from Houston via US-287 and I-25, roughly 15 hours, typically three to four business days to Denver County.',
+        'Food halls, craft breweries and mountain ski-town restaurants order PET cups, boat trays, black-base containers, beverage napkins and '
+        'trash liners. Ski season in winter and the summer festival season are both busy, so Denver buyers order on a steady schedule.',
+    ],
+    'las-vegas': [
+        'Las Vegas is our longest regular lane: about 1,465 miles via I-10 and I-40 / US-93, roughly 21 hours, four to five business days by LTL '
+        'freight to Clark County. Las Vegas accounts order full pallets and plan a month ahead.',
+        'Casino resorts, buffets and convention caterers go through black nitrile gloves, black-base containers, PET cups, cutlery kits and trash '
+        'liners in volume. Major conventions in January and spring are the peaks.',
+    ],
+    'kansas-city': [
+        'Kansas City is about 745 miles north via I-45 and I-35, roughly 11 hours, with two to three business days of transit to Jackson County.',
+        'Kansas City barbecue and the competition circuit run on round foil pans, deep steam table pans, checkered deli paper, boat trays and black '
+        'nitrile gloves. The American Royal World Series of Barbecue in the fall and football season are the peaks.',
+    ],
+    'st-louis': [
+        'St. Louis is about 820 miles northeast via I-30 and I-55, roughly 12 hours, typically two to three business days to St. Louis City.',
+        'Barbecue, pizza and ballpark concessions order round foil pans, PET cups, boat trays, black-base containers and trash liners. Baseball '
+        'season, spring through fall, is the long peak.',
+    ],
+    'chicago': [
+        'Chicago is about 1,085 miles from Houston via I-45, I-30, I-40 and I-55, roughly 16 hours, with three to four business days of transit '
+        'to Cook County. Chicago accounts usually order mixed pallets on a fixed schedule.',
+        'Italian beef and hot dog stands wrap in checkered deli paper; neighborhood restaurants order black-base containers, deli containers and '
+        'paper bags, plus black nitrile gloves. Summer festival season and the holidays are the peaks.',
+    ],
+})
+INDEXED_CITIES = sorted(set(INDEXED_CITIES) | set(LOCAL))

@@ -30,7 +30,7 @@ SITE_UPDATED = '2026-11-04'
 FOOTER_BAND = seo2.footer_band(
     [('/locations/texas/%s/' % c if c in location_data.TEXAS else '/locations/%s/%s/' % (location_data.STATES[location_data.METROS[c][1]][1], c),
       '%s, %s' % ((location_data.TEXAS.get(c) or location_data.METROS[c])[0], (location_data.TEXAS.get(c) or location_data.METROS[c])[1]))
-     for c in location_data.INDEXED_CITIES if c != 'houston'],
+     for c in location_data.FOOTER_CITIES if c != 'houston'],
     [('/guides/%s/' % g, n) for g, n, _ in guides.GUIDES],
     [('/industries/%s/' % i['slug'], i['name']) for i in industries.INDUSTRIES])
 
