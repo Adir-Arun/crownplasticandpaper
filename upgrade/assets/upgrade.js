@@ -415,7 +415,7 @@
       var x = document.createElement('div'); x.className = 'cpp-cardx';
       x.innerHTML = '<p>Need pricing for a full supply list?</p>' +
         '<a class="cpp-btn cpp-btn--solid" href="/get-your-quote/">Request a Quote<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>' +
-        '<a class="cpp-btn cpp-btn--line" href="https://heyzine.com/flip-book/0ee04dad9c.html#page/13" target="_blank" rel="noopener">View 2026 Catalog</a>' +
+        '<a class="cpp-btn cpp-btn--line" href="/catalog/">View 2026 Catalog</a>' +
         '<p class="cpp-cardx-text">Prefer to text? <a href="sms:+17135975320">(713) 597-5320</a> · <a href="https://wa.me/17135975320?text=Hi%20Crown%2C%20I%27d%20like%20a%20quote%20for%3A%20" target="_blank" rel="noopener">WhatsApp</a></p>';
       card.appendChild(x);
     }
@@ -432,7 +432,7 @@
       '<a class="cpp-sticky-logo" href="/" tabindex="-1"><img src="/wp-content/uploads/2026/01/icn_crown_logo.svg" width="44" height="40" alt="Crown Plastic &amp; Paper home"></a>' +
       '<nav class="cpp-sticky-nav" aria-label="Quick navigation">' +
         '<a href="/products/" tabindex="-1">Products</a><a href="/products/product_cat-gloves/" tabindex="-1">Disposable Gloves</a>' +
-        '<a href="https://heyzine.com/flip-book/0ee04dad9c.html#page/13" target="_blank" rel="noopener" tabindex="-1">Catalog</a>' +
+        '<a href="/catalog/" tabindex="-1">Catalog</a>' +
         '<a href="/about-us/" tabindex="-1">About Us</a><a href="/contact-us/" tabindex="-1">Contact</a></nav>' +
       '<a class="cpp-sticky-tel" href="tel:+18449000084" tabindex="-1">' + PHONE + '</a>' +
       '<a class="cpp-sticky-wa" href="https://wa.me/17135975320?text=Hi%20Crown%2C%20I%27d%20like%20a%20quote%20for%3A%20" target="_blank" rel="noopener" tabindex="-1">WhatsApp</a>' +
