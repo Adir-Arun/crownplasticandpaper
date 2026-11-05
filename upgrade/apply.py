@@ -48,10 +48,10 @@ PALETTE_RE = re.compile(r'#(%s)\b' % '|'.join(PALETTE), re.I) if PALETTE else No
 FORM_ICON_RE = re.compile(r'icn_crown_form_(full-name|company-name|email|phone|message)\.svg')
 
 
-ICON_LINKS = ('<link rel="icon" href="/favicon.ico" sizes="48x48">'
-              '<link rel="icon" href="/favicon.svg" type="image/svg+xml">'
-              '<link rel="icon" href="/icon-192.png" type="image/png" sizes="192x192">'
-              '<link rel="apple-touch-icon" href="/apple-touch-icon.png">')
+ICON_LINKS = ('<link rel="icon" href="/favicon.ico?v=3" sizes="48x48">'      # ?v= makes browsers drop the
+              '<link rel="icon" href="/favicon.svg?v=3" type="image/svg+xml">'   # old WordPress logo they cached
+              '<link rel="icon" href="/icon-192.png?v=3" type="image/png" sizes="192x192">'
+              '<link rel="apple-touch-icon" href="/apple-touch-icon.png?v=3">')
 
 
 def recolor(s):
@@ -1064,7 +1064,7 @@ def main():
             d = os.path.join(SITE, old_.strip('/'))
             os.makedirs(d, exist_ok=True)
             with open(os.path.join(d, 'index.html'), 'w', encoding='utf-8') as f:
-                f.write('<!doctype html><meta charset="utf-8"><title>Moved</title><link rel="canonical" href="%s%s">'
+                f.write('<!doctype html><meta charset="utf-8"><title>Moved</title>' + ICON_LINKS + '<link rel="canonical" href="%s%s">'
                         '<meta name="robots" content="noindex, follow"><meta http-equiv="refresh" content="0; url=%s">'
                         '<a href="%s">%s</a>' % (ORIGIN, new_, new_, new_, new_))
         print('location pages: %d (+%d state redirects)' % (len(pages_), len(redirects_)))
@@ -1185,6 +1185,11 @@ def main():
     print('sitemap: %d urls' % len(urls))
     for name in os.listdir(os.path.join(ASSETS, 'icons')):
         shutil.copy(os.path.join(ASSETS, 'icons', name), os.path.join(SITE, name))
+    # the old WordPress site icon (crown + wordmark) is still cached by browsers and Google under this name
+    for name in ('cropped-fav-1.png',):
+        old_icon = os.path.join(SITE, 'wp-content', 'uploads', '2026', '02', name)
+        if os.path.exists(old_icon):
+            shutil.copy(os.path.join(ASSETS, 'icons', 'icon-512.png'), old_icon)
     spec_src = os.path.join(ASSETS, 'spec-sheets')
     if os.path.isdir(spec_src):
         spec_dir = os.path.join(SITE, 'spec-sheets')
