@@ -96,7 +96,7 @@ def faq_block(title, qa):
 
 STEPS = ('<ol class="cpp-loc-steps"><li><b>Send your list.</b> Products, sizes and case counts through the quote form, by phone, text or WhatsApp.</li>'
          '<li><b>Get one wholesale quote.</b> Case and pallet pricing for the whole list, with freight to your dock.</li>'
-         '<li><b>We ship from Houston.</b> Orders typically leave the warehouse in 24–48 hours.</li></ol>')
+         '<li><b>We ship from Houston.</b> Orders typically leave the warehouse in 1–2 business days.</li></ol>')
 
 
 # ------------------------------------------------------------------------------------------------
@@ -113,14 +113,14 @@ def city_page(l, locs, groups, products, origin, spec_sizes):
     if l.slug == 'houston':
         lead = ('Crown Plastic & Paper is a Houston wholesale distributor of food service disposables. Our warehouse is at 7350 Langfield Rd '
                 '(77092), so Houston restaurants, caterers and distributors can pick up or get local delivery, usually the same or next business day.')
-        facts = [('Warehouse', 'in Houston, 77092'), ('Pick-up', 'at 7350 Langfield Rd'), ('Ships in', '24–48 hours'), ('Net 30', 'after credit approval')]
+        facts = [('Warehouse', 'in Houston, 77092'), ('Pick-up', 'at 7350 Langfield Rd'), ('Ships in', '1–2 business days'), ('Net 30', 'after credit approval')]
     elif l.houston_area:
         lead = ('Crown Plastic & Paper supplies %s restaurants, caterers and distributors from our Houston warehouse %d miles away (%s). '
                 'Orders typically arrive the next business day, or you can pick up in Houston.') % (l.name, l.miles, l.route)
         facts = [('%d miles' % l.miles, 'from our warehouse'), ('Next day', 'typical delivery'), ('Pick-up', 'in Houston'), ('Net 30', 'after credit approval')]
     else:
         lead = ('Crown Plastic & Paper ships wholesale food service disposables to %s, %s by the case and pallet. Orders leave our Houston warehouse in '
-                '24–48 hours and typically arrive in %s by LTL freight (%s, about %d miles).') % (l.name, l.st, t.lower(), l.route, l.miles)
+                '1–2 business days and typically arrive in %s by LTL freight (%s, about %d miles).') % (l.name, l.st, t.lower(), l.route, l.miles)
         facts = [('%s miles' % format(l.miles, ','), 'from Houston'), (t, 'typical transit'), ('LTL freight', 'pallets and mixed pallets'), ('Net 30', 'after credit approval')]
     h1 = 'Wholesale Food Service Disposables in %s, %s' % (l.name, l.st)
     out = [hero(crumb_html, h1, lead, facts), '<div class="cpp-loc" data-cpp-upgrade><div class="cpp-wrap">']
@@ -169,9 +169,9 @@ def city_page(l, locs, groups, products, origin, spec_sizes):
     if l.slug == 'houston':
         q1 = ('Can I pick up my order in Houston?', 'Yes. Pick-up is at our warehouse, 7350 Langfield Rd, Houston, TX 77092. Send your list first so the order is staged and ready when you arrive.')
     elif l.houston_area:
-        q1 = ('How fast can %s get an order?' % l.name, 'Orders typically ship from our Houston warehouse in 24–48 hours, and %s is about %d miles away (%s), so most deliveries arrive the next business day. You can also pick up in Houston.' % (l.name, l.miles, l.route))
+        q1 = ('How fast can %s get an order?' % l.name, 'Orders typically ship from our Houston warehouse in 1–2 business days, and %s is about %d miles away (%s), so most deliveries arrive the next business day. You can also pick up in Houston.' % (l.name, l.miles, l.route))
     else:
-        q1 = ('How long does shipping from Houston to %s take?' % l.name, 'Orders typically leave our Houston warehouse in 24–48 hours. From there, LTL freight to %s usually takes %s (about %s miles via %s).' % (l.name, t.lower(), format(l.miles, ','), l.route.split(',')[0]))
+        q1 = ('How long does shipping from Houston to %s take?' % l.name, 'Orders typically leave our Houston warehouse in 1–2 business days. From there, LTL freight to %s usually takes %s (about %s miles via %s).' % (l.name, t.lower(), format(l.miles, ','), l.route.split(',')[0]))
     qa = [q1,
           ('What do %s food service businesses buy most?' % l.name, '%s are among the most requested, along with whatever the season calls for. %s' % (', '.join(top), l.season)),
           ('Can I mix products on one %s order?' % l.name, 'Yes. Combine any Crown products on the same order and pallet. Pricing is by the case and pallet in three tiers: Houston pick-up, delivered 6 pallets and delivered 12 pallets.'),
@@ -208,7 +208,7 @@ def state_page(state_slug, cities, groups, origin, products, spec_sizes):
         c.url, E(c.name), 'Local' if c.miles == 0 else format(c.miles, ','), E(transit(c.miles)), E(c.route.split(',')[0])) for c in cities)
     out.append('<section class="cpp-loc-sec"><h2>Shipping times from Houston</h2><div class="cpp-skus-scroll" tabindex="0" role="region" aria-label="Shipping times">'
                '<table class="cpp-skus-table"><thead><tr><th scope="col">City</th><th scope="col">Road miles</th><th scope="col">Typical transit</th><th scope="col">Route</th></tr></thead>'
-               '<tbody>%s</tbody></table></div><p class="cpp-loc-note">Transit is a typical LTL estimate after the order ships; orders leave Houston in 24–48 hours.</p></section>' % rows)
+               '<tbody>%s</tbody></table></div><p class="cpp-loc-note">Transit is a typical LTL estimate after the order ships; orders leave Houston in 1–2 business days.</p></section>' % rows)
     full = len(cities) <= 4   # small states: give each city its full notes so the page stands on its own
     notes = ''.join('<li><a href="%s"><b>%s</b></a> %s%s</li>' % (
         c.url, E(c.name), E(' '.join(c.food) if full else c.food[0]), (' <i>Busy seasons:</i> ' + E(c.season)) if full else '') for c in cities)
@@ -229,9 +229,9 @@ def state_page(state_slug, cities, groups, origin, products, spec_sizes):
                '<li><a href="/locations/">All locations</a></li></ul></section>' % others)
     out.append('</div></div>')
     qa = [('How long does shipping from Houston to %s take?' % name,
-           'Orders leave our Houston warehouse in 24\u201348 hours. Typical LTL transit is %s to %s and %s to %s.' % (
+           'Orders leave our Houston warehouse in 1\u20132 business days. Typical LTL transit is %s to %s and %s to %s.' % (
                transit(near).lower(), cities[0].name, transit(far).lower(), cities[-1].name) if state_slug != 'texas' else
-           'Orders leave our Houston warehouse in 24\u201348 hours. Greater Houston usually gets them the next business day; Austin, San Antonio and Dallas\u2013Fort Worth about one business day after shipping; El Paso two to three.'),
+           'Orders leave our Houston warehouse in 1\u20132 business days. Greater Houston usually gets them the next business day; Austin, San Antonio and Dallas\u2013Fort Worth about one business day after shipping; El Paso two to three.'),
           ('Do you ship full pallets and mixed pallets to %s?' % name,
            'Both. Order by the case and mix products on the same pallet, or order full pallets. Pricing tiers are Houston pick-up, delivered 6 pallets and delivered 12 pallets.'),
           ('Can %s businesses open a Net 30 account?' % name,
@@ -246,7 +246,7 @@ def hub_page(locs, groups, origin):
     crumb_html, crumb_ld = crumbs([('Home', '/'), ('Locations', None)], origin)
     lead = ('Every Crown Plastic & Paper order ships from one warehouse in Houston, Texas. We deliver across Greater Houston, ship by the case and pallet '
             'across Texas, and send LTL freight to food service businesses throughout the South, Southeast, Midwest and Mountain West.')
-    facts = [('%d cities' % len(locs), 'with shipping details'), ('%d states' % len(groups), 'served from Houston'), ('24–48 hrs', 'to leave the warehouse')]
+    facts = [('%d cities' % len(locs), 'with shipping details'), ('48 states', 'served from Houston'), ('1–2 days', 'to leave the warehouse')]
     out = [hero(crumb_html, 'Service Areas: Wholesale Food Service Disposables Shipped from Houston', lead, facts),
            '<div class="cpp-loc" data-cpp-upgrade><div class="cpp-wrap">']
     order = ['texas'] + sorted((s for s in groups if s != 'texas'), key=lambda s: groups[s][0].miles)
@@ -261,7 +261,7 @@ def hub_page(locs, groups, origin):
     out.append('<section class="cpp-loc-sec"><h2>How ordering works</h2>%s</section>' % STEPS)
     out.append('</div></div>' + crumb_ld)
     title = 'Service Areas | Wholesale Food Service Disposables from Houston | Crown'
-    desc = 'Where Crown Plastic & Paper ships: Greater Houston, all of Texas and %d states across the South, Midwest and West. Transit times by city.' % (len(groups) - 1)
+    desc = 'Where Crown Plastic & Paper ships: Greater Houston, all of Texas and all 48 contiguous states. Transit times by city.'
     return title, desc[:158], ''.join(out)
 
 

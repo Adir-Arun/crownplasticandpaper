@@ -125,10 +125,10 @@ INDEX_PAGES = {'/choosing-the-right-food-packaging-for-your-business/',
 FIX_TITLES = {
     '/': ('Buy Wholesale Foodservice Supplies | Bulk Plastic Cups & Containers',
           'Houston wholesale distributor of food service disposables: cups, deli containers, foil pans, gloves, napkins and bags '
-          'by the case or pallet. Ships in 24–48h, Net 30. Call (844) 900-0084.'),
+          'by the case or pallet. Ships in 1–2 business days, Net 30. Call (844) 900-0084.'),
     '/product/pet-cups/': ('Buy Clear PET Plastic Cups Wholesale | PET Drink Cups Bulk',
                            'Clear PET plastic cups wholesale from 9oz to 32oz, 1,000 per case (32oz: 500). Rims of 92mm, 98mm and 107mm '
-                           'for iced coffee, tea and smoothies. Ships from Houston in 24–48 hours.'),
+                           'for iced coffee, tea and smoothies. Ships from Houston in 1–2 business days.'),
     '/product/latex-gloves/': ('Disposable Latex Gloves | Wholesale Bulk Supply USA',
                                'Disposable latex gloves in bulk cases for food handling, janitorial and commercial use. '
                                'Wholesale pricing from Crown Plastic & Paper in Houston, TX.'),
@@ -490,6 +490,7 @@ def render_location(shell, url, title, desc, body):
     page = re.sub(r'<meta property="article:[^>]*>\s*', '', page)
     # the shell comes from /faqs/ (one level deep): its "../x" links mean "/x" from any depth
     page = re.sub(r'(?<=["\'(\s,=])\.\./(?!\.\./)', '/', page)
+    page = page.replace('href="./#"', 'href="#"')
     return seo2.fix_images(seo2.faqs(page, url, SPEC_MAP), url, SITE)
 
 
@@ -613,6 +614,100 @@ def fix_dead_links(s):
     s = re.sub(r'(<a [^>]*href=")#("[^>]*>)(.{1,2500}?)</a>', repl, s, flags=re.S)
     # the header logo linked to "#" on many pages: it goes home
     return re.sub(r'(data-widget_type="theme-site-logo\.default">\s*<a href=")#(")', r'\1/\2', s)
+
+
+# WordPress "#" placeholders and self-links were saved as "index.html#" / "index.html" and end up
+# as "./#" and "./". On the FAQs page (the shell every location, guide, industry and catalog page
+# is built from) that turned the menu and footer into links back to the same page. Point them at
+# the real pages by link text; any leftover "./#" becomes a plain "#".
+SELF_LINK_TARGETS = {
+    'about': '/about-us/', 'about us': '/about-us/',
+    'bulk & wholesale orders': '/get-your-quote/', 'bulk &#038; wholesale orders': '/get-your-quote/',
+    'food service supplies': '/products/product_cat-food-service-supplies/',
+    'aluminum products': '/products/product_cat-aluminum-products/',
+    'paper napkins': '/products/product_cat-paper-napkins/',
+    'paper supply': '/products/product_cat-paper-supply/',
+    'toilet tissue': '/products/product_cat-toilet-tissue/',
+    'gloves': '/products/product_cat-gloves/', 'disposable gloves': '/products/product_cat-gloves/',
+    'miscellaneous': '/products/product_cat-miscellaneous/',
+    'janitorial & miscellaneous': '/products/product_cat-miscellaneous/',
+    'products': '/products/', 'all products': '/products/',
+    'faqs': '/faqs/', 'contact us': '/contact-us/', 'login': '/contact-us/',
+    'customer support': '/contact-us/', 'business inquiries': '/contact-us/',
+    'get your quote': '/get-your-quote/', 'get a quote': '/get-your-quote/',
+    'privacy policy': '/privacy-policy/', 'terms & conditions': '/terms-conditions/',
+    'terms &amp; conditions': '/terms-conditions/', 'accessibility statement': '/accessibility-statement/',
+    'do not sell my personal information': '/do-not-sell-my-personal-information/',
+    'home': '/', 'catalog': CATALOG, 'blog': '/blog/', 'latest insights': '/blog/',
+}
+
+
+def fix_self_links(s):
+    def repl(m):
+        text = html.unescape(re.sub(r'<[^>]+>|\s+', ' ', m.group(4))).strip().lower()
+        target = SELF_LINK_TARGETS.get(text) or SELF_LINK_TARGETS.get(text.replace('&', '&amp;'))
+        if target:
+            return m.group(1) + target + m.group(3) + m.group(4) + '</a>'
+        if m.group(2) == './#':
+            return m.group(1) + '#' + m.group(3) + m.group(4) + '</a>'
+        return m.group(0)
+    return re.sub(r'(<a\b[^>]*?href=")(\./#?)("[^>]*>)(.{0,2500}?)</a>', repl, s, flags=re.S)
+
+
+# Blog cards linked to WordPress draft/short URLs (?p=ID), saved as "index.html@p=ID.html".
+# Those copies are stale, and the live server sent them to the homepage. Link the real articles.
+ARTICLE_IDS = {
+    '11285': 'why-bulk-purchasing-saves-money-for-food-businesses',
+    '11287': 'choosing-the-right-food-packaging-for-your-business',
+    '12260': 'ways-high-quality-packaging-can-improve-customer-retention-for-restaurants',
+    '12273': 'choosing-the-right-register-rolls-for-retail-and-hospitality-businesses',
+    '12282': 'expanding-your-business-through-strategic-international-sourcing',
+    '12290': 'the-future-of-wholesale-distribution-in-a-competitive-marketplace',
+    '12321': 'best-practices-for-selecting-products-for-wholesale-distribution',
+    '12328': 'cost-effective-dinner-napkin-solutions-for-restaurants-and-catering-businesses',
+    '12329': 'cost-effective-dinner-napkin-solutions-for-restaurants-and-catering-businesses',
+    '12330': 'cost-effective-dinner-napkin-solutions-for-restaurants-and-catering-businesses',
+    '12331': 'how-wholesale-food-packaging-helps-restaurants-reduce-operating-costs',
+    '12332': 'how-wholesale-food-packaging-helps-restaurants-reduce-operating-costs',
+    '12339': 'a-complete-guide-to-choosing-the-right-takeout-bags-for-food-businesses',
+    '12345': 'how-to-keep-hot-and-cold-foods-at-the-right-temperature-during-delivery',
+    '12346': 'how-to-choose-the-right-portion-cups-for-sauces-dressings-and-condiments',
+    '12347': 'the-ultimate-guide-to-disposable-tableware-for-catering-companies',
+    '12351': 'how-to-select-the-right-food-storage-bags-for-commercial-kitchens',
+    '12352': 'why-tamper-evident-packaging-matters-for-restaurant-delivery-orders',
+}
+
+
+def fix_article_links(s):
+    def repl(m):
+        slug = ARTICLE_IDS.get(m.group(1))
+        return 'href="/%s/"' % slug if slug else 'href="/blog/"'
+    return re.sub(r'href="(?:\.\./|\./|/)*index\.html@p=(\d+)\.html"', repl, s)
+
+
+def remove_div(s, marker):
+    """Remove every <div> whose opening tag contains `marker`, with everything inside it."""
+    while True:
+        i = s.find(marker)
+        if i < 0:
+            return s
+        start = s.rfind('<div', 0, i)
+        if start < 0 or s.find('>', start) < i:
+            return s
+        depth, pos = 0, start
+        for m in re.finditer(r'<div\b|</div>', s[start:]):
+            depth += 1 if m.group(0) == '<div' else -1
+            if depth == 0:
+                pos = start + m.end()
+                break
+        else:
+            return s
+        s = s[:start] + s[pos:]
+
+
+# The homepage "What Our Customers Say" slider used placeholder testimonials, not real customers:
+# take it out until real reviews replace it.
+TESTIMONIAL_BLOCKS = ('elementor-element-39b69fe ', 'data-elementor-id="4381"')
 
 
 def fix_placeholders(s):
@@ -765,6 +860,15 @@ def upgrade_html(path, snippets, search_items, sitemap):
     s = re.sub(r'href="([^"#?:]*?)index\.html(#[^"]*)?"',
                lambda m: 'href="%s"' % m.group(2) if not m.group(1) and m.group(2) and len(m.group(2)) > 1
                else 'href="%s%s"' % (m.group(1) or './', m.group(2) or ''), s)
+    s = fix_self_links(s)
+    s = fix_article_links(s)
+    for marker in TESTIMONIAL_BLOCKS:
+        s = remove_div(s, marker)
+    # image title tooltips stuffed with a keyword phrase ("Reliable Paper Products Wholesaler in the USA 25")
+    s = re.sub(r'\s+title="Reliable Paper Products Wholesaler[^"]*"', '', s)
+    # footer links to the old ".html" copies (they only redirect): link the real pages
+    s = re.sub(r'href="(?:https?://crownplasticandpaper\.com)?(?:\.\./|\./|/)*(business-partnership|contact-us|applications)\.html"',
+               r'href="/\1/"', s)
     s = re.sub(r'(https?:)?//www\.crownplasticandpaper\.com', lambda m: ORIGIN if m.group(1) else '//crownplasticandpaper.com', s)
     s = s.replace('http://crownplasticandpaper.com', ORIGIN)
     s = re.sub(r'(%2F%2F|\\/\\/)www\.crownplasticandpaper\.com', r'\1crownplasticandpaper.com', s, flags=re.I)  # encoded / JSON-escaped
@@ -942,6 +1046,7 @@ def upgrade_html(path, snippets, search_items, sitemap):
     tail = snippets['bar'] + spec_script(url) + '<script src="/upgrade/upgrade.js" defer></script>'
     s = s.replace('</body>', tail + '</body>', 1)
     s = re.sub(r'href="(?:\.\./)*/?login/"', 'href="/contact-us/"', s)  # hidden old Login button: no such page
+    s = s.replace('href="./#"', 'href="#"')  # leftover placeholder buttons: not a link to this page
     open(path, 'w', encoding='utf-8').write(s)
     if os.path.basename(path) == 'index.html' and indexable(s, url):
         mod = (re.search(r'<meta property="(?:article:modified_time|og:updated_time)" content="([^"]+)"', s)
@@ -1172,7 +1277,7 @@ def main():
                  '- [About](%(o)s/about-us/)\n'
                  '- [Contact / quote](%(o)s/contact-us/)\n'
                  '\n## Related\n\n'
-                 '- Sister company: AR Unlimited Supply LLC, https://arunlimitedsupply.com/ (same address)\n') % {'o': ORIGIN}
+                 '- Brand and supply partner: Crown Plastic & Paper is the product brand; AR Unlimited Supply LLC (https://www.arunlimitedsupply.com/), at the same Houston address, redistributes Crown products and more to restaurants, distributors and institutions in 48 states\n') % {'o': ORIGIN}
         if full:
             qa_ = seo2.BASE_FAQ + [seo2.SISTER] + guides.FAQS
             text += '\n## Frequently asked questions\n\n' + '\n'.join('Q: %s\nA: %s\n' % (q, a) for q, a in qa_)

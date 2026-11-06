@@ -15,7 +15,7 @@ FACTS = {
     'street': '7350 Langfield Rd', 'city': 'Houston', 'region': 'TX', 'zip': '77092',
     'terms': 'Net 30 after credit approval', 'since': '2021',
     'tiers': 'Houston pick-up, delivered 6 pallets, and delivered 12 pallets',
-    'ship': '24–48 hours', 'warehouse': '60,000 sq ft', 'states': '25+',
+    'ship': '1–2 business days', 'warehouse': '60,000 sq ft', 'states': '48',
 }
 F = FACTS
 
@@ -242,8 +242,11 @@ User-agent: Claude-User
 User-agent: Google-Extended
 User-agent: Applebot-Extended
 User-agent: Bingbot
+User-agent: Amazonbot
+User-agent: meta-externalagent
 Allow: /
 Disallow: /api/
+Disallow: /upgrade/search-index.json
 
 Sitemap: %s/sitemap.xml
 """ % ORIGIN

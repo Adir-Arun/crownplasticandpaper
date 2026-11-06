@@ -68,7 +68,7 @@ INDUSTRIES = [
         'products': ['pet-cups', 'portion-cups', 'deli-containers', 'black-containers', 'foil-rolls', 'deep-steam-table-pans', 'interfold-napkins',
                      'blue-nitrile-gloves', 'paper-bags', 'trash-liners', 'jumbo-roll-tissue', 'register-roll-paper'],
         'guides': ['cases-per-pallet', 'pet-cup-sizes', 'takeout-container-sizes', 'disposable-gloves-guide'],
-        'faq': [('Do you sell to distributors outside Texas?', 'Yes. We ship nationwide except the New York area and California, by LTL freight or full truckload. See our service areas for transit times.'),
+        'faq': [('Do you sell to distributors outside Texas?', 'Yes. We ship to all 48 contiguous states by LTL freight or full truckload. See our service areas for transit times.'),
                 ('What are your pallet price tiers?', 'Pricing tiers are %s.' % F['tiers']),
                 ('Can I get spec sheets for my catalog?', 'Yes. Every product page has its spec sheet as a PDF, and the 2026 catalog can be downloaded as a PDF.'),
                 ('Do you offer Net 30?', 'Yes, %s.' % F['terms'])],

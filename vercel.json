@@ -147,8 +147,98 @@
       "permanent": true
     },
     {
+      "source": "/index.html@p=11285.html",
+      "destination": "/why-bulk-purchasing-saves-money-for-food-businesses/",
+      "permanent": true
+    },
+    {
+      "source": "/index.html@p=11287.html",
+      "destination": "/choosing-the-right-food-packaging-for-your-business/",
+      "permanent": true
+    },
+    {
+      "source": "/index.html@p=12260.html",
+      "destination": "/ways-high-quality-packaging-can-improve-customer-retention-for-restaurants/",
+      "permanent": true
+    },
+    {
+      "source": "/index.html@p=12273.html",
+      "destination": "/choosing-the-right-register-rolls-for-retail-and-hospitality-businesses/",
+      "permanent": true
+    },
+    {
+      "source": "/index.html@p=12282.html",
+      "destination": "/expanding-your-business-through-strategic-international-sourcing/",
+      "permanent": true
+    },
+    {
+      "source": "/index.html@p=12290.html",
+      "destination": "/the-future-of-wholesale-distribution-in-a-competitive-marketplace/",
+      "permanent": true
+    },
+    {
+      "source": "/index.html@p=12321.html",
+      "destination": "/best-practices-for-selecting-products-for-wholesale-distribution/",
+      "permanent": true
+    },
+    {
+      "source": "/index.html@p=12328.html",
+      "destination": "/cost-effective-dinner-napkin-solutions-for-restaurants-and-catering-businesses/",
+      "permanent": true
+    },
+    {
+      "source": "/index.html@p=12329.html",
+      "destination": "/cost-effective-dinner-napkin-solutions-for-restaurants-and-catering-businesses/",
+      "permanent": true
+    },
+    {
+      "source": "/index.html@p=12330.html",
+      "destination": "/cost-effective-dinner-napkin-solutions-for-restaurants-and-catering-businesses/",
+      "permanent": true
+    },
+    {
+      "source": "/index.html@p=12331.html",
+      "destination": "/how-wholesale-food-packaging-helps-restaurants-reduce-operating-costs/",
+      "permanent": true
+    },
+    {
+      "source": "/index.html@p=12332.html",
+      "destination": "/how-wholesale-food-packaging-helps-restaurants-reduce-operating-costs/",
+      "permanent": true
+    },
+    {
+      "source": "/index.html@p=12339.html",
+      "destination": "/a-complete-guide-to-choosing-the-right-takeout-bags-for-food-businesses/",
+      "permanent": true
+    },
+    {
+      "source": "/index.html@p=12345.html",
+      "destination": "/how-to-keep-hot-and-cold-foods-at-the-right-temperature-during-delivery/",
+      "permanent": true
+    },
+    {
+      "source": "/index.html@p=12346.html",
+      "destination": "/how-to-choose-the-right-portion-cups-for-sauces-dressings-and-condiments/",
+      "permanent": true
+    },
+    {
+      "source": "/index.html@p=12347.html",
+      "destination": "/the-ultimate-guide-to-disposable-tableware-for-catering-companies/",
+      "permanent": true
+    },
+    {
+      "source": "/index.html@p=12351.html",
+      "destination": "/how-to-select-the-right-food-storage-bags-for-commercial-kitchens/",
+      "permanent": true
+    },
+    {
+      "source": "/index.html@p=12352.html",
+      "destination": "/why-tamper-evident-packaging-matters-for-restaurant-delivery-orders/",
+      "permanent": true
+    },
+    {
       "source": "/index.html@p=:id(.*)",
-      "destination": "/",
+      "destination": "/blog/",
       "permanent": true
     },
     {

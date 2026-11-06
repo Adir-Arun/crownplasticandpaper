@@ -153,7 +153,7 @@ BASE_FAQ = [
     ('How do I get pricing?', 'Call %s or request a quote. Pricing tiers are Houston pick-up, 6-pallet delivered and 12-pallet delivered.' % F['phone']),
 ]
 SISTER = ('Is Crown Plastic & Paper related to AR Unlimited Supply?',
-          'Yes. Crown Plastic & Paper is a sister company of AR Unlimited Supply LLC (arunlimitedsupply.com), at the same Houston address.')
+          'Yes. Crown Plastic & Paper is the product brand, and AR Unlimited Supply LLC (arunlimitedsupply.com), at the same Houston address, is the supply company that redistributes Crown products and more across 48 states.')
 CORE_FAQ = {
     '/about-us/': ('About Crown Plastic & Paper: common questions', BASE_FAQ + [SISTER]),
     '/contact-us/': ('Contact and ordering questions', [
@@ -170,7 +170,7 @@ CORE_FAQ = {
         BASE_FAQ[5]]),
     '/business-partnership/': ('Partnership questions', [
         ('Do you work with distributors and wholesalers?', 'Yes. Distributors buy full and mixed pallets with tiered pricing, spec sheets for every item and Net 30 after credit approval.'),
-        ('Do you ship outside Texas?', 'Yes. We ship across the U.S. (except the New York area and California) by LTL freight or full truckload.'),
+        ('Do you ship outside Texas?', 'Yes. We ship to all 48 contiguous states by LTL freight or full truckload.'),
         BASE_FAQ[4], BASE_FAQ[3]]),
     '/products/': ('Product questions', [
         ('What products does Crown Plastic & Paper sell?', 'Food service disposables and janitorial paper: PET cups and lids, portion cups, deli and takeout containers, foil pans and rolls, napkins, gloves, bags, towels, tissue and trash liners.'),
@@ -185,7 +185,7 @@ CORE_FAQ = {
         BASE_FAQ[4], BASE_FAQ[5]]),
     '/industries/': ('Questions about who we supply', [BASE_FAQ[1], BASE_FAQ[2], BASE_FAQ[3], BASE_FAQ[4]]),
     '/locations/': ('Service area questions', [
-        ('Where do you ship?', 'Across the U.S. except the New York area and California, from our Houston warehouse by LTL freight or full truckload, plus Houston pick-up.'),
+        ('Where do you ship?', 'All 48 contiguous states, from our Houston warehouse by LTL freight or full truckload, plus Houston pick-up.'),
         ('How long does shipping take?', 'Orders leave Houston in %s. Texas cities usually receive them the next business day; most of the South and Midwest in 1–3 business days.' % F['ship']),
         BASE_FAQ[4]]),
 }
@@ -234,8 +234,8 @@ def faqs(s, url, spec_map):
         slug = url.split('/')[2]
         s = insert_before_footer(s, faq_block('Questions about %s' % PRODUCTS.get(slug, {}).get('name', 'this product'), product_faq(slug, spec_map)))
     if url == '/about-us/' and 'cpp-sister' not in s:
-        s = insert_before_footer(s, '<section class="cpp-sister" data-cpp-upgrade><div class="cpp-wrap"><p>Crown Plastic &amp; Paper is a sister company of '
-                                    '<a href="https://arunlimitedsupply.com/">AR Unlimited Supply</a>, operating from the same Houston warehouse at 7350 Langfield Rd.</p></div></section>')
+        s = insert_before_footer(s, '<section class="cpp-sister" data-cpp-upgrade><div class="cpp-wrap"><p>Crown Plastic &amp; Paper is the product brand. '
+                                    '<a href="https://www.arunlimitedsupply.com/">AR Unlimited Supply</a>, our supply company at the same Houston warehouse (7350 Langfield Rd), redistributes Crown products and more.</p></div></section>')
     return s
 
 
