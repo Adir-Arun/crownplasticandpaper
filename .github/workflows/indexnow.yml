@@ -1,0 +1,13 @@
+name: Submit sitemaps to IndexNow (Bing)
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: [".github/indexnow.py", ".github/workflows/indexnow.yml"]
+jobs:
+  submit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - run: python3 .github/indexnow.py
