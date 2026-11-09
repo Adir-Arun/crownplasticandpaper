@@ -67,6 +67,7 @@ PHONE_TEL = 'tel:+18449000084'
 EMAIL = 'info@crownplasticandpaper.com'
 CATALOG = '/catalog/'
 CROWN_LINKEDIN = 'https://www.linkedin.com/company/crown-plastic-paper/'
+CROWN_FACEBOOK = 'https://www.facebook.com/profile.php?id=61596442587629'
 CATALOG_OLD_RE = re.compile(r'href="https://(?:heyzine\.com/flip-book/0ee04dad9c\.html[^"]*|1drv\.ms/b/c/a9c21038c70541e1/[^"]*)"((?:\s+(?:target="_blank"|rel="[^"]*"))*)')
 YEAR = '2026'
 
@@ -797,6 +798,7 @@ def upgrade_html(path, snippets, search_items, sitemap):
     s = CATALOG_OLD_RE.sub('href="%s"' % CATALOG, s)   # the flipbook now lives on our own domain
     # the footer's LinkedIn icon pointed at the sister company; Crown has its own page
     s = re.sub(r'https?://(?:www\.)?linkedin\.com/company/ar-unlimited-supply/?', CROWN_LINKEDIN, s)
+    s = re.sub(r'https?://(?:www\.)?facebook\.com/Lunchtraysolutions/?', CROWN_FACEBOOK, s)
     s = geo.faq_rewrite(s)
     s = re.sub(r'(<li class="menu-item[^"]*menu-item-5750"><a href="[^"]*" class="elementor-item"[^>]*>Latest Insights</a></li>)',
                r'\1<li class="menu-item cpp-menu-locations"><a href="/locations/" class="elementor-item">Service Areas</a></li>'
