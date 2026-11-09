@@ -67,6 +67,8 @@ PHONE_TEL = 'tel:+18449000084'
 EMAIL = 'info@crownplasticandpaper.com'
 CATALOG = '/catalog/'
 CROWN_LINKEDIN = 'https://www.linkedin.com/company/crown-plastic-paper/'
+DATE_ARCHIVES = {'2026/03/31': '/blog/', '2026/06/09': '/ways-high-quality-packaging-can-improve-customer-retention-for-restaurants/', '2026/09/16': '/choosing-the-right-register-rolls-for-retail-and-hospitality-businesses/', '2026/09/21': '/expanding-your-business-through-strategic-international-sourcing/', '2026/09/23': '/the-future-of-wholesale-distribution-in-a-competitive-marketplace/', '2026/09/28': '/best-practices-for-selecting-products-for-wholesale-distribution/', '2026/09/30': '/cost-effective-dinner-napkin-solutions-for-restaurants-and-catering-businesses/', '2026/10/02': '/how-wholesale-food-packaging-helps-restaurants-reduce-operating-costs/', '2026/10/14': '/a-complete-guide-to-choosing-the-right-takeout-bags-for-food-businesses/', '2026/10/16': '/how-to-keep-hot-and-cold-foods-at-the-right-temperature-during-delivery/', '2026/10/21': '/how-to-choose-the-right-portion-cups-for-sauces-dressings-and-condiments/', '2026/10/22': '/the-ultimate-guide-to-disposable-tableware-for-catering-companies/', '2026/10/23': '/how-to-select-the-right-food-storage-bags-for-commercial-kitchens/', '2026/10/26': '/why-tamper-evident-packaging-matters-for-restaurant-delivery-orders/'}   # WordPress day archive -> its post (vercel.json 301s the same paths)
+DATE_LINK_RE = re.compile(r'<a href="(?:\.\./)*/?(?:https://crownplasticandpaper\.com/)?\d{4}/\d{2}/\d{2}/(?:index\.html)?">(.*?)</a>', re.S)
 CROWN_FACEBOOK = 'https://www.facebook.com/profile.php?id=61596442587629'
 CATALOG_OLD_RE = re.compile(r'href="https://(?:heyzine\.com/flip-book/0ee04dad9c\.html[^"]*|1drv\.ms/b/c/a9c21038c70541e1/[^"]*)"((?:\s+(?:target="_blank"|rel="[^"]*"))*)')
 YEAR = '2026'
@@ -125,6 +127,8 @@ INDEX_PAGES = {'/choosing-the-right-food-packaging-for-your-business/',
                '/why-bulk-purchasing-saves-money-for-food-businesses/'}
 # Two products shared one title; the latex page carried the nitrile copy.
 FIX_TITLES = {
+    '/applications/': ('Wholesale Business & Credit Application | Crown Plastic & Paper',
+                       'Apply for a Crown Plastic & Paper wholesale business account: send your tax permit, request Net 30 credit terms and get case and pallet pricing from Houston.'),
     '/': ('Buy Wholesale Foodservice Supplies | Bulk Plastic Cups & Containers',
           'Houston wholesale distributor of food service disposables: cups, deli containers, foil pans, gloves, napkins and bags '
           'by the case or pallet. Ships in 1–2 business days, Net 30. Call (844) 900-0084.'),
@@ -796,6 +800,8 @@ def upgrade_html(path, snippets, search_items, sitemap):
     s = re.sub(r'href="tell?:[^"]*?844[^"]*?900[^"]*?(?:0084|8801|8804)"', 'href="%s"' % PHONE_TEL, s)
     s = re.sub(r'844-900-(?:8801|8804)', '844-900-0084', s)  # plain text and schema.org "telephone"
     s = CATALOG_OLD_RE.sub('href="%s"' % CATALOG, s)   # the flipbook now lives on our own domain
+    # post dates linked to WordPress day archives (copies of the homepage): keep the date, drop the link
+    s = DATE_LINK_RE.sub(r'<span class="elementor-post-info__item-link">\1</span>', s)
     # the footer's LinkedIn icon pointed at the sister company; Crown has its own page
     s = re.sub(r'https?://(?:www\.)?linkedin\.com/company/ar-unlimited-supply/?', CROWN_LINKEDIN, s)
     s = re.sub(r'https?://(?:www\.)?facebook\.com/Lunchtraysolutions/?', CROWN_FACEBOOK, s)
@@ -1032,6 +1038,12 @@ def upgrade_html(path, snippets, search_items, sitemap):
     s = re.sub(r'(crown-customers-wholesalers\.webp) \d+w(?:, [^"]*)?"', r'\1 540w"', s)
 
     # --- Nov 2026 SEO/GEO spec: one business entity, FAQs, related products, blog -> product links, footer links
+    day_ = re.match(r'^/(\d{4}/\d{2}/\d{2})/$', url)
+    if day_:   # WordPress day archive: a copy of the homepage. Vercel 301s it; if served anyway, it stays out of Google
+        target_ = DATE_ARCHIVES.get(day_.group(1), '/blog/')
+        s = set_robots(s, 'noindex, follow')
+        s = re.sub(r'<link rel="canonical" href="[^"]*"\s*/?>', '<link rel="canonical" href="%s%s" />' % (ORIGIN, target_), s)
+        s = set_title(s, 'Posts from %s | Crown Plastic & Paper' % day_.group(1), 'Blog posts published on %s.' % day_.group(1))
     if POLISH:
         s = seo2.normalize_ld(s, url)
         s = seo2.faqs(s, url, SPEC_MAP)
