@@ -77,6 +77,161 @@
   "trailingSlash": true,
   "redirects": [
     {
+      "source": "/2026/03/31/",
+      "destination": "/blog/",
+      "permanent": true
+    },
+    {
+      "source": "/2026/03/31",
+      "destination": "/blog/",
+      "permanent": true
+    },
+    {
+      "source": "/2026/06/09/",
+      "destination": "/ways-high-quality-packaging-can-improve-customer-retention-for-restaurants/",
+      "permanent": true
+    },
+    {
+      "source": "/2026/06/09",
+      "destination": "/ways-high-quality-packaging-can-improve-customer-retention-for-restaurants/",
+      "permanent": true
+    },
+    {
+      "source": "/2026/09/16/",
+      "destination": "/choosing-the-right-register-rolls-for-retail-and-hospitality-businesses/",
+      "permanent": true
+    },
+    {
+      "source": "/2026/09/16",
+      "destination": "/choosing-the-right-register-rolls-for-retail-and-hospitality-businesses/",
+      "permanent": true
+    },
+    {
+      "source": "/2026/09/21/",
+      "destination": "/expanding-your-business-through-strategic-international-sourcing/",
+      "permanent": true
+    },
+    {
+      "source": "/2026/09/21",
+      "destination": "/expanding-your-business-through-strategic-international-sourcing/",
+      "permanent": true
+    },
+    {
+      "source": "/2026/09/23/",
+      "destination": "/the-future-of-wholesale-distribution-in-a-competitive-marketplace/",
+      "permanent": true
+    },
+    {
+      "source": "/2026/09/23",
+      "destination": "/the-future-of-wholesale-distribution-in-a-competitive-marketplace/",
+      "permanent": true
+    },
+    {
+      "source": "/2026/09/28/",
+      "destination": "/best-practices-for-selecting-products-for-wholesale-distribution/",
+      "permanent": true
+    },
+    {
+      "source": "/2026/09/28",
+      "destination": "/best-practices-for-selecting-products-for-wholesale-distribution/",
+      "permanent": true
+    },
+    {
+      "source": "/2026/09/30/",
+      "destination": "/cost-effective-dinner-napkin-solutions-for-restaurants-and-catering-businesses/",
+      "permanent": true
+    },
+    {
+      "source": "/2026/09/30",
+      "destination": "/cost-effective-dinner-napkin-solutions-for-restaurants-and-catering-businesses/",
+      "permanent": true
+    },
+    {
+      "source": "/2026/10/02/",
+      "destination": "/how-wholesale-food-packaging-helps-restaurants-reduce-operating-costs/",
+      "permanent": true
+    },
+    {
+      "source": "/2026/10/02",
+      "destination": "/how-wholesale-food-packaging-helps-restaurants-reduce-operating-costs/",
+      "permanent": true
+    },
+    {
+      "source": "/2026/10/14/",
+      "destination": "/a-complete-guide-to-choosing-the-right-takeout-bags-for-food-businesses/",
+      "permanent": true
+    },
+    {
+      "source": "/2026/10/14",
+      "destination": "/a-complete-guide-to-choosing-the-right-takeout-bags-for-food-businesses/",
+      "permanent": true
+    },
+    {
+      "source": "/2026/10/16/",
+      "destination": "/how-to-keep-hot-and-cold-foods-at-the-right-temperature-during-delivery/",
+      "permanent": true
+    },
+    {
+      "source": "/2026/10/16",
+      "destination": "/how-to-keep-hot-and-cold-foods-at-the-right-temperature-during-delivery/",
+      "permanent": true
+    },
+    {
+      "source": "/2026/10/21/",
+      "destination": "/how-to-choose-the-right-portion-cups-for-sauces-dressings-and-condiments/",
+      "permanent": true
+    },
+    {
+      "source": "/2026/10/21",
+      "destination": "/how-to-choose-the-right-portion-cups-for-sauces-dressings-and-condiments/",
+      "permanent": true
+    },
+    {
+      "source": "/2026/10/22/",
+      "destination": "/the-ultimate-guide-to-disposable-tableware-for-catering-companies/",
+      "permanent": true
+    },
+    {
+      "source": "/2026/10/22",
+      "destination": "/the-ultimate-guide-to-disposable-tableware-for-catering-companies/",
+      "permanent": true
+    },
+    {
+      "source": "/2026/10/23/",
+      "destination": "/how-to-select-the-right-food-storage-bags-for-commercial-kitchens/",
+      "permanent": true
+    },
+    {
+      "source": "/2026/10/23",
+      "destination": "/how-to-select-the-right-food-storage-bags-for-commercial-kitchens/",
+      "permanent": true
+    },
+    {
+      "source": "/2026/10/26/",
+      "destination": "/why-tamper-evident-packaging-matters-for-restaurant-delivery-orders/",
+      "permanent": true
+    },
+    {
+      "source": "/2026/10/26",
+      "destination": "/why-tamper-evident-packaging-matters-for-restaurant-delivery-orders/",
+      "permanent": true
+    },
+    {
+      "source": "/:y(\\d{4})/:m(\\d{2})/:d(\\d{2})/",
+      "destination": "/blog/",
+      "permanent": true
+    },
+    {
+      "source": "/:y(\\d{4})/:m(\\d{2})/",
+      "destination": "/blog/",
+      "permanent": true
+    },
+    {
+      "source": "/:y(\\d{4})/",
+      "destination": "/blog/",
+      "permanent": true
+    },
+    {
       "source": "/shop/",
       "destination": "/products/",
       "permanent": true
