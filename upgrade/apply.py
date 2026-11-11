@@ -23,6 +23,7 @@ import guides  # noqa: E402
 import industries  # noqa: E402
 import seo2  # noqa: E402
 import location_data  # noqa: E402
+import new_products  # noqa: E402
 GUIDES = []
 LOCATION_URLS = []
 GUIDE_URLS = []
@@ -335,7 +336,7 @@ CAT_HEADERS = {
                'crown-cat-gloves', 'Cases of Crown disposable vinyl gloves stacked on pallets in the Houston warehouse'),
     'food-service-supplies': ('Food Service Supplies', 'PET and portion cups with lids, deli and take-out containers, cutlery kits, food film and paper bags.',
                               'crown-cat-food-service-supplies', 'Pallets of Crown 28 oz rectangular black containers in the Houston warehouse'),
-    'paper-napkins': ('Paper Napkins', 'Interfold, tall fold, dinner and beverage napkins in bulk cases.',
+    'paper-napkins': ('Paper Napkins', 'Interfold, tall fold, dinner, lunch and beverage napkins in bulk cases.',
                       'crown-cat-paper-napkins', 'Stacked cases of Crown white tall fold napkins'),
     'paper-supply': ('Paper Supply', 'Kitchen roll towels, C-fold towels, multi-fold and single-fold napkins.',
                      'crown-cat-paper-supply', 'Racks of Crown paper cases along a warehouse aisle'),
@@ -792,6 +793,7 @@ def upgrade_html(path, snippets, search_items, sitemap):
         return False
     prefix = rel_prefix(path)
     url = page_url(path)
+    s = new_products.link(s)   # list products added after the snapshot in menus and grids
 
     # --- content consistency -------------------------------------------------
     # One phone number everywhere: (844) 900-0084 (the WordPress pages also showed 900-8801).
@@ -1112,6 +1114,13 @@ def main():
     if not os.path.isdir(SITE):
         print('no site dir: %s' % SITE)
         return 1
+    # products added after the snapshot: built from a similar product's page, then upgraded like the rest
+    photo_src = os.path.join(ASSETS, 'new-products')
+    photo_dst = os.path.join(SITE, 'wp-content', 'uploads', '2026', '10')
+    os.makedirs(photo_dst, exist_ok=True)
+    for name in os.listdir(photo_src):
+        shutil.copy(os.path.join(photo_src, name), os.path.join(photo_dst, name))
+    print('new products: %s' % (', '.join(new_products.add_pages(SITE)) or 'none'))
     seo2.init(SITE)
     snippets = {
         'map': open(os.path.join(ASSETS, 'map-section.html'), encoding='utf-8').read(),
