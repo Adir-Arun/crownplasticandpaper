@@ -34,6 +34,9 @@ FOOTER_BAND = seo2.footer_band(
      for c in location_data.FOOTER_CITIES if c != 'houston'],
     [('/guides/%s/' % g, n) for g, n, _ in guides.GUIDES],
     [('/industries/%s/' % i['slug'], i['name']) for i in industries.INDUSTRIES])
+import guides_buyer  # noqa: E402  (buying guides; added after the footer so the footer keeps the size charts only)
+guides.GUIDES += guides_buyer.ENTRIES
+guides.GROUPS.update(guides_buyer.GROUPS)
 
 SITE = sys.argv[1] if len(sys.argv) > 1 else 'site'
 HERE = os.path.dirname(os.path.abspath(__file__))

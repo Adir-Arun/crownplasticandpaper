@@ -319,6 +319,9 @@ GUIDES = [
     ('cases-per-pallet', 'Cases per pallet (Ti × Hi)', g_pallet),
 ]
 
+GROUPS = {}       # slug -> hub section; size charts have none
+CHART_GROUP = 'Size charts'
+
 # product slug -> guide URL, for the "Size guide" link on product pages
 PRODUCT_GUIDE = {}
 FAQS = []          # (question, answer) from every guide, for llms-full.txt
@@ -335,7 +338,10 @@ def render_guide(slug, short, fn, spec, products, origin):
                % ''.join('<li><a href="%s">%s</a></li>' % (products[s][1], E(products[s][0])) for s in related if s in products))
         for s in related:
             PRODUCT_GUIDE.setdefault(s, (url, short))
-    others = ''.join('<li><a href="/guides/%s/">%s</a></li>' % (s, E(n)) for s, n, _ in GUIDES if s != slug)
+    grp = GROUPS.get(slug, CHART_GROUP)
+    others = ''.join('<li><a href="/guides/%s/">%s</a></li>' % (s, E(n)) for s, n, _ in GUIDES
+                     if s != slug and GROUPS.get(s, CHART_GROUP) == grp)
+    others += '<li><a href="/guides/">All guides</a></li>'
     art = {'@context': 'https://schema.org', '@type': 'Article', 'headline': h1, 'description': desc, 'url': origin + url,
            'mainEntityOfPage': origin + url, 'dateModified': UPDATED, 'datePublished': UPDATED, 'inLanguage': 'en-US',
            'author': {'@id': origin + '/#org'}, 'publisher': {'@id': origin + '/#org'}, 'about': short}
@@ -353,20 +359,23 @@ def render_guide(slug, short, fn, spec, products, origin):
 
 def hub(origin):
     crumb_html, crumb_ld = crumbs([('Home', '/'), ('Guides', None)], origin)
-    cards = ''.join('<li><a href="/guides/%s/"><strong>%s</strong></a></li>' % (s, E(n)) for s, n, _ in GUIDES)
+    order = [CHART_GROUP] + [x for x in dict.fromkeys(GROUPS.values())]
+    secs = ''.join('<section class="cpp-loc-sec"><h2>%s</h2><ul class="cpp-loc-near cpp-guide-hub">%s</ul></section>' % (
+        E(grp), ''.join('<li><a href="/guides/%s/"><strong>%s</strong></a></li>' % (s, E(n)) for s, n, _ in GUIDES if GROUPS.get(s, CHART_GROUP) == grp))
+        for grp in order)
     data = {'@context': 'https://schema.org', '@type': 'CollectionPage', 'name': 'Food service packaging size guides', 'url': origin + '/guides/',
             'hasPart': [{'@type': 'Article', 'name': n, 'url': '%s/guides/%s/' % (origin, s)} for s, n, _ in GUIDES]}
     body = ''.join([
-        hero(crumb_html, 'Food Service Packaging Size Guides',
-             'Size charts and buying guides built from our own spec sheets: which lid fits which cup, how many cases fit on a pallet, and which container or glove to use for each job.',
-             [('%d guides' % len(GUIDES), 'with size charts'), ('Spec-sheet', 'figures'), ('Updated', 'November 2026'), ('Free', 'to use and share')]),
+        hero(crumb_html, 'Food Service Packaging Size Charts and Buying Guides',
+             'Size charts built from our own spec sheets, plus buying guides for distributors, restaurant groups and every kind of food business: lid fit, pallet counts, pallet pricing, freight and what to stock.',
+             [('%d guides' % len(GUIDES), 'charts and buying guides'), ('Spec-sheet', 'figures'), ('Updated', 'November 2026'), ('Free', 'to use and share')]),
         '<div class="cpp-loc cpp-guide" data-cpp-upgrade><div class="cpp-wrap">',
-        '<section class="cpp-loc-sec"><h2>Size charts</h2><ul class="cpp-loc-near cpp-guide-hub">%s</ul></section>' % cards,
+        secs,
         '<section class="cpp-loc-sec"><h2>More reading</h2><ul class="cpp-loc-near"><li><a href="/category/product-guides/">Product guides on our blog</a></li>'
         '<li><a href="/catalog/">2026 product catalog</a></li><li><a href="/locations/">Service areas and transit times</a></li><li><a href="/industries/">Who we supply</a></li></ul></section>',
         '</div></div>', crumb_ld, ld(data)])
-    return ('/guides/', 'Food Service Packaging Size Guides and Charts | Crown Plastic & Paper',
-            'Free size charts for food service disposables: PET cup lid fit, portion cups, deli and takeout containers, foil pans, gloves and cases per pallet.', body)
+    return ('/guides/', 'Size Charts & Buying Guides for Disposables | Crown Plastic & Paper',
+            'Size charts and buying guides for food service disposables: lid fit, case and pallet counts, pallet pricing, freight, and supplies by type of business.', body)
 
 
 def all_pages(spec, products, origin):
