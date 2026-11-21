@@ -351,7 +351,7 @@ def render_guide(slug, short, fn, spec, products, origin):
         '<section class="cpp-loc-sec"><h2>How ordering works</h2><ol class="cpp-loc-steps"><li><b>Send your list.</b> Products, sizes and case counts through the quote form, by phone, text or WhatsApp.</li>'
         '<li><b>Get one wholesale quote.</b> Case and pallet pricing for the whole list, delivered or Houston pick-up.</li>'
         '<li><b>We ship from Houston.</b> Orders typically leave the warehouse in %s. Approved accounts get Net 30.</li></ol></section>' % E(geo.F['ship']),
-        '<section class="cpp-loc-sec"><h2>More guides</h2><ul class="cpp-loc-near">%s<li><a href="/catalog/">2026 catalog</a></li></ul></section>' % others,
+        '<section class="cpp-loc-sec"><h2>More guides</h2><ul class="cpp-loc-near">%s</ul></section>' % others,
         '<p class="cpp-guide-updated">Updated %s. Figures come from Crown Plastic &amp; Paper product spec sheets.</p>' % 'November 2026',
         '</div></div>', faq_block('Questions about %s' % short.lower().replace('pet', 'PET'), faq), crumb_ld, ld(art)])
     return url, title, desc, body
@@ -372,7 +372,7 @@ def hub(origin):
         '<div class="cpp-loc cpp-guide" data-cpp-upgrade><div class="cpp-wrap">',
         secs,
         '<section class="cpp-loc-sec"><h2>More reading</h2><ul class="cpp-loc-near"><li><a href="/category/product-guides/">Product guides on our blog</a></li>'
-        '<li><a href="/catalog/">2026 product catalog</a></li><li><a href="/locations/">Service areas and transit times</a></li><li><a href="/industries/">Who we supply</a></li></ul></section>',
+        '<li><a href="/locations/">Service areas and transit times</a></li><li><a href="/industries/">Who we supply</a></li></ul></section>',
         '</div></div>', crumb_ld, ld(data)])
     return ('/guides/', 'Size Charts & Buying Guides for Disposables | Crown Plastic & Paper',
             'Size charts and buying guides for food service disposables: lid fit, case and pallet counts, pallet pricing, freight, and supplies by type of business.', body)
