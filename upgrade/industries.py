@@ -122,7 +122,7 @@ def page(ind, products, origin):
         n, u, d = products[s]
         cards.append('<li><a href="%s"><b>%s</b>%s</a></li>' % (u, E(n), '<span>%s</span>' % E(d[:110]) if d else ''))
     out.append('<section class="cpp-loc-sec"><h2>Products %s order most</h2><ul class="cpp-loc-prods">%s</ul>'
-               '<p><a href="/products/">See all products</a> or <a href="/catalog/">flip through the 2026 catalog</a>.</p></section>' % (E(ind['name'].lower()), ''.join(cards)))
+               '<p><a href="/products/">See all products</a>.</p></section>' % (E(ind['name'].lower()), ''.join(cards)))
     import guides
     gmap = {s: n for s, n, _ in guides.GUIDES}
     out.append('<section class="cpp-loc-sec"><h2>Size guides</h2><ul class="cpp-loc-near">%s</ul></section>' % ''.join(
@@ -153,7 +153,7 @@ def hub(origin):
              [('Ships in', F['ship']), ('Mixed', 'pallets welcome'), ('Net 30', 'after credit approval'), ('Since', F['since'])]),
         '<div class="cpp-loc" data-cpp-upgrade><div class="cpp-wrap">',
         '<section class="cpp-loc-sec"><h2>Pick your business</h2><ul class="cpp-loc-prods">%s</ul></section>' % cards,
-        '<section class="cpp-loc-sec"><h2>Helpful links</h2><ul class="cpp-loc-near"><li><a href="/guides/">Size guides</a></li><li><a href="/catalog/">2026 catalog</a></li>'
+        '<section class="cpp-loc-sec"><h2>Helpful links</h2><ul class="cpp-loc-near"><li><a href="/guides/">Size guides</a></li>'
         '<li><a href="/locations/">Service areas</a></li><li><a href="/applications/">Credit application</a></li></ul></section>',
         '</div></div>', crumb_ld])
     return ('/industries/', 'Who We Supply: Restaurants, Caterers, Distributors and More | Crown Plastic & Paper',
