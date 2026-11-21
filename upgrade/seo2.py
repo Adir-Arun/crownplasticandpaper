@@ -1,5 +1,5 @@
 """Nov 2026 SEO/GEO fix spec: one clean business entity, complete Product data, FAQs on core pages,
-internal links (related products, blog -> products, footer link band), sister-company mention."""
+internal links (related products, blog -> products, footer link band)."""
 import glob
 import html
 import json
@@ -152,10 +152,8 @@ BASE_FAQ = [
     ('Can I mix products on one pallet?', 'Yes. Cups, containers, foil, gloves and napkins can share a pallet.'),
     ('How do I get pricing?', 'Call %s or request a quote. Pricing tiers are Houston pick-up, 6-pallet delivered and 12-pallet delivered.' % F['phone']),
 ]
-SISTER = ('Is Crown Plastic & Paper related to AR Unlimited Supply?',
-          'Yes. Crown Plastic & Paper is the product brand, and AR Unlimited Supply LLC (arunlimitedsupply.com), at the same Houston address, is the supply company that redistributes Crown products and more across 48 states.')
 CORE_FAQ = {
-    '/about-us/': ('About Crown Plastic & Paper: common questions', BASE_FAQ + [SISTER]),
+    '/about-us/': ('About Crown Plastic & Paper: common questions', BASE_FAQ),
     '/contact-us/': ('Contact and ordering questions', [
         ('What is the best way to reach sales?', 'Call %s, text or WhatsApp %s, email %s, or send the quote form.' % (F['phone'], F['whatsapp'], F['email'])),
         ('Can I pick up an order in Houston?', 'Yes, at %s, %s, %s %s. Send your list first so it is staged when you arrive.' % (F['street'], F['city'], F['region'], F['zip'])),
@@ -233,9 +231,6 @@ def faqs(s, url, spec_map):
     elif url.startswith('/product/') and not _valid_faq(s):
         slug = url.split('/')[2]
         s = insert_before_footer(s, faq_block('Questions about %s' % PRODUCTS.get(slug, {}).get('name', 'this product'), product_faq(slug, spec_map)))
-    if url == '/about-us/' and 'cpp-sister' not in s:
-        s = insert_before_footer(s, '<section class="cpp-sister" data-cpp-upgrade><div class="cpp-wrap"><p>Crown Plastic &amp; Paper is the product brand. '
-                                    '<a href="https://www.arunlimitedsupply.com/">AR Unlimited Supply</a>, our supply company at the same Houston warehouse (7350 Langfield Rd), redistributes Crown products and more.</p></div></section>')
     return s
 
 
