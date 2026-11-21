@@ -63,14 +63,14 @@ INDUSTRIES = [
                  'gloves, bags and janitorial paper, with published spec sheets (case pack, Ti × Hi, cases per pallet) for every item, '
                  'pallet price tiers, and Net 30 for approved accounts.'),
         'need': [('Pallet programs', 'Price tiers for Houston pick-up, 6 pallets delivered and 12 pallets delivered; full truckload is the lowest cost per case.'),
-                 ('Clean data for your catalog', 'A spec sheet for every product with case pack, Ti × Hi and cases per pallet, plus our 2026 catalog to share with your customers.'),
+                 ('Clean data for your catalog', 'A spec sheet for every product with case pack, Ti × Hi and cases per pallet, and the full product range listed on our products page.'),
                  ('Reliable fill', 'Stock is held in our 60,000 sq ft Houston warehouse and ships in %s.' % F['ship'])],
         'products': ['pet-cups', 'portion-cups', 'deli-containers', 'black-containers', 'foil-rolls', 'deep-steam-table-pans', 'interfold-napkins',
                      'blue-nitrile-gloves', 'paper-bags', 'trash-liners', 'jumbo-roll-tissue', 'register-roll-paper'],
         'guides': ['cases-per-pallet', 'pet-cup-sizes', 'takeout-container-sizes', 'disposable-gloves-guide'],
         'faq': [('Do you sell to distributors outside Texas?', 'Yes. We ship to all 48 contiguous states by LTL freight or full truckload. See our service areas for transit times.'),
                 ('What are your pallet price tiers?', 'Pricing tiers are %s.' % F['tiers']),
-                ('Can I get spec sheets for my catalog?', 'Yes. Every product page has its spec sheet as a PDF, and the 2026 catalog can be downloaded as a PDF.'),
+                ('Can I get spec sheets for my catalog?', 'Yes. Every product page has its spec sheet as a PDF, and the full product range is listed on our products page.'),
                 ('Do you offer Net 30?', 'Yes, %s.' % F['terms'])],
     },
     {
