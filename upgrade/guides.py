@@ -1,7 +1,7 @@
 """/guides/: size charts and buying guides built from our own spec sheets (assets/spec-map.json).
 
 These are the pages answer engines quote: one direct answer at the top, a real table, an FAQ.
-Every number comes from the spec map (or the 2026 catalog where noted); nothing is estimated.
+Every number comes from the spec map; nothing is estimated.
 """
 import html
 import re
@@ -78,7 +78,7 @@ def g_pet(spec, products):
            '<li><b>32oz:</b> extra-large drinks and party-size servings; it takes its own 107mm lid.</li></ul>'
            '<p>Standardizing on the 98mm rim (12oz to 24oz) is the easiest way to cut lid SKUs: four cup sizes, one lid size.</p></section>') % (
         table('PET cups: rim size, case pack and cases per pallet (from our spec sheets)', ['Cup size', 'Lid size (rim)', 'Case pack', 'Cases / pallet'], rows,
-              'The 2026 catalog also lists a 12oz PET cup with a 90mm rim; ask for it on your quote if that is the lid you already stock.'),
+              'We also offer a 12oz PET cup with a 90mm rim; ask for it on your quote if that is the lid you already stock.'),
         table('PET cup lids', ['Lid type', 'Fits rim', 'Case pack', 'Cases / pallet'], lid_rows))
     faq = [('What size lid fits a 16oz PET cup?', 'Our 16oz PET cup has a 98mm rim, so it takes any 98mm lid: flat, flat with straw hole, dome or slip-through. The same lids fit our 12oz (98mm), 20oz and 24oz cups.'),
            ('Do 12oz and 24oz PET cups use the same lid?', 'Yes, when both are 98mm-rim cups. In our line the 12oz (98mm), 16oz, 20oz and 24oz cups all share the 98mm lid.'),
@@ -109,7 +109,7 @@ def g_portion(spec, products):
            '<section class="cpp-loc-sec"><h2>Which lid fits which portion cup</h2>%s</section>'
            '<section class="cpp-loc-sec"><h2>What each size is used for</h2>%s</section>') % (
         table('Portion cups: color, case pack and cases per pallet', ['Size', 'Color', 'Case pack', 'Cases / pallet'], rows,
-              'Black cups are listed in our 2026 catalog; pallet counts for them come with your quote.'),
+              'Black cups are also available on request; pallet counts for them come with your quote.'),
         table('Portion cup lids', ['Fits', 'Lid', 'Case pack'], lid_rows), uses)
     faq = [('What lid fits a 2oz portion cup?', 'The 1.5–2oz lid. It fits both 1.5oz and 2oz portion cups.'),
            ('Do 3.25oz and 4oz portion cups use the same lid?', 'Yes. One lid size covers 3.25oz, 4oz and 5.5oz portion cups.'),
@@ -176,7 +176,7 @@ def g_takeout(spec, products):
            '<li><b>Bagasse:</b> the compostable, PFAS-free choice where foam or plastic is restricted.</li></ul></section>') % (
         table('Black-base takeout containers (sold as sets: base and lid)', ['Size', 'Shape', 'Case pack', 'Cases / pallet'], r1),
         table('Hinged containers', ['Size', 'Compartments', 'Material', 'Case pack', 'Cases / pallet'], r2,
-              'Clear PET hinged containers are listed in our 2026 catalog; pallet counts come with your quote.'))
+              'Clear PET hinged containers are also available on request; pallet counts come with your quote.'))
     faq = [('What size takeout container do I need for a full meal?', 'For an entrée with sides, a 28oz to 38oz rectangular black container or an 8"×8" or 9"×9" hinged container (3-compartment keeps sides separate).'),
            ('How many takeout containers are in a case?', 'Black-base rectangular, square and round containers pack 150 sets per case. Black hinged containers pack 150 per case, except 6"×6" at 300. Clear PET hinged: 200 to 400. Bagasse hinged: 200 to 500 depending on size.'),
            ('Are your bagasse containers PFAS-free?', 'Yes. Our bagasse (sugarcane fiber) hinged containers are PFAS-free.'),
@@ -212,7 +212,7 @@ def g_foil(spec, products):
            'Pop-up foil sheets (9"×10.75" and 12"×10.75") are pre-cut for fast wrapping of burgers, burritos and sandwiches.</p></section>') % (
         table('Foil pans and lids', ['Item', 'Case pack', 'Cases / pallet'], r1),
         table('Foil sheets and rolls', ['Item', 'Case pack', 'Cases / pallet'], r2,
-              'Cushion foil and board lids are listed in our 2026 catalog; pallet counts come with your quote.'))
+              'Cushion foil and board lids are also available on request; pallet counts come with your quote.'))
     faq = [('How many half-size pans fit in a full-size steam table slot?', 'Two. A half-size pan is half of a full-size pan, so two sit side by side in one full-size opening.'),
            ('How many foil pans are in a case?', 'Full-size deep steam table pans: 50 per case. Half-size deep: 100 per case. 7" and 9" round pans: 500 per case.'),
            ('Do your foil pans come with lids?', 'Lids are sold separately so you only buy what you need: foil lids for full- and half-size pans, and board lids for 7" and 9" round pans.'),

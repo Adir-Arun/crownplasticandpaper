@@ -882,6 +882,11 @@ def upgrade_html(path, snippets, search_items, sitemap):
                else 'href="%s%s"' % (m.group(1) or './', m.group(2) or ''), s)
     s = fix_self_links(s)
     s = fix_article_links(s)
+    # /catalog/ was taken down (301 to /products/). Its menu entry would now be a second "Products"
+    # item next to the existing one, so drop it; any other link left with that label says Products.
+    s = re.sub(r'<li class="[^"]*"(?: id="[^"]*")?><a\b[^>]*href="/products/"[^>]*>\s*Catalog\s*</a></li>', '', s)
+    s = re.sub(r'(<a\b[^>]*href="/products/"[^>]*>)\s*Catalog\s*</a>', r'\1Products</a>', s)
+    s = s.replace('View 2026 Catalog', 'View All Products')
     for marker in TESTIMONIAL_BLOCKS:
         s = remove_div(s, marker)
     # image title tooltips stuffed with a keyword phrase ("Reliable Paper Products Wholesaler in the USA 25")
