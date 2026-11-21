@@ -557,6 +557,11 @@ def home_faq(s):
 
 def rebrand(s):
     """This is Crown's site: replace the AR Unlimited Supply name (titles, Google data, text)."""
+    # leftovers the exact-case replace missed: a WordPress CSS comment and lower-case
+    # mentions in the credit-application terms
+    s = s.replace('/* ar unlimited supply product Details icon list */', '/* product Details icon list */')
+    s = re.sub(r'\bAR unlimited supply\b', html.escape(BRAND_NEW), s)
+    s = re.sub(r'\bapproved by AR unlimited\.', 'approved by ' + html.escape(BRAND_NEW) + '.', s)
     if BRAND_OLD not in s:
         return s
     # JSON-LD is JSON, not HTML: a literal "&" there.
@@ -1304,11 +1309,9 @@ def main():
                  '- [Service areas](%(o)s/locations/): cities and transit times\n'
                  '- [Houston](%(o)s/locations/texas/houston/)\n'
                  '- [About](%(o)s/about-us/)\n'
-                 '- [Contact / quote](%(o)s/contact-us/)\n'
-                 '\n## Related\n\n'
-                 '- Brand and supply partner: Crown Plastic & Paper is the product brand; AR Unlimited Supply LLC (https://www.arunlimitedsupply.com/), at the same Houston address, redistributes Crown products and more to restaurants, distributors and institutions in 48 states\n') % {'o': ORIGIN}
+                 '- [Contact / quote](%(o)s/contact-us/)\n') % {'o': ORIGIN}
         if full:
-            qa_ = seo2.BASE_FAQ + [seo2.SISTER] + guides.FAQS
+            qa_ = seo2.BASE_FAQ + guides.FAQS
             text += '\n## Frequently asked questions\n\n' + '\n'.join('Q: %s\nA: %s\n' % (q, a) for q, a in qa_)
         text += '\n## Catalog\n\n- [2026 product catalog (flipbook)](%s/catalog/) · [PDF](%s/catalog/crown-product-catalog-2026.pdf)\n' % (ORIGIN, ORIGIN)
         if LOCATION_URLS:
