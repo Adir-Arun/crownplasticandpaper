@@ -94,6 +94,8 @@ SEARCH_ACTION_RE = re.compile(
     r'action="((?:\.\./)*)(?:products/)?(?:product_cat-[^"/]*/)?\{\{data\.[a-z_]+\}\}\.html"')
 
 
+VA_SNIPPET = ('<script>window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };</script>'
+              '<script defer src="/_vercel/insights/script.js"></script>')
 BRAND_OLD = 'AR Unlimited Supply'
 BRAND_NEW = 'Crown Plastic & Paper'
 LDJSON_RE = re.compile(r'(<script[^>]*application/ld\+json[^>]*>)(.*?)(</script>)', re.S)
@@ -1331,6 +1333,20 @@ def main():
     # Branded "page not found" (Vercel serves /404.html for unknown paths).
     open(os.path.join(SITE, '404.html'), 'w', encoding='utf-8').write(
         recolor(open(os.path.join(ASSETS, '404.html'), encoding='utf-8').read()))
+    # Vercel Web Analytics (static-site snippet), once in the <head> of every generated page
+    va_pages = 0
+    for root, _, files in os.walk(SITE):
+        for name in files:
+            if not name.endswith('.html'):
+                continue
+            path = os.path.join(root, name)
+            page = open(path, encoding='utf-8', errors='surrogateescape').read()
+            if VA_SNIPPET in page or '</head>' not in page:
+                continue
+            page = page.replace('</head>', VA_SNIPPET + '</head>', 1)
+            open(path, 'w', encoding='utf-8', errors='surrogateescape').write(page)
+            va_pages += 1
+    print('web analytics: snippet added to %d pages' % va_pages)
     print('upgraded %d pages, %d stylesheets, %d search entries' % (pages, css, len(uniq)))
     return 0
 
