@@ -626,6 +626,12 @@ DEAD_LINKS = {
 WP_HEAD_DEAD = re.compile(r"""<link\b(?=[^>]*(?:application/rss\+xml|json\+oembed|xml\+oembed|api\.w\.org|href=["']/wp-json|rel=["'](?:shortlink|EditURI|wlwmanifest|pingback)["']))[^>]*>\s*""", re.I)
 
 
+# Send visitors who reach the Vercel production alias to the real domain (vercel.json host redirects
+# do not fire for *.vercel.app on this project). Preview URLs are left alone.
+HOST_GUARD = ('<script>(function(h){if(h==="crownplasticandpaper-topaz.vercel.app"||h==="crownplasticandpaper.vercel.app")'
+              'location.replace("https://crownplasticandpaper.com"+location.pathname+location.search+location.hash)})(location.hostname)</script>')
+
+
 def strip_wp_head(s):
     """Static snapshot has no feeds, oEmbed or REST API: drop head links that would 404."""
     return WP_HEAD_DEAD.sub('', s)
@@ -1367,6 +1373,8 @@ def main():
             if VA_SNIPPET in page or '</head>' not in page:
                 continue
             page = page.replace('</head>', VA_SNIPPET + '</head>', 1)
+            if HOST_GUARD not in page:
+                page = re.sub(r'(<head\b[^>]*>)', lambda m: m.group(1) + HOST_GUARD, page, count=1)
             open(path, 'w', encoding='utf-8', errors='surrogateescape').write(page)
             va_pages += 1
     print('web analytics: snippet added to %d pages' % va_pages)
