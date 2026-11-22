@@ -623,6 +623,14 @@ DEAD_LINKS = {
 }
 
 
+WP_HEAD_DEAD = re.compile(r"""<link\b(?=[^>]*(?:application/rss\+xml|json\+oembed|xml\+oembed|api\.w\.org|href=["']/wp-json|rel=["'](?:shortlink|EditURI|wlwmanifest|pingback)["']))[^>]*>\s*""", re.I)
+
+
+def strip_wp_head(s):
+    """Static snapshot has no feeds, oEmbed or REST API: drop head links that would 404."""
+    return WP_HEAD_DEAD.sub('', s)
+
+
 def fix_dead_links(s):
     def repl(m):
         text = re.sub(r'<[^>]+>|\s+', ' ', m.group(3)).strip().lower()
@@ -880,6 +888,7 @@ def upgrade_html(path, snippets, search_items, sitemap):
     # --- broken links ----------------------------------------------------------
     s = fix_placeholders(s)
     s = fix_dead_links(s)
+    s = strip_wp_head(s)
     s = re.sub(r'href="([^"#?:]*?)index\.html(#[^"]*)?"',
                lambda m: 'href="%s"' % m.group(2) if not m.group(1) and m.group(2) and len(m.group(2)) > 1
                else 'href="%s%s"' % (m.group(1) or './', m.group(2) or ''), s)
