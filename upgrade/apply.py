@@ -18,6 +18,7 @@ import urllib.parse
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import geo  # noqa: E402
 import locations  # noqa: E402
+import catalog_page  # noqa: E402
 import guides  # noqa: E402
 import industries  # noqa: E402
 import seo2  # noqa: E402
@@ -68,7 +69,7 @@ INDEXNOW_KEY = '4926503e2eb4d675df74dc7347df8da2'
 PHONE_TEXT = '(844) 900-0084'
 PHONE_TEL = 'tel:+18449000084'
 EMAIL = 'info@crownplasticandpaper.com'
-CATALOG = '/products/'  # the AR-branded /catalog/ flipbook was taken down; 301 to /products/ in vercel.json
+CATALOG = '/catalog/'
 CROWN_LINKEDIN = 'https://www.linkedin.com/company/crown-plastic-paper/'
 DATE_ARCHIVES = {'2026/03/31': '/blog/', '2026/06/09': '/ways-high-quality-packaging-can-improve-customer-retention-for-restaurants/', '2026/09/16': '/choosing-the-right-register-rolls-for-retail-and-hospitality-businesses/', '2026/09/21': '/expanding-your-business-through-strategic-international-sourcing/', '2026/09/23': '/the-future-of-wholesale-distribution-in-a-competitive-marketplace/', '2026/09/28': '/best-practices-for-selecting-products-for-wholesale-distribution/', '2026/09/30': '/cost-effective-dinner-napkin-solutions-for-restaurants-and-catering-businesses/', '2026/10/02': '/how-wholesale-food-packaging-helps-restaurants-reduce-operating-costs/', '2026/10/14': '/a-complete-guide-to-choosing-the-right-takeout-bags-for-food-businesses/', '2026/10/16': '/how-to-keep-hot-and-cold-foods-at-the-right-temperature-during-delivery/', '2026/10/21': '/how-to-choose-the-right-portion-cups-for-sauces-dressings-and-condiments/', '2026/10/22': '/the-ultimate-guide-to-disposable-tableware-for-catering-companies/', '2026/10/23': '/how-to-select-the-right-food-storage-bags-for-commercial-kitchens/', '2026/10/26': '/why-tamper-evident-packaging-matters-for-restaurant-delivery-orders/'}   # WordPress day archive -> its post (vercel.json 301s the same paths)
 DATE_LINK_RE = re.compile(r'<a href="(?:\.\./)*/?(?:https://crownplasticandpaper\.com/)?\d{4}/\d{2}/\d{2}/(?:index\.html)?">(.*?)</a>', re.S)
@@ -734,7 +735,7 @@ def fix_placeholders(s):
             return 'href="%s"' % frag
         tail = s[m.end():m.end() + 900]
         text = strip_tags(tail.split('</a>', 1)[0].split('>', 1)[-1]).lower()
-        if 'catalog' in text or text == 'view all products':
+        if 'catalog' in text:
             return 'href="%s"' % CATALOG
         if text == 'home':  # product-page breadcrumb
             return 'href="/"'
@@ -831,7 +832,7 @@ def upgrade_html(path, snippets, search_items, sitemap):
     s = s.replace('@www.crownplasticandpaper.com', '@crownplasticandpaper.com')
     s = s.replace('Copyright © 2025 AR Unlimited Supply', 'Copyright © %s Crown Plastic &#038; Paper' % YEAR)
     s = re.sub(r'Copyright © 2025 Crown', 'Copyright © %s Crown' % YEAR, s)
-    s = s.replace('View 2025 Catalog', 'View All Products')
+    s = s.replace('View 2025 Catalog', 'View 2026 Catalog')
     s = re.sub(r'<li[^>]*>\s*<a[^>]*page_id=66[^>]*>\s*Home old\s*</a>\s*</li>', '', s)
 
     # --- About Us video still showed an AR Unlimited Supply truck: use the Crown warehouse photo
@@ -884,11 +885,6 @@ def upgrade_html(path, snippets, search_items, sitemap):
                else 'href="%s%s"' % (m.group(1) or './', m.group(2) or ''), s)
     s = fix_self_links(s)
     s = fix_article_links(s)
-    # /catalog/ was taken down (301 to /products/). Its menu entry would now be a second "Products"
-    # item next to the existing one, so drop it; any other link left with that label says Products.
-    s = re.sub(r'<li class="[^"]*"(?: id="[^"]*")?><a\b[^>]*href="/products/"[^>]*>\s*Catalog\s*</a></li>', '', s)
-    s = re.sub(r'(<a\b[^>]*href="/products/"[^>]*>)\s*Catalog\s*</a>', r'\1Products</a>', s)
-    s = s.replace('View 2026 Catalog', 'View All Products')
     for marker in TESTIMONIAL_BLOCKS:
         s = remove_div(s, marker)
     # image title tooltips stuffed with a keyword phrase ("Reliable Paper Products Wholesaler in the USA 25")
@@ -1244,6 +1240,23 @@ def main():
             linked += 1
         print('guides + industries: %d pages, %d product pages linked to a size chart' % (len(made), linked))
 
+    # --- /catalog/: the product catalog as a flipbook on our own domain --------------------------
+    cat_src = os.path.join(ASSETS, 'catalog')
+    if POLISH and os.path.exists(shell_path) and os.path.isdir(cat_src):
+        cat_dir = os.path.join(SITE, 'catalog')
+        os.makedirs(os.path.join(cat_dir, 'pages'), exist_ok=True)
+        for name in os.listdir(os.path.join(cat_src, 'pages')):
+            shutil.copy(os.path.join(cat_src, 'pages', name), os.path.join(cat_dir, 'pages', name))
+        for name in ('catalog.css', 'catalog.js', 'page-flip.min.js', 'crown-product-catalog-2026.pdf', 'crown-catalog-2026-share.jpg'):
+            shutil.copy(os.path.join(cat_src, name), os.path.join(cat_dir, name))
+        page_ = render_location(shell, catalog_page.URL, catalog_page.TITLE, catalog_page.DESC,
+                                catalog_page.body(catalog_page.load(ASSETS), ORIGIN))
+        page_ = re.sub(r'<meta property="og:image" content="[^"]*"', '<meta property="og:image" content="%s/catalog/crown-catalog-2026-share.jpg"' % ORIGIN, page_, count=1)
+        with open(os.path.join(cat_dir, 'index.html'), 'w', encoding='utf-8') as f:
+            f.write(page_)
+        sitemap.append((catalog_page.URL, catalog_page.UPDATED))
+        print('catalog: /catalog/ flipbook (%d pages)' % len(catalog_page.load(ASSETS)))
+
     # sitemap.xml and robots.txt (WordPress's were not part of the copy)
     # Pages with no date of their own (category and list pages) take the newest date of the
     # products or articles they link to.
@@ -1302,6 +1315,7 @@ def main():
         if full:
             qa_ = seo2.BASE_FAQ + guides.FAQS
             text += '\n## Frequently asked questions\n\n' + '\n'.join('Q: %s\nA: %s\n' % (q, a) for q, a in qa_)
+        text += '\n## Catalog\n\n- [2026 product catalog (flipbook)](%s/catalog/) · [PDF](%s/catalog/crown-product-catalog-2026.pdf)\n' % (ORIGIN, ORIGIN)
         if LOCATION_URLS:
             text += '\n## Service areas (shipped from Houston)\n\n' + '\n'.join(
                 '- [%s](%s%s)' % (t.split(' | ')[0].replace('Wholesale Food Service Disposables in ', ''), ORIGIN, u) for u, t in LOCATION_URLS) + '\n'

@@ -174,6 +174,10 @@ CORE_FAQ = {
         ('What products does Crown Plastic & Paper sell?', 'Food service disposables and janitorial paper: PET cups and lids, portion cups, deli and takeout containers, foil pans and rolls, napkins, gloves, bags, towels, tissue and trash liners.'),
         ('Is there a spec sheet for each product?', 'Yes. Every product page lists case pack, Ti × Hi and cases per pallet, with a PDF spec sheet.'),
         BASE_FAQ[4], BASE_FAQ[5]]),
+    '/catalog/': ('Catalog questions', [
+        ('Can I download the catalog?', 'Yes. Use Download PDF on this page to save the 2026 catalog (2.6 MB) and share it with your team.'),
+        ('How do I get prices for items in the catalog?', 'Request a quote with the items and case counts you need; prices are set by order tier.'),
+        BASE_FAQ[2]]),
     '/guides/': ('Questions about the size guides', [
         ('Where do the numbers in the guides come from?', 'From our product spec sheets: case pack, Ti × Hi and cases per pallet for every item.'),
         BASE_FAQ[4], BASE_FAQ[5]]),
@@ -246,6 +250,7 @@ def related(s, url):
     if me['cat_slug']:
         links.append('<a href="/products/product_cat-%s/">All %s</a>' % (me['cat_slug'], E(me['cat'].lower())))
     links.append('<a href="/locations/texas/houston/">Wholesale supply in Houston</a>')
+    links.append('<a href="/catalog/">2026 catalog</a>')
     block = ('<section class="cpp-related" data-cpp-upgrade aria-labelledby="cpp-related-h"><div class="cpp-wrap"><h2 id="cpp-related-h">Related products</h2>'
              '<ul class="cpp-loc-prods">%s</ul><p class="cpp-related-links">%s</p></div></section>') % (cards, ' · '.join(links))
     TOUCHED.add(url)
@@ -291,7 +296,7 @@ def footer_band(cities, guides_list, industries_list):
     gd = ''.join('<li><a href="%s">%s</a></li>' % (u, E(n)) for u, n in guides_list)
     ind = ''.join('<li><a href="%s">%s</a></li>' % (u, E(n)) for u, n in industries_list)
     return ('<nav class="cpp-footlinks" data-cpp-upgrade aria-label="Popular pages"><div class="cpp-wrap">'
-            '<div><h2>Wholesale products</h2><ul>%s</ul></div>'
+            '<div><h2>Wholesale products</h2><ul>%s<li><a href="/catalog/">2026 catalog</a></li></ul></div>'
             '<div><h2>Service areas</h2><ul><li><a href="/locations/texas/houston/">Wholesale foodservice supplies Houston</a></li>%s<li><a href="/locations/">All service areas</a></li></ul></div>'
             '<div><h2>Size guides</h2><ul>%s</ul></div>'
             '<div><h2>Who we supply</h2><ul>%s</ul></div>'

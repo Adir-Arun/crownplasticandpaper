@@ -77,21 +77,6 @@
   "trailingSlash": true,
   "redirects": [
     {
-      "source": "/catalog",
-      "destination": "/products/",
-      "statusCode": 301
-    },
-    {
-      "source": "/catalog/",
-      "destination": "/products/",
-      "statusCode": 301
-    },
-    {
-      "source": "/catalog/:path*",
-      "destination": "/products/",
-      "statusCode": 301
-    },
-    {
       "source": "/2026/03/31/",
       "destination": "/blog/",
       "statusCode": 301
