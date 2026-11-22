@@ -77,6 +77,17 @@
   "trailingSlash": true,
   "redirects": [
     {
+      "source": "/:path*",
+      "has": [
+        {
+          "type": "host",
+          "value": "crownplasticandpaper(-topaz)?\\.vercel\\.app"
+        }
+      ],
+      "destination": "https://crownplasticandpaper.com/:path*",
+      "statusCode": 301
+    },
+    {
       "source": "/2026/03/31/",
       "destination": "/blog/",
       "statusCode": 301
