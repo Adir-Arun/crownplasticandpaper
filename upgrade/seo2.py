@@ -175,7 +175,7 @@ CORE_FAQ = {
         ('Is there a spec sheet for each product?', 'Yes. Every product page lists case pack, Ti × Hi and cases per pallet, with a PDF spec sheet.'),
         BASE_FAQ[4], BASE_FAQ[5]]),
     '/catalog/': ('Catalog questions', [
-        ('Can I download the catalog?', 'Yes. Use Download PDF on this page to save the 2026 catalog (2.6 MB) and share it with your team.'),
+        ('Can I download the catalog?', 'Yes. Use Download PDF on this page to save the interactive 2026 catalog (4.2 MB, 15 pages) and share it with your team. Phone numbers, email and item numbers in the PDF are clickable.'),
         ('How do I get prices for items in the catalog?', 'Request a quote with the items and case counts you need; prices are set by order tier.'),
         BASE_FAQ[2]]),
     '/guides/': ('Questions about the size guides', [
