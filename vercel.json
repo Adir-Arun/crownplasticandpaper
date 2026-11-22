@@ -81,11 +81,22 @@
       "has": [
         {
           "type": "host",
-          "value": "crownplasticandpaper(-topaz)?\\.vercel\\.app"
+          "value": "crownplasticandpaper-topaz.vercel.app"
         }
       ],
       "destination": "https://crownplasticandpaper.com/:path*",
-      "statusCode": 301
+      "permanent": true
+    },
+    {
+      "source": "/:path*",
+      "has": [
+        {
+          "type": "host",
+          "value": "crownplasticandpaper.vercel.app"
+        }
+      ],
+      "destination": "https://crownplasticandpaper.com/:path*",
+      "permanent": true
     },
     {
       "source": "/2026/03/31/",
