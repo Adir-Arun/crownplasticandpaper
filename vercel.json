@@ -518,5 +518,11 @@
       "destination": "/locations/illinois/chicago/",
       "permanent": true
     }
+  ],
+  "routes": [
+    {
+      "src": "^/supabet-casino-diseno-y-audio-interfaz-atractiva-y-sonido-envolvente(?:/)?$",
+      "status": 410
+    }
   ]
 }

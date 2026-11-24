@@ -1344,6 +1344,22 @@ def main():
         old_icon = os.path.join(SITE, 'wp-content', 'uploads', '2026', '02', name)
         if os.path.exists(old_icon):
             shutil.copy(os.path.join(ASSETS, 'icons', 'icon-512.png'), old_icon)
+    # wget saved the homepage HTML under image filenames; drop any that are still
+    # HTML after the icon replacement so they 404 instead of being served as images
+    # with leftover www canonicals.
+    dropped = 0
+    for rel in list(fake_images()):
+        path = os.path.join(SITE, rel.lstrip('/'))
+        try:
+            with open(path, 'rb') as fh:
+                head = fh.read(64).lstrip().lower()
+        except OSError:
+            continue
+        if head.startswith(b'<!doctype html') or head.startswith(b'<html'):
+            os.remove(path)
+            dropped += 1
+    if dropped:
+        print('removed %d html-as-image snapshot files' % dropped)
     spec_src = os.path.join(ASSETS, 'spec-sheets')
     if os.path.isdir(spec_src):
         spec_dir = os.path.join(SITE, 'spec-sheets')

@@ -41,7 +41,7 @@ def download(url_path, seen):
     dest = local_path(clean)
     if os.path.exists(dest) and not os.path.isdir(dest):
         return
-    url = 'https://www.crownplasticandpaper.com' + clean
+    url = 'https://crownplasticandpaper.com' + clean
     try:
         req = urllib.request.Request(url, headers=UA)
         with urllib.request.urlopen(req, timeout=30) as r:
