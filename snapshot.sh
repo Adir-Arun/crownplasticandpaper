@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
-# Takes a fresh static snapshot of www.crownplasticandpaper.com into site/.
+# Takes a fresh static snapshot of crownplasticandpaper.com into site/.
 # Run by the "Snapshot live site" GitHub Action (Actions tab > Run workflow).
 set -u
-SITE=www.crownplasticandpaper.com
+SITE=crownplasticandpaper.com
 command -v wget >/dev/null 2>&1 || dnf install -y wget >/dev/null 2>&1 || yum install -y wget >/dev/null 2>&1
 rm -rf mirror site && mkdir -p mirror
 cd mirror
