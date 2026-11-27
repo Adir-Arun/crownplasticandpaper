@@ -378,8 +378,10 @@ BUYER = [
      'sections': [('Paper bag sizes we stock', ('spec', 'paper-bags', 'Paper bags')),
                   ('Poly bags we stock', ('spec', 'poly-bags', 'Poly bags')),
                   ('Poly bag sizes and thickness', [
-                      'How gusseted sizes read, what mil thickness means and LDPE vs HDPE: see the <a href="/guides/poly-bag-sizes/">poly bag sizes and thickness guide</a>.'])],
-     'faq': [('What size paper bag for one takeout meal?', 'A #8 or #10 bag usually fits one container with sides; #12 for two meals.'),
+                      'How gusseted sizes read, what mil thickness means and LDPE vs HDPE: see the <a href="/guides/poly-bag-sizes/">poly bag sizes and thickness guide</a>.']),
+                  ('Paper bag sizes explained', [
+                      'What #2 to #12 mean, which size fits which order and how many bags fit on a pallet: see the <a href="/guides/paper-bag-sizes/">paper bag sizes guide</a>.'])],
+     'faq': [('What size paper bag for one takeout meal?', 'A #8 bag fits one or two meals and is the usual takeout size; use #12 for family orders.'),
              ('Are plastic bags banned for restaurants?', 'Some states and cities restrict plastic carryout bags; check local rules.'),
              ('How many paper bags are in a case?', '500.')],
      'related': ['paper-bags', 'poly-bags', 'black-containers', 'disposable-cutlery-kits']},
@@ -569,7 +571,9 @@ BUYER = [
      'facts': [('Per meal', 'planning unit'), ('Sporks', 'one-piece option'), ('Pallets', 'before each semester'), ('Net 30', 'for approved accounts')],
      'sections': [('Per-meal planning', ('table', 'Per student per meal', ['Item', 'Typical quantity'], [
          ['Compartment tray', '1'], ['Cutlery kit or spork', '1'], ['Napkins', '1–2'], ['Portion cups (condiments)', '0–2'], ['Gloves (staff)', 'by shift']])),
-         ('Cutlery kits', ('spec', 'disposable-cutlery-kits', 'Cutlery and spork kits'))],
+         ('Cutlery kits', ('spec', 'disposable-cutlery-kits', 'Cutlery and spork kits')),
+         ('Compartment lunch trays', [
+             'Our 5-compartment molded fiber school tray, its case and pallet counts and how many cases a school year takes are in the <a href="/guides/school-lunch-trays/">disposable school lunch trays guide</a>.'])],
      'faq': [('How many trays for 500 students?', '500 per meal served; plan for days per month and a few percent spare.'),
              ('Sporks or full cutlery kits?', 'Sporks for younger students and simpler menus; kits for older students.'),
              ('Can schools get Net 30 terms?', 'Approved accounts get Net 30.')],
@@ -638,8 +642,8 @@ BUYER = [
              ['120', '1.2', '30', 'Heavy, irregular or sharp-cornered loads']],
              'Conversions are exact (1 gauge = 0.01 mil = 0.254 microns). Uses are general guidance; heavier loads can also be handled with more passes of a lighter film.')),
          ('Our stretch film', ('table', 'Stretch film we stock (from our spec sheet)', ['Width', 'Roll length', 'Gauge', 'Film', 'Rolls / case', 'Cases / pallet'], [
-             ['18"', '1,000 ft', '80', 'LLDPE, high cling, clear', '4', '66']],
-             'Ti × Hi 11 × 6.')),
+             ['18"', '1,000 ft', '80', 'LLDPE, high cling, clear', '4', '90']],
+             'Ti × Hi 10 × 9.')),
          ('Hand film vs machine film', [
              '<b>Hand film</b> is wrapped by a person walking around the pallet, usually with a handle or dispenser. Widths of 12 to 20 inches are common, and 18 inch is the standard because it covers a pallet quickly without being too heavy to hold.',
              '<b>Machine film</b> goes on a turntable or rotary arm wrapper. It comes on wider, heavier rolls, commonly 20 or 30 inches, and is pre-stretched by the machine. If you wrap fewer than a few dozen pallets a day, hand film is usually all you need.']),
@@ -773,7 +777,7 @@ BUYER = [
              '- <b>9" × 9" 1-compartment:</b> full entrées, rice and noodle dishes, fried food, salads.',
              '- <b>9" × 9" 3-compartment:</b> plate lunches, combo meals and catering boxes that keep sides apart.',
              '- <b>9" round plate:</b> buffets, events, cafeterias and picnics.',
-             '- <b>5-compartment school tray:</b> school and institutional meals; see <a href="/guides/school-cafeteria-disposables/">school cafeteria disposables</a>.',
+             '- <b>5-compartment school tray:</b> school and institutional meals; see the <a href="/guides/school-lunch-trays/">school lunch trays guide</a> and <a href="/guides/school-cafeteria-disposables/">school cafeteria disposables</a>.',
              'Every container size with black plastic and clear options side by side is in the <a href="/guides/takeout-container-sizes/">takeout container sizes chart</a>.']),
          ('Microwave, oven and freezer', [
              'Bagasse is microwave safe for reheating, so customers can warm leftovers in the same container. Vent or open the lid and heat in short intervals. We do not list bagasse as ovenable; for the oven, use <a href="/guides/foil-pans-oven-grill-air-fryer/">foil pans</a>. For a container-by-container chart, see <a href="/guides/microwave-safe-takeout-containers/">which takeout containers are microwave safe</a>.']),
@@ -792,7 +796,95 @@ BUYER = [
              ('Are your bagasse containers PFAS-free?', 'Yes. Our bagasse hinged containers are PFAS-free.'),
              ('What sizes do bagasse clamshells come in?', 'We stock 6 × 6, 9 × 6 and 9 × 9 inch 1-compartment, and 8 × 8 and 9 × 9 inch 3-compartment hinged containers.')],
      'related': ['bagasse-hinged-containers', 'round-plates', 'school-trays', 'black-containers'],
-     'primary': ['round-plates', 'school-trays']},
+     'primary': ['round-plates']},
+
+    # ================================================================ Search Console gap pages, round 2 (Nov 27 2026)
+    {'slug': 'school-lunch-trays', 'group': 'Product buying guides', 'short': 'Disposable school lunch trays',
+     'title': 'Disposable School Lunch Trays: 5-Compartment, Bulk',
+     'desc': 'Disposable 5-compartment school lunch trays in molded fiber: what goes in each compartment, 500 per case, 48 cases per pallet, and how many cases a school year takes.',
+     'h1': 'Disposable school lunch trays: compartments, material and bulk counts',
+     'answer': 'Our disposable school lunch tray is a 5-compartment molded fiber tray made from sugarcane bagasse, sold 500 trays per case and 48 cases per pallet (24,000 trays). The five compartments hold the entrée, a starch, a vegetable, bread or a roll, and fruit or dessert. It is microwave safe for reheating and PFAS-free, and replaces foam and plastic compartment trays.',
+     'facts': [('5', 'compartments'), ('500', 'trays per case'), ('48', 'cases per pallet'), ('24,000', 'trays per pallet')],
+     'sections': [
+         ('The tray we stock', ('table', 'School tray MFT-500 (from our spec sheet and 2026 catalog)', ['Spec', 'Detail'], [
+             ['Item #', 'MFT-500'], ['Compartments', '5'], ['Material', 'Molded fiber (sugarcane bagasse), PFAS-free'], ['Color', 'White (natural fiber)'],
+             ['Case pack', '500 trays'], ['Ti × Hi', '8 × 6'], ['Cases per pallet', '48 (24,000 trays)'],
+             ['Case dimensions', '16.93" × 12.99" × 10.83"'], ['Case weight', '25.11 lb']],
+             'Ti × Hi is cases per layer × layers per pallet.')),
+         ('What goes in each compartment', [
+             'The five compartments follow the portioned-tray layout used in school and institutional meal service, one well for each part of the meal:',
+             '- The entrée or main protein.',
+             '- A starch side.',
+             '- A vegetable side.',
+             '- Bread or a roll.',
+             '- Fruit or dessert.',
+             'Keeping each component in its own well makes portions consistent and easy to check on the line. Whether a menu meets your meal pattern is set by your program, not the tray, so confirm requirements with your nutrition program coordinator.',
+             'Full specs: the <a href="/product/school-trays/">school trays page</a> and the <a href="/spec-sheets/school-trays-mft-500-spec-sheet.pdf">MFT-500 spec sheet (PDF)</a>.']),
+         ('How many cases for a school year', ('table', 'Trays for a 180-day school year, one tray per student per day', ['Students served daily', 'Trays per year', 'Cases (500 trays)', 'Pallets (48 cases)'], [
+             ['250', '45,000', '90', '1.9'], ['500', '90,000', '180', '3.75'], ['1,000', '180,000', '360', '7.5'], ['2,000', '360,000', '720', '15']],
+             'A typical US school year is about 180 school days. Add a few percent for spills, seconds and staff meals, and double the count if the tray is also used at breakfast.')),
+         ('Molded fiber vs foam and plastic trays', [
+             '- <b>Molded fiber (bagasse):</b> plant-based, holds hot and greasy food, microwave safe for reheating and PFAS-free. Compostable in commercial composting facilities that accept it; check with your hauler.',
+             '- <b>Foam trays:</b> restricted or banned in a growing number of states and cities; see <a href="/guides/styrofoam-alternatives/">styrofoam alternatives</a>.',
+             '- <b>Plastic compartment trays:</b> an option for takeout-style service; where foam is being phased out, molded fiber is a common replacement for cafeteria trays.',
+             'Why PFAS-free matters and what to keep on file: <a href="/guides/pfas-free-takeout-containers/">PFAS-free takeout containers</a>. Other molded fiber sizes: <a href="/guides/bagasse-plates-and-containers/">bagasse plates and containers</a>.']),
+         ('What else goes on the tray line', [
+             '- <a href="/product/disposable-cutlery-kits/">Cutlery kits</a> or sporks, one per meal.',
+             '- <a href="/product/portion-cups/">Portion cups</a> for dressings and condiments; sizes in the <a href="/guides/portion-cup-sizes/">portion cup sizes chart</a>.',
+             '- <a href="/product/lunch-napkins/">Napkins</a>, one or two per student.',
+             '- <a href="/product/black-nitrile-gloves/">Gloves</a> for the serving line and <a href="/product/trash-liners/">trash liners</a> for the dish return.',
+             'The full per-student list is in <a href="/guides/school-cafeteria-disposables/">school cafeteria disposables</a>.']),
+         ('Ordering school trays wholesale', [
+             'School trays ship by the case and mix onto one pallet with cutlery, napkins and the rest of your order. Pricing tiers: %s. Approved accounts, including school districts and institutional buyers, can apply for Net 30; orders typically leave our Houston warehouse in %s.' % (F['tiers'], F['ship']),
+             'Request wholesale pricing through the quote form or call <a href="tel:+18449000084">%s</a>.' % F['phone']])],
+     'faq': [('How many compartments does a school lunch tray have?', 'Ours has 5: the entrée, a starch, a vegetable, bread or a roll, and fruit or dessert.'),
+             ('What are disposable school lunch trays made of?', 'Ours are molded fiber made from sugarcane bagasse, PFAS-free. Foam and plastic compartment trays also exist, but foam is restricted in many places.'),
+             ('How many school trays are in a case?', '500 trays per case, and 48 cases (24,000 trays) per pallet.'),
+             ('Are molded fiber school trays microwave safe?', 'Yes, for reheating meals in the tray.'),
+             ('Are bagasse school trays compostable?', 'They are compostable in commercial composting facilities that accept molded fiber. Check with your local program or hauler.'),
+             ('How many trays does a school need for a year?', 'About one tray per student per meal for roughly 180 school days: 500 students eating lunch daily use about 90,000 trays, or 180 cases (3.75 pallets).')],
+     'related': ['school-trays', 'round-plates', 'disposable-cutlery-kits', 'portion-cups', 'lunch-napkins'],
+     'primary': ['school-trays']},
+
+    {'slug': 'paper-bag-sizes', 'group': 'Product buying guides', 'short': 'Paper bag sizes (#2 to #12)',
+     'title': 'Paper Bag Sizes #2 to #12: Kraft & White, Bulk',
+     'desc': 'What paper bag sizes #2, #4, #6, #8 and #12 mean, which size fits which order, kraft vs white, 500 per case and how many cases fit on a pallet.',
+     'h1': 'Paper bag sizes explained: #2 to #12 flat-bottom bags',
+     'answer': 'Flat-bottom paper bags are sold by a size number, from #2 (small) to #12 (large). The number is a trade size, also written as pounds (a #8 bag is an "8 lb" bag), not a measurement. Use #2 to #4 for pastries and single items, #6 to #8 for one or two meals (#8 is the takeout workhorse) and #12 for family orders. We stock #2, #4, #6, #8 and #12 in kraft and white, 500 bags per case.',
+     'facts': [('#2–#12', 'sizes in stock'), ('500', 'bags per case'), ('Kraft / white', 'colors'), ('90–288', 'cases per pallet')],
+     'sections': [
+         ('What the size number means', [
+             'Paper bag sizes such as #6 or "6 lb" are a long-standing trade grading for flat-bottom (SOS) bags. The number originally related to roughly how many pounds of goods the bag would carry; today it works as a size class. Bags of the same number from different mills are close in size but not identical, so if a bag has to fit a specific container, test a sample.',
+             'Our <a href="/product/paper-bags/">paper bags page</a> lists the same bags by capacity (2 lb, 4 lb, 6 lb, 8 lb, 12 lb), with a spec sheet for every size and color; our catalog lists them as #2 to #12. They are the same items.']),
+         ('Which size for which order', [
+             '- <b>#2:</b> a pastry, cookie, donut or a single small item.',
+             '- <b>#4:</b> a sandwich, a few pastries or a single side.',
+             '- <b>#6:</b> one meal in a small container, or a bakery order.',
+             '- <b>#8:</b> one or two meals in standard takeout containers; the most common takeout size.',
+             '- <b>#12:</b> family and group orders, several containers stacked.',
+             'Match the bag to your container footprint: see the <a href="/guides/takeout-container-sizes/">takeout container sizes chart</a>.']),
+         ('Paper bags we stock', ('table', 'Flat-bottom paper bags (2026 catalog and spec sheets)', ['Size', 'Item # (kraft / white)', 'Per case', 'Ti × Hi', 'Cases / pallet', 'Bags / pallet'], [
+             ['#2', 'BPB-2 / WPB-2', '500', '32 × 9', '288', '144,000'],
+             ['#4', 'BPB-4 / WPB-4', '500', '12 × 12', '144', '72,000'],
+             ['#6', 'BPB-6 / WPB-6', '500', '12 × 12', '144', '72,000'],
+             ['#8', 'BPB-8 / WPB-8', '500', '9 × 10', '90', '45,000'],
+             ['#12', 'BPB-12 / WPB-12', '500', '9 × 10', '90', '45,000']],
+             'Every size comes in kraft and white with the same case pack and pallet pattern. Bags per pallet = 500 × cases per pallet.')),
+         ('Kraft or white?', [
+             'Brown kraft has a natural, unbleached look that suits bakeries, delis and eco-minded brands. White gives a clean background for stamps, stickers and printed logos. Both are the same flat-bottom construction, case pack and pallet count, so you can mix colors on one pallet.']),
+         ('Greasy and wet food', [
+             'Standard paper bags are not moisture-resistant. For fried or saucy food, wrap or line with <a href="/product/checker-deli-paper-wrap/">deli paper</a> or <a href="/product/interfold-wax-paper/">wax paper</a>, or serve fries and wings in <a href="/product/paper-boat-trays/">paperboard boat trays</a> inside the bag. For heavy, wet catering orders, compare <a href="/guides/paper-vs-plastic-takeout-bags/">paper vs plastic takeout bags</a> and <a href="/guides/poly-bag-sizes/">poly bag sizes</a>.']),
+         ('Ordering paper bags wholesale', [
+             'Paper bags ship by the case and mix onto one pallet with containers, napkins and the rest of your order. Pricing tiers: %s. Approved accounts get Net 30; orders typically leave our Houston warehouse in %s.' % (F['tiers'], F['ship']),
+             'Send your sizes and case counts through the quote form or call <a href="tel:+18449000084">%s</a> for wholesale pricing.' % F['phone']])],
+     'faq': [('What do paper bag sizes like #6 and #8 mean?', 'They are trade sizes for flat-bottom bags, also written in pounds (#8 = 8 lb). The number is a size class, not a dimension; a higher number is a larger bag.'),
+             ('What size paper bag is best for takeout?', '#8 fits one or two meals and is the usual takeout bag. Use #12 for family orders and #2 to #4 for pastries and single items.'),
+             ('How many paper bags are in a case?', '500 bags per case in every size.'),
+             ('How many cases of paper bags fit on a pallet?', '#2: 288 cases. #4 and #6: 144 cases. #8 and #12: 90 cases.'),
+             ('Do you carry kraft and white paper bags?', 'Yes. Every size, #2 to #12, comes in brown kraft and white.'),
+             ('Are paper bags good for greasy food?', 'Standard paper bags are not moisture-resistant. Wrap greasy items in deli or wax paper, or use boat trays inside the bag.')],
+     'related': ['paper-bags', 'checker-deli-paper-wrap', 'interfold-wax-paper', 'poly-bags', 'black-containers'],
+     'primary': ['paper-bags']},
 ]
 
 GROUPS = {g['slug']: g['group'] for g in BUYER}

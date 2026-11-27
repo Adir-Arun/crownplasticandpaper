@@ -20,11 +20,13 @@ DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'assets', '
 
 # file -> (new file name or None, [(row label or None for the title, old text, new text)])
 FIXES = {
-    '8x4x18-poly-bag-14ib-pb8418-spec-sheet.pdf': (None, [('Pack Size', '100/Case', '1,000/Case')]),
+    '8x4x18-poly-bag-14ib-pb8418-spec-sheet.pdf': (None, [('Pack Size', '100/Case', '1,000/Case'),
+                                                           ('Ti x Hi', '9 x 10', '8 x 11'), ('Cases / Pallet', '90', '88')]),
     '12x6x24-poly-bag-16ib-pb12624-spec-sheet.pdf': (None, [('Pack Size', '100/Case', '1,000/Case')]),
     '23x17x34-poly-bag-14ib-pb231734-spec-sheet.pdf': (None, [('Pack Size', '100/Case', '1,000/Case')]),
     '18-x1500x80g-spec-sheet.pdf': ('18-x1000x80g-spec-sheet.pdf', [(None, '18"x1500x80G', '18"x1000x80G'),
                                                                     ('Product', '18"x1500x80G', '18"x1000x80G')]),
+    '18-x1000x80g-spec-sheet.pdf': (None, [('Ti x Hi', '11 x 6', '10 x 9'), ('Cases / Pallet', '66', '90')]),
     '1-ply-white-beverage-napkins-wbn-4000-spec-sheet.pdf': (None, [('Ti x Hi', '12 x 9', '13 x 8'), ('Cases / Pallet', '108', '104')]),
     'interfold-napkins-white-ifw6000-spec-sheet.pdf': (None, [('Cases / Pallet', '54', '45')]),
     'interfold-napkins-kraft-ifk6000-spec-sheet.pdf': (None, [('Cases / Pallet', '72', '45')]),

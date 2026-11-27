@@ -21,6 +21,31 @@ CAT_NAMES = {'aluminum-products': 'Aluminum Products', 'food-service-supplies': 
              'toilet-tissue': 'Toilet Tissue'}
 
 
+# WordPress filed these under the wrong category (round plates are molded fiber, not aluminum;
+# school trays are food-service trays). Used for the Product category, breadcrumb and related cards.
+CAT_OVERRIDE = {'round-plates': 'food-service-supplies', 'school-trays': 'food-service-supplies'}
+
+
+def _foreign_cat_node(n, slug):
+    """An FAQ/breadcrumb block about aluminum packaging pasted onto a product that is not aluminum."""
+    p = PRODUCTS.get(slug)
+    if not p or p['cat_slug'] == 'aluminum-products':
+        return False
+    j = json.dumps(n).lower()
+    return 'aluminum-packaging' in j or 'aluminum food packaging' in j
+
+
+def _product_crumb(slug, old):
+    p = PRODUCTS[slug]
+    items = [('Home', ORIGIN + '/')]
+    if p['cat_slug']:
+        items.append((p['cat'] or CAT_NAMES.get(p['cat_slug'], ''), ORIGIN + '/products/product_cat-%s/' % p['cat_slug']))
+    items.append((p['name'], ORIGIN + '/product/%s/' % slug))
+    n = {'@type': 'BreadcrumbList', '@id': ORIGIN + '/product/%s/#breadcrumb' % slug}
+    n['itemListElement'] = [{'@type': 'ListItem', 'position': i + 1, 'name': nm, 'item': u} for i, (nm, u) in enumerate(items)]
+    return n
+
+
 def init(site):
     """Read every product page once: name, category (from its breadcrumb) and image."""
     PRODUCTS.clear()
@@ -44,7 +69,8 @@ def init(site):
         if img.startswith('/'):
             img = ORIGIN + img
         PRODUCTS[slug] = {'name': name, 'url': '/product/%s/' % slug,
-                          'cat': CAT_NAMES.get(cat_slug, ''), 'cat_slug': cat_slug, 'img': img}
+                          'cat': CAT_NAMES.get(CAT_OVERRIDE.get(slug, cat_slug), ''),
+                          'cat_slug': CAT_OVERRIDE.get(slug, cat_slug), 'img': img}
 
 
 # ---------------------------------------------------------------- P4 + P5: structured data
@@ -93,6 +119,12 @@ def normalize_ld(s, url):
                 continue
             if 'FAQPage' in t and not n.get('mainEntity'):
                 continue
+            if is_product and t & {'FAQPage', 'BreadcrumbList'} and _foreign_cat_node(n, slug):
+                continue
+            if is_product and 'BreadcrumbList' in t and slug in PRODUCTS:
+                # WordPress pasted breadcrumbs from other pages (wrong product URLs, categories that do not
+                # exist); use the one the page shows: Home / category / product
+                n = _product_crumb(slug, n)
             if 'BreadcrumbList' in t:
                 if seen_crumb[0]:
                     continue
