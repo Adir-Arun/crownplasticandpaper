@@ -148,6 +148,38 @@ FIX_TITLES = {
     '/product/latex-gloves/': ('Disposable Latex Gloves | Wholesale Bulk Supply USA',
                                'Disposable latex gloves in bulk cases for food handling, janitorial and commercial use. '
                                'Wholesale pricing from Crown Plastic & Paper in Houston, TX.'),
+    # Striking-distance pages (Search Console, Oct 30 - Nov 26 2026): main query first, facts from each page's own copy.
+    '/product/stretch-film/': ('Stretch Film Wrap, 18" 80 Gauge | Crown Plastic & Paper',
+                               '18" x 80-gauge LLDPE stretch film wrap for pallets and bundling, 4 rolls per case. Wholesale '
+                               'case pricing, Net 30 terms, ships from Houston in 1–2 days.'),
+    '/product/c-fold-towel/': ('C-Fold Paper Towels 10x12, 2,400/Case | Crown Plastic & Paper',
+                               'C-fold paper towels, 10" x 12" sheets, 2,400 per case (12 x 200) in kraft or white for '
+                               'standard C-fold dispensers. Wholesale pricing and Net 30 terms.'),
+    '/product/school-trays/': ('Disposable School Lunch Trays | Crown Plastic & Paper',
+                               'Disposable school lunch trays: 5-compartment compostable bagasse, microwave safe, 500 per case. '
+                               'Wholesale pricing for schools and cafeterias, Net 30 terms.'),
+    '/product/black-containers/': ('Black Meal Prep Containers Wholesale | Crown Plastic & Paper',
+                                   'Black meal prep containers with clear lids: 16–58oz rectangular and 16–48oz round, microwave '
+                                   'safe, 150 sets per case. Wholesale pricing and Net 30 terms.'),
+    '/product/foil-rolls/': ('Bulk Aluminum Foil Rolls, 12" & 18" | Crown Plastic & Paper',
+                             'Bulk aluminum foil rolls: 12" x 1000\' standard plus 18" x 500\' and 18" x 1000\' in standard or '
+                             'heavy duty. Wholesale pricing, Net 30, ships in 1–2 days.'),
+    '/product/poly-bags/': ('Poly Bags Wholesale, Clear Gusseted | Crown Plastic & Paper',
+                            'Clear polyethylene poly bags wholesale in 8x4x18, 12x6x24 and 23x17x34 gusset sizes, 100 per '
+                            'case. Case pricing, Net 30 terms, ships from Houston.'),
+    '/product/blue-nitrile-gloves/': ('Blue Nitrile Gloves Bulk, Powder-Free | Crown Plastic & Paper',
+                                      'Blue nitrile gloves, powder-free and latex-free for food handling, S to XL, 1,000 per case '
+                                      '(10 boxes of 100). Wholesale case pricing and Net 30 terms.'),
+    '/product/vinyl-gloves/': ('Vinyl Gloves Bulk, Clear & Powder-Free | Crown Plastic & Paper',
+                               'Clear vinyl gloves in bulk: powder-free, latex-free and food safe, 1,000 per case (10 boxes of '
+                               '100). Wholesale case pricing and Net 30 terms.'),
+    '/product/beverage-napkins/': ('Wholesale Beverage Napkins, 9" x 9" | Crown Plastic & Paper',
+                                   'Wholesale beverage napkins, 9" x 9": white 1-ply at 4,000 per case and black 2-ply at 1,000 '
+                                   'per case for bars and cafés. Case pricing and Net 30 terms.'),
+    '/the-ultimate-guide-to-disposable-tableware-for-catering-companies/': (
+        'Buying Catering Disposables in Bulk | Crown Plastic & Paper',
+        'How to buy catering disposables in bulk: plates, cutlery, napkins, foil pans and containers by the case '
+        'or mixed pallet, with Net 30 terms from Houston.'),
 }
 DEFAULT_OG_IMAGE = ORIGIN + '/wp-content/uploads/2026/01/img_crown_The_Trusted_Choice_of_Distributors.png'
 INDEX_ROBOTS = 'follow, index, max-snippet:-1, max-video-preview:-1, max-image-preview:large'

@@ -111,13 +111,14 @@ def g_portion(spec, products):
         table('Portion cups: color, case pack and cases per pallet', ['Size', 'Color', 'Case pack', 'Cases / pallet'], rows,
               'Black cups are listed in our 2026 catalog; pallet counts for them come with your quote.'),
         table('Portion cup lids', ['Fits', 'Lid', 'Case pack'], lid_rows), uses)
-    faq = [('What lid fits a 2oz portion cup?', 'The 1.5–2oz lid. It fits both 1.5oz and 2oz portion cups.'),
+    faq = [('How big is a 2oz portion cup?', 'A 2oz portion cup holds 2 fl oz, which is 1/4 US cup or 4 tablespoons. A 1oz cup holds 2 tablespoons and a 4oz cup holds 1/2 cup.'),
+           ('What lid fits a 2oz portion cup?', 'The 1.5–2oz lid. It fits both 1.5oz and 2oz portion cups.'),
            ('Do 3.25oz and 4oz portion cups use the same lid?', 'Yes. One lid size covers 3.25oz, 4oz and 5.5oz portion cups.'),
            ('How many portion cups are in a case?', '2,500 cups per case for every size, and 2,500 lids per case.'),
            ('What is the most common portion cup size for sauces?', 'For to-go sauces and dressings, 1.5oz to 2oz is a common choice; 1oz is typical for ketchup and hot sauce.'),
            ('Do you sell portion cups and lids together?', 'Cups and lids are sold as separate cases so you can match quantities to how you use them. Add both to one quote.')]
-    return ('Portion Cup Sizes and Lid Chart (1oz to 5.5oz) | Crown Plastic & Paper',
-            'Portion cup lid chart: one lid for 0.75–1oz, one for 1.5–2oz, one for 3.25–5.5oz cups. Sizes, colors, case packs and what each size is used for.',
+    return ('Portion Cup Sizes & Lid Chart (1–5.5oz) | Crown Plastic & Paper',
+            'Portion cup sizes from 0.75oz to 5.5oz, which of 3 lids fits each, and what a 2oz cup holds. 2,500 per case. Get wholesale pricing and Net 30 terms.',
             'Portion Cup Sizes and Lid Chart', answer,
             [('3 lids', 'cover every size'), ('1oz–5.5oz', 'clear cups'), ('Black', '2oz, 3.25oz, 4oz'), ('2,500', 'per case')],
             sec, faq, ['portion-cups', 'portion-cups-lids', 'deli-containers', 'pet-cups'])
@@ -125,7 +126,8 @@ def g_portion(spec, products):
 
 def g_deli(spec, products):
     d = sorted(entries(spec, 'deli-containers'), key=lambda a: _num(a['size']))
-    rows = [[E(a['size']), E(a['pack-size']), _tihi(a), _pal(a)] for a in d]
+    cups = lambda a: ('%g' % (_num(a['size']) / 8)) + (' cup' if _num(a['size']) == 8 else ' cups')  # 8 US fl oz = 1 cup
+    rows = [[E(a['size']), cups(a), E(a['pack-size']), _tihi(a), _pal(a)] for a in d]
     answer = ('Heavy duty deli containers come in %s. The 8oz through 32oz sizes pack 240 per case and the 64oz packs 120 per case. '
               'Use 8oz to 12oz for sides and sauces, 16oz for soups and salads, 24oz to 32oz for entrées and family sides, and 64oz for catering and bulk prep.'
               % ', '.join(a['size'] for a in d))
@@ -136,15 +138,16 @@ def g_deli(spec, products):
            '<li><b>16oz (one pint):</b> the standard soup and salad cup.</li>'
            '<li><b>24oz to 32oz (one quart):</b> entrées, large soups, family sides and kitchen prep.</li>'
            '<li><b>64oz:</b> catering portions and bulk storage in the walk-in.</li></ul></section>') % (
-        table('Heavy duty deli containers: case pack and pallet configuration', ['Size', 'Case pack', 'Ti × Hi', 'Cases / pallet'], rows,
-              'Ti × Hi is cases per layer × layers per pallet. Where a spec sheet&rsquo;s layers and total disagree we show the total only.'))
-    faq = [('How many ounces is a pint deli container?', 'A pint deli container holds 16oz. A quart holds 32oz.'),
+        table('Heavy duty deli containers: case pack and pallet configuration', ['Size', 'Cups (US)', 'Case pack', 'Ti × Hi', 'Cases / pallet'], rows,
+              'Cups are US cups (8 fl oz). Ti × Hi is cases per layer × layers per pallet. Where a spec sheet&rsquo;s layers and total disagree we show the total only.'))
+    faq = [('How many cups are in a deli container?', 'An 8oz deli container holds 1 cup, 12oz holds 1.5 cups, 16oz (a pint) holds 2 cups, 24oz holds 3 cups, 32oz (a quart) holds 4 cups and 64oz holds 8 cups. These are US cups of 8 fl oz, filled to the brim.'),
+           ('How many ounces is a pint deli container?', 'A pint deli container holds 16oz. A quart holds 32oz.'),
            ('How many deli containers are in a case?', '240 per case for 8oz, 12oz, 16oz, 24oz and 32oz, and 120 per case for 64oz.'),
            ('What size deli container is best for soup?', '16oz for a single serving and 32oz for a quart or a family portion.'),
            ('Can I order several deli container sizes on one pallet?', 'Yes. Mixed pallets are welcome, so you can combine sizes by the case.')]
-    return ('Deli Container Sizes Chart (8oz to 64oz) | Crown Plastic & Paper',
-            'Heavy duty deli container sizes from 8oz to 64oz: case packs (240 or 120), cases per pallet, and which size to use for soups, sides and catering.',
-            'Deli Container Sizes Chart', answer,
+    return ('Deli Container Sizes Chart: Oz & Cups | Crown Plastic & Paper',
+            'Deli container sizes from 8oz (1 cup) to 64oz (8 cups), 240 per case for 8–32oz, and which size fits soups and sides. Get wholesale pricing and Net 30.',
+            'Deli Container Sizes Chart (Ounces and Cups)', answer,
             [('8oz–64oz', '6 sizes'), ('240', 'per case, 8–32oz'), ('120', 'per case, 64oz'), ('16oz', 'one pint')],
             sec, faq, ['deli-containers', 'portion-cups', 'black-containers', 'round-black-containers'])
 
@@ -182,8 +185,8 @@ def g_takeout(spec, products):
            ('Are your bagasse containers PFAS-free?', 'Yes. Our bagasse (sugarcane fiber) hinged containers are PFAS-free.'),
            ('Do black containers come with lids?', 'Yes. Our black-base rectangular, square and round containers are sold as sets (base and lid), 150 sets per case.'),
            ('Can I mix container sizes on one order?', 'Yes. Order any mix by the case; mixed pallets are welcome.')]
-    return ('Takeout Container Sizes Chart: Black, Round, Hinged and Bagasse | Crown Plastic & Paper',
-            'Takeout container size chart: black rectangular 16oz–58oz, round 16oz–48oz, hinged 6"×6" to 9"×9" and PFAS-free bagasse. Case packs and what to use for each menu item.',
+    return ('Takeout Container Sizes Chart (16–58oz) | Crown Plastic & Paper',
+            'Takeout container sizes: black 16–58oz, round 16–48oz, hinged 6"–9" and bagasse, with case packs and the right size per menu item. Wholesale, Net 30.',
             'Takeout Container Sizes Chart', answer,
             [('16oz–58oz', 'black-base'), ('6"–9"', 'hinged'), ('PFAS-free', 'bagasse option'), ('150', 'per case, most sizes')],
             sec, faq, ['black-containers', 'round-black-containers', 'black-hinged-containers', 'bagasse-hinged-containers'])
@@ -218,9 +221,9 @@ def g_foil(spec, products):
            ('Do your foil pans come with lids?', 'Lids are sold separately so you only buy what you need: foil lids for full- and half-size pans, and board lids for 7" and 9" round pans.'),
            ('What foil roll sizes do you carry?', '12"×1000\' standard, 18"×500\' standard and heavy duty, and 18"×1000\' standard and heavy duty.'),
            ('What is pop-up foil?', 'Pre-cut, interfolded foil sheets that dispense one at a time. We stock 9"×10.75" and 12"×10.75", 500 sheets per box, 6 boxes per case.')]
-    return ('Foil Pan, Sheet and Roll Sizes Chart | Crown Plastic & Paper',
-            'Foil pan sizes: full- and half-size steam table pans, 7" and 9" round pans, lids, pop-up foil sheets and 12" and 18" rolls. Case packs and pallet counts from our spec sheets.',
-            'Foil Pan, Sheet and Roll Sizes', answer,
+    return ('Foil Pan Sizes Chart: Full, Half & Round | Crown Plastic & Paper',
+            'Foil pan sizes chart: full- and half-size steam table pans, 7" and 9" round pans, lids, sheets and rolls, with case packs. Wholesale pricing and Net 30.',
+            'Foil Pan Sizes Chart: Pans, Lids, Sheets and Rolls', answer,
             [('2 half pans', '= 1 full-size slot'), ('50 / 100', 'full / half pans per case'), ('500', 'round pans per case'), ('12" & 18"', 'foil rolls')],
             sec, faq, ['deep-steam-table-pans', 'foil-lids-for-steam-table-pans', 'round-foil-pans', 'foil-sheets', 'foil-rolls'])
 
