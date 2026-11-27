@@ -151,7 +151,7 @@ FIX_TITLES = {
                                'Wholesale pricing from Crown Plastic & Paper in Houston, TX.'),
     # Striking-distance pages (Search Console, Oct 30 - Nov 26 2026): main query first, facts from each page's own copy.
     '/product/stretch-film/': ('Stretch Film Wrap, 18" 80 Gauge | Crown Plastic & Paper',
-                               '18" x 80-gauge LLDPE stretch film wrap for pallets and bundling, 4 rolls per case. Wholesale '
+                               '18" x 1,000 ft, 80-gauge LLDPE stretch film wrap for pallets and bundling, 4 rolls per case. Wholesale '
                                'case pricing, Net 30 terms, ships from Houston in 1–2 days.'),
     '/product/c-fold-towel/': ('C-Fold Paper Towels 10x12, 2,400/Case | Crown Plastic & Paper',
                                'C-fold paper towels, 10" x 12" sheets, 2,400 per case (12 x 200) in kraft or white for '
@@ -166,7 +166,7 @@ FIX_TITLES = {
                              'Bulk aluminum foil rolls: 12" x 1000\' standard plus 18" x 500\' and 18" x 1000\' in standard or '
                              'heavy duty. Wholesale pricing, Net 30, ships in 1–2 days.'),
     '/product/poly-bags/': ('Poly Bags Wholesale, Clear Gusseted | Crown Plastic & Paper',
-                            'Clear polyethylene poly bags wholesale in 8x4x18, 12x6x24 and 23x17x34 gusset sizes, 100 per '
+                            'Clear polyethylene poly bags wholesale in 8x4x18, 12x6x24 and 23x17x34 gusset sizes, 1,000 per '
                             'case. Case pricing, Net 30 terms, ships from Houston.'),
     '/product/blue-nitrile-gloves/': ('Blue Nitrile Gloves Bulk, Powder-Free | Crown Plastic & Paper',
                                       'Blue nitrile gloves, powder-free and latex-free for food handling, S to XL, 1,000 per case '
@@ -440,6 +440,75 @@ def close_open_styles(s):
 
 SPEC_MAP_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'assets', 'spec-map.json')
 SPEC_MAP = json.load(open(SPEC_MAP_PATH, encoding='utf-8')) if os.path.exists(SPEC_MAP_PATH) else {}
+# Corrections confirmed by Adir on 2026-11-27, applied on top of the generated spec map (build_map.py
+# regenerates spec-map.json from WordPress product data, which still has the old figures).
+# (product slug, {attr: value that identifies the entry} or None for every entry, {attr: new value}, new file or None)
+SPEC_OVERRIDES = [
+    ('poly-bags', None, {'pack-size': '1,000/Case'}, None),
+    ('stretch-film', None, {}, '18-x1000x80g-spec-sheet.pdf'),
+    # napkin pallet counts from the 2026 catalog
+    ('beverage-napkins', {'color': 'White'}, {'ti-x-hi': '13 x 8', 'cases-pallets': '104'}, None),
+    ('interfold-napkins', {'color': 'White'}, {'ti-x-hi': '9 x 5', 'cases-pallets': '45'}, None),
+    ('interfold-napkins', {'color': 'Kraft'}, {'ti-x-hi': '9 x 5', 'cases-pallets': '45'}, None),
+    ('single-fold-napkins', {'napkin-type': 'Multifold'}, {'ti-x-hi': '8 x 6', 'cases-pallets': '48'}, None),
+    ('single-multi-and-c-fold-napkins', {'napkin-type': 'Multifold'}, {'ti-x-hi': '8 x 6', 'cases-pallets': '48'}, None),
+]
+for _slug, _when, _set, _file in SPEC_OVERRIDES:
+    for _e in SPEC_MAP.get(_slug, []):
+        if _when and any(_e.get('match', {}).get(k) != v for k, v in _when.items()):
+            continue
+        if _e.get('match'):
+            _e['match'].update(_set)
+        if _file:
+            _e['file'] = _file
+
+# The same corrections in the WordPress snapshot's own copy of each product page (variation data, option
+# swatches, spec tables, descriptions and FAQs). Applied to the raw pages before anything reads them.
+_Q = r'(?<=[>"\';])'      # value starts right after a tag, quote or &quot;
+_E = r'(?=[<"\'&])'       # ...and ends right before one
+SPEC_TEXT_FIXES = {
+    '/product/poly-bags/': [
+        (r'(?<![\d,.])100(\\?/Case)', r'1,000\1'),
+        (r'variable-item-100-case', 'variable-item-1000-case'),
+        (r'(?<![\d,.])100( bags)? per case', r'1,000\1 per case'),
+    ],
+    '/product/beverage-napkins/': [
+        (_Q + '108' + _E, '104'), (_Q + '12 x 9' + _E, '13 x 8'), (r'variable-item-12-x-9\b', 'variable-item-13-x-8'),
+    ],
+    '/product/interfold-napkins/': [
+        (_Q + '(?:54|72)' + _E, '45'), (_Q + '(?:9 x 6|12 x 6)' + _E, '9 x 5'),
+        (r'variable-item-(?:9|12)-x-6\b', 'variable-item-9-x-5'), (r'variable-item-(?:54|72)\b', 'variable-item-45'),
+    ],
+    '/product/single-multi-and-c-fold-napkins/': [
+        (_Q + '49' + _E, '48'), (_Q + '7 ?x ?7' + _E, '8 x 6'),
+        (r'variable-item-7-x-7\b', 'variable-item-8-x-6'), (r'variable-item-49\b', 'variable-item-48'),
+    ],
+    '/product/single-fold-napkins/': [
+        (_Q + '49' + _E, '48'), (_Q + '7 ?x ?7' + _E, '8 x 6'),
+        (r'variable-item-7-x-7\b', 'variable-item-8-x-6'), (r'variable-item-49\b', 'variable-item-48'),
+    ],
+    # round plates are molded fiber (bagasse), not clear plastic
+    '/product/round-plates/': [
+        (r'(Material</th>\s*<td class="spec-details">)Plastic(?=</td>)', r'\1Molded Fiber (Bagasse)'),
+        (r'<tr>\s*<th class="spec-feature">Color</th>\s*<td class="spec-details">Clear</td>\s*</tr>', ''),
+        (r'(&quot;Material&quot;,&quot;details&quot;:&quot;)Plastic(?=&quot;)', r'\1Molded Fiber (Bagasse)'),
+        (r'\{&quot;feature&quot;:&quot;Color&quot;,&quot;details&quot;:&quot;Clear&quot;\},?', ''),
+    ],
+}
+
+
+def fix_spec_text():
+    for url, rules in SPEC_TEXT_FIXES.items():
+        p = os.path.join(SITE, url.strip('/'), 'index.html')
+        if not os.path.exists(p):
+            continue
+        s = open(p, encoding='utf-8', errors='ignore').read()
+        n = 0
+        for pat, rep in rules:
+            s, k = re.subn(pat, rep, s)
+            n += k
+        open(p, 'w', encoding='utf-8').write(s)
+        print('spec text fixes: %s (%d)' % (url, n))
 
 
 def spec_script(url):
@@ -1185,6 +1254,7 @@ def main():
     os.makedirs(photo_dst, exist_ok=True)
     for name in os.listdir(photo_src):
         shutil.copy(os.path.join(photo_src, name), os.path.join(photo_dst, name))
+    fix_spec_text()   # corrected figures in the snapshot's product pages, before anything reads them
     print('new products: %s' % (', '.join(new_products.add_pages(SITE)) or 'none'))
     seo2.init(SITE)
     snippets = {

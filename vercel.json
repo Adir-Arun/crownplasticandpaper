@@ -104,6 +104,11 @@
       "statusCode": 301
     },
     {
+      "source": "/spec-sheets/18-x1500x80g-spec-sheet.pdf",
+      "destination": "/spec-sheets/18-x1000x80g-spec-sheet.pdf",
+      "statusCode": 301
+    },
+    {
       "source": "/2026/03/31",
       "destination": "/blog/",
       "statusCode": 301

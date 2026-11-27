@@ -593,7 +593,7 @@ BUYER = [
          ('Which size for which job', [
              '- <b>8" × 4" × 18":</b> bread loaves, bagels and rolls, smaller produce portions, specialty food items and small parts.',
              '- <b>12" × 6" × 24":</b> medium produce, bulk dry goods, folded garments and mid-size parts.',
-             '- <b>18" × 14" × 21":</b> a wide, shorter bag for grocery, retail and light industrial packing. Listed on our <a href="/product/poly-bags/">poly bags page</a>; ask for case and pallet counts on your quote.',
+             '- <b>18" × 14" × 21":</b> a wide, shorter bag for grocery, retail and light industrial packing. Listed on our <a href="/product/poly-bags/">poly bags page</a>, also 1,000 per case.',
              '- <b>23" × 17" × 34":</b> the largest size, for bulk produce, large retail items, bedding and box liners.',
              'If an item is long and narrow (a baguette, a roll of parts), pick on width and length. If it is boxy (a tray of pastries, a stack of folded shirts), pick on width × gusset so the base sits flat.']),
          ('Mil thickness explained', ('table', 'Poly bag thickness: general guidance (industry conversions)', ['Thickness', 'Microns', 'Typical use'], [
@@ -619,7 +619,7 @@ BUYER = [
              ('What is the difference between LDPE and HDPE bags?', 'LDPE is soft, clear and stretchy and is the usual film for food and produce bags. HDPE is stiffer, crinkly and frosted, and is strong for its thickness.'),
              ('Are your poly bags food safe?', 'Yes. They are clear polyethylene listed as food safe for produce, frozen food and direct food contact, and they are freezer compatible.'),
              ('What poly bag sizes do you carry?', '8 × 4 × 18, 12 × 6 × 24, 18 × 14 × 21 and 23 × 17 × 34 inches, all clear gusseted bags.'),
-             ('How many poly bags are in a case?', 'Our spec sheets list 100 per case for the 8 × 4 × 18, 12 × 6 × 24 and 23 × 17 × 34 bags. Your quote confirms the case count for each size.')],
+             ('How many poly bags are in a case?', '1,000 per case for the 8 × 4 × 18, 12 × 6 × 24 and 23 × 17 × 34 bags.')],
      'related': ['poly-bags', 'trash-liners', 'paper-bags', 'stretch-film'],
      'primary': ['poly-bags']},
 
@@ -627,8 +627,8 @@ BUYER = [
      'title': 'Stretch Film Guide: Gauge, Width and How to Wrap a Pallet',
      'desc': 'Stretch film gauge chart (gauge to mil and microns), hand vs machine widths, cast vs blown film, pallet covers vs stretch wrap, and how to wrap a pallet.',
      'h1': 'Stretch film guide: gauge, width and wrapping a pallet',
-     'answer': 'Stretch film thickness is sold in gauge: 100 gauge equals 1 mil (25.4 microns), so 80 gauge is 0.8 mil, about 20 microns. 80 gauge is the general-purpose weight for mixed-case pallets. Hand film usually comes in 12 to 20 inch widths, with 18 inch the most common; machine film is wider. Our stretch film is 18 inch, 80 gauge LLDPE, 4 rolls per case.',
-     'facts': [('80 gauge', '≈ 0.8 mil / 20 µm'), ('18"', 'hand film width'), ('LLDPE', 'high cling'), ('4', 'rolls per case')],
+     'answer': 'Stretch film thickness is sold in gauge: 100 gauge equals 1 mil (25.4 microns), so 80 gauge is 0.8 mil, about 20 microns. 80 gauge is the general-purpose weight for mixed-case pallets. Hand film usually comes in 12 to 20 inch widths, with 18 inch the most common; machine film is wider. Our stretch film is 18 inch × 1,000 ft, 80 gauge LLDPE, 4 rolls per case.',
+     'facts': [('80 gauge', '≈ 0.8 mil / 20 µm'), ('18"', 'hand film width'), ('1,000 ft', 'per roll'), ('4', 'rolls per case')],
      'sections': [
          ('Stretch film gauge chart', ('table', 'Gauge, mil and microns (100 gauge = 1 mil)', ['Gauge', 'Mil', 'Microns', 'Typical use'], [
              ['47 – 60', '0.47 – 0.6', '12 – 15', 'Pre-stretched film, light and even boxed loads'],
@@ -637,9 +637,9 @@ BUYER = [
              ['90', '0.9', '23', 'Heavier loads, more stacking or longer trips'],
              ['120', '1.2', '30', 'Heavy, irregular or sharp-cornered loads']],
              'Conversions are exact (1 gauge = 0.01 mil = 0.254 microns). Uses are general guidance; heavier loads can also be handled with more passes of a lighter film.')),
-         ('Our stretch film', ('table', 'Stretch film we stock (from our spec sheet)', ['Width', 'Gauge', 'Film', 'Rolls / case', 'Cases / pallet'], [
-             ['18"', '80', 'LLDPE, high cling, clear', '4', '66']],
-             'Ti × Hi 11 × 6. Roll length is confirmed on your quote.')),
+         ('Our stretch film', ('table', 'Stretch film we stock (from our spec sheet)', ['Width', 'Roll length', 'Gauge', 'Film', 'Rolls / case', 'Cases / pallet'], [
+             ['18"', '1,000 ft', '80', 'LLDPE, high cling, clear', '4', '66']],
+             'Ti × Hi 11 × 6.')),
          ('Hand film vs machine film', [
              '<b>Hand film</b> is wrapped by a person walking around the pallet, usually with a handle or dispenser. Widths of 12 to 20 inches are common, and 18 inch is the standard because it covers a pallet quickly without being too heavy to hold.',
              '<b>Machine film</b> goes on a turntable or rotary arm wrapper. It comes on wider, heavier rolls, commonly 20 or 30 inches, and is pre-stretched by the machine. If you wrap fewer than a few dozen pallets a day, hand film is usually all you need.']),
@@ -666,7 +666,7 @@ BUYER = [
              ('What is the most common stretch film width?', '18 inches for hand film. Machine film is wider, commonly 20 or 30 inches.'),
              ('What is the difference between cast and blown stretch film?', 'Cast film is clearer, quieter and clings well. Blown film is tougher and more puncture resistant but hazier and noisier.'),
              ('Is a pallet cover the same as stretch film?', 'No. A pallet cover or top sheet keeps dust and water off the top of the load. Stretch film holds the load together and to the pallet.'),
-             ('How many rolls of stretch film are in a case?', 'Four rolls per case of our 18 inch, 80 gauge film.')],
+             ('How many rolls of stretch film are in a case?', 'Four rolls per case of our 18 inch × 1,000 ft, 80 gauge film.')],
      'related': ['stretch-film', 'poly-bags', 'food-film', 'trash-liners'],
      'primary': ['stretch-film']},
 
@@ -679,7 +679,7 @@ BUYER = [
      'sections': [
          ('Folded towel dimensions compared', ('table', 'Folded hand towels (from our spec sheets and product pages)', ['Towel', 'Sheet size', 'Per case', 'Cases / pallet'], [
              ['C-fold', '10" × 12"', '2,400 (12 × 200)', '70'],
-             ['Multifold', '9" × 9"', '4,000', '49'],
+             ['Multifold', '9" × 9"', '4,000', '48'],
              ['Single fold', '10" × 9"', '4,000', '63']],
              'Sheet sizes are unfolded. Multifold and single fold come in kraft or white.')),
          ('What C-fold, multifold and single fold mean', [
@@ -718,13 +718,13 @@ BUYER = [
      'facts': [('9" × 9"', 'beverage'), ('12" × 12"', 'lunch'), ('15" × 17"', 'dinner'), ('10,000', 'tall fold per case')],
      'sections': [
          ('Napkin sizes we stock', ('table', 'Paper napkins: sheet size, ply and case counts (from our spec sheets and product pages)', ['Napkin', 'Sheet size', 'Ply / color', 'Per case', 'Cases / pallet'], [
-             ['Beverage', '9" × 9"', '1-ply white', '4,000', '108'],
+             ['Beverage', '9" × 9"', '1-ply white', '4,000', '104'],
              ['Beverage', '9" × 9"', '2-ply black', '1,000', '200'],
              ['Lunch', '12" × 12"', 'White', '6,000', '36'],
              ['Dinner', '15" × 17"', '2-ply white', '3,000', '45'],
              ['Tall fold (dispenser)', '13" × 7"', '1-ply white', '10,000', '50'],
-             ['Interfold (dispenser)', '6.5" × 7.9"', 'White or kraft', '6,000 (24 × 250)', '54 white / 72 kraft']],
-             'Sheet sizes are before folding. Pallet counts come from each item\'s spec sheet.')),
+             ['Interfold (dispenser)', '6.5" × 7.9"', 'White or kraft', '6,000 (24 × 250)', '45']],
+             'Sheet sizes are before folding. Pallet counts are from our 2026 catalog.')),
          ('Which napkin for which service', [
              '- <b>Beverage napkins (9" × 9"):</b> under drinks at the bar, with coffee and desserts, at receptions and with small plates. Black 2-ply looks upscale for cocktail service; white 1-ply is the everyday, lower-cost choice.',
              '- <b>Lunch napkins (12" × 12"):</b> counter service, quick casual, delis, food trucks and catering drop-offs, wherever a beverage napkin is too small but a dinner napkin is more than you need.',
