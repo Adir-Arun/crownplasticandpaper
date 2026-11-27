@@ -129,7 +129,8 @@ def g_deli(spec, products):
     cups = lambda a: ('%g' % (_num(a['size']) / 8)) + (' cup' if _num(a['size']) == 8 else ' cups')  # 8 US fl oz = 1 cup
     rows = [[E(a['size']), cups(a), E(a['pack-size']), _tihi(a), _pal(a)] for a in d]
     answer = ('Heavy duty deli containers come in %s. The 8oz through 32oz sizes pack 240 per case and the 64oz packs 120 per case. '
-              'Use 8oz to 12oz for sides and sauces, 16oz for soups and salads, 24oz to 32oz for entrées and family sides, and 64oz for catering and bulk prep.'
+              'Use 8oz to 12oz for sides and sauces, 16oz for soups and salads, 24oz to 32oz for entrées and family sides, and 64oz for catering and bulk prep. '
+              'Deli cups, deli containers and soup containers are the same item; the size is the fill volume in fluid ounces.'
               % ', '.join(a['size'] for a in d))
     sec = ('<section class="cpp-loc-sec"><h2>Deli container sizes</h2>%s</section>'
            '<section class="cpp-loc-sec"><h2>Choosing a size</h2><ul class="cpp-guide-list">'
@@ -140,7 +141,8 @@ def g_deli(spec, products):
            '<li><b>64oz:</b> catering portions and bulk storage in the walk-in.</li></ul></section>') % (
         table('Heavy duty deli containers: case pack and pallet configuration', ['Size', 'Cups (US)', 'Case pack', 'Ti × Hi', 'Cases / pallet'], rows,
               'Cups are US cups (8 fl oz). Ti × Hi is cases per layer × layers per pallet. Where a spec sheet&rsquo;s layers and total disagree we show the total only.'))
-    faq = [('How many cups are in a deli container?', 'An 8oz deli container holds 1 cup, 12oz holds 1.5 cups, 16oz (a pint) holds 2 cups, 24oz holds 3 cups, 32oz (a quart) holds 4 cups and 64oz holds 8 cups. These are US cups of 8 fl oz, filled to the brim.'),
+    faq = [('What are the standard deli cup sizes?', 'Deli cups (deli containers) come in standard sizes of %s. The 16oz pint and 32oz quart are the most common; 8oz and 12oz are for sides and sauces, and 64oz is for catering and bulk prep.' % ', '.join(a['size'] for a in d)),
+           ('How many cups are in a deli container?', 'An 8oz deli container holds 1 cup, 12oz holds 1.5 cups, 16oz (a pint) holds 2 cups, 24oz holds 3 cups, 32oz (a quart) holds 4 cups and 64oz holds 8 cups. These are US cups of 8 fl oz, filled to the brim.'),
            ('How many ounces is a pint deli container?', 'A pint deli container holds 16oz. A quart holds 32oz.'),
            ('How many deli containers are in a case?', '240 per case for 8oz, 12oz, 16oz, 24oz and 32oz, and 120 per case for 64oz.'),
            ('What size deli container is best for soup?', '16oz for a single serving and 32oz for a quart or a family portion.'),
@@ -210,13 +212,32 @@ def g_foil(spec, products):
               'with board lids, pop-up foil sheets and 12" and 18" foil rolls in standard and heavy duty.')
     sec = ('<section class="cpp-loc-sec"><h2>Foil pans and lids</h2>%s</section>'
            '<section class="cpp-loc-sec"><h2>Foil sheets and rolls</h2>%s</section>'
+           '<section class="cpp-loc-sec"><h2>Standard steam table pan sizes</h2>'
+           '<p>Steam tables, chafers and hot holding wells in the US are built on the standard hotel-pan grid. Foil steam table pans are made to drop into those openings, '
+           'with a rolled rim that rests on the frame, so pick the pan by the opening it has to fit.</p>%s'
+           '<p>Full-size and half-size are the two foil sizes most kitchens and caterers use, and the two we stock in the deep style, with fitted foil lids for both. '
+           'Two half-size pans fill one full-size opening, which lets you serve two dishes from one chafer.</p></section>'
+           '<section class="cpp-loc-sec"><h2>Case sizes and weights</h2>%s</section>'
            '<section class="cpp-loc-sec"><h2>Standard or heavy duty foil?</h2><p>Standard foil covers wrapping, lining and short holds. '
            'Heavy duty is thicker: it resists tearing on bones and sharp edges and holds up on the grill and in long oven holds. '
            'Pop-up foil sheets (9"×10.75" and 12"×10.75") are pre-cut for fast wrapping of burgers, burritos and sandwiches.</p></section>') % (
         table('Foil pans and lids', ['Item', 'Case pack', 'Cases / pallet'], r1),
         table('Foil sheets and rolls', ['Item', 'Case pack', 'Cases / pallet'], r2,
-              'Cushion foil and board lids are listed in our 2026 catalog; pallet counts come with your quote.'))
-    faq = [('How many half-size pans fit in a full-size steam table slot?', 'Two. A half-size pan is half of a full-size pan, so two sit side by side in one full-size opening.'),
+              'Cushion foil and board lids are listed in our 2026 catalog; pallet counts come with your quote.'),
+        table('Standard steam table opening sizes (nominal)', ['Pan size', 'Nominal opening', 'Fits in a full-size opening'],
+              [['Full size', '12" × 20"', '1'], ['Half size', '12" × 10"', '2']],
+              'Nominal sizes of the standard hotel-pan grid. Foil pans run slightly larger at the rim so they rest on the frame.'),
+        table('Foil pan and lid cases (from our spec sheets)', ['Item', 'Item #', 'Case pack', 'Case dimensions', 'Case weight', 'Cases / pallet'],
+              [['Full-size deep steam table pan', 'FSDFP-50', '50', '21.1" × 13.5" × 13.6"', '14.99 lb', '28'],
+               ['Half-size deep steam table pan', 'HSDFP-100', '100', '19.5" × 13" × 10.5"', '10.14 lb', '42'],
+               ['Foil lid, full-size pan', 'FSAL-50', '50', '21.85" × 5.08" × 13.98"', '7.72 lb', '50'],
+               ['Foil lid, half-size pan', 'HSAL-100', '100', '13.58" × 11.61" × 7.87"', '5.29 lb', '50'],
+               ['7" round foil pan', 'RFP7-500', '500', '13.4" × 7.7" × 15"', '9.04 lb', '45'],
+               ['9" round foil pan', 'RFP9-500', '500', '19" × 15.7" × 19"', '16.76 lb', '24']],
+              'Case dimensions help plan shelf space and freight; pans nest, so a case of 50 full-size pans is only about 13.6" tall.'))
+    faq = [('What are the standard foil pan sizes?', 'Foil steam table pans follow the hotel-pan grid: full size fits a nominal 12" × 20" opening and half size fits 12" × 10". We stock full- and half-size deep pans with fitted foil lids, plus 7" and 9" round pans.'),
+           ('What size is a full-size foil steam table pan?', 'It fits a standard full-size steam table or chafer opening, nominally 12" × 20". Our full-size deep pans pack 50 per case.'),
+           ('How many half-size pans fit in a full-size steam table slot?', 'Two. A half-size pan is half of a full-size pan, so two sit side by side in one full-size opening.'),
            ('How many foil pans are in a case?', 'Full-size deep steam table pans: 50 per case. Half-size deep: 100 per case. 7" and 9" round pans: 500 per case.'),
            ('Do your foil pans come with lids?', 'Lids are sold separately so you only buy what you need: foil lids for full- and half-size pans, and board lids for 7" and 9" round pans.'),
            ('What foil roll sizes do you carry?', '12"×1000\' standard, 18"×500\' standard and heavy duty, and 18"×1000\' standard and heavy duty.'),

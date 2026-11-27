@@ -261,22 +261,22 @@
     {
       "source": "/shop/",
       "destination": "/products/",
-      "permanent": true
+      "statusCode": 301
     },
     {
       "source": "/shop",
       "destination": "/products/",
-      "permanent": true
+      "statusCode": 301
     },
     {
       "source": "/cost-effective-dinner-napkin-solutions-for-restaurants-and-catering-businesses-:n(2|3)/",
       "destination": "/cost-effective-dinner-napkin-solutions-for-restaurants-and-catering-businesses/",
-      "permanent": true
+      "statusCode": 301
     },
     {
       "source": "/how-wholesale-food-packaging-helps-restaurants-reduce-operating-costs-2/",
       "destination": "/how-wholesale-food-packaging-helps-restaurants-reduce-operating-costs/",
-      "permanent": true
+      "statusCode": 301
     },
     {
       "source": "/product/single-fold-napkins/",

@@ -38,6 +38,12 @@ import guides_buyer  # noqa: E402  (buying guides; added after the footer so the
 guides.GUIDES += guides_buyer.ENTRIES
 guides.GROUPS.update(guides_buyer.GROUPS)
 guides.PRIMARY.update(guides_buyer.PRIMARY)
+# product pages link to the guide that actually covers them (first-come order picked e.g. a resale
+# certificate guide for paper bags and the PET cup chart for deli containers)
+guides.PRIMARY.update({'deli-containers': 'deli-container-sizes', 'portion-cups': 'portion-cup-sizes',
+                       'black-containers': 'takeout-container-sizes', 'round-black-containers': 'takeout-container-sizes',
+                       'register-roll-paper': 'thermal-vs-bond-paper-test',
+                       'disposable-cutlery-kits': 'catering-disposables-per-100-guests'})
 
 SITE = sys.argv[1] if len(sys.argv) > 1 else 'site'
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -208,6 +214,19 @@ def set_title(s, title, desc=None):
     return s
 
 
+def page_n_title(s, n):
+    """Archive pages 2, 3... repeated page 1's title and description; give each its own."""
+    t = re.search(r'<title>([^<]*)</title>', s)
+    if not t or ('Page %s' % n) in t.group(1):
+        return s
+    title = html.unescape(t.group(1))
+    head, sep, brand = title.rpartition(' | ')
+    title = '%s – Page %s | %s' % (head, n, brand) if sep else '%s – Page %s' % (title, n)
+    d = re.search(r'<meta name="description" content="([^"]*)"', s)
+    desc = ('Page %s. %s' % (n, html.unescape(d.group(1)))) if d else None
+    return set_title(s, title, desc)
+
+
 def drop_ratings(s):
     """No reviews are shown on the site, so star ratings in Google data are not allowed."""
     def clean(o):
@@ -244,6 +263,9 @@ def seo(s, url):
                       'Guides and articles on %s for food service and wholesale buyers, from Crown Plastic & Paper.' % name)
     if url in FIX_TITLES:
         s = set_title(s, *FIX_TITLES[url])
+    pg = re.match(r'^/.+/page/(\d+)/$', url)
+    if pg:
+        s = page_n_title(s, pg.group(1))
     if url in NOINDEX_PAGES:
         s = set_robots(s, 'noindex, follow')
     if url in INDEX_PAGES:
@@ -445,6 +467,8 @@ SPEC_MAP = json.load(open(SPEC_MAP_PATH, encoding='utf-8')) if os.path.exists(SP
 # (product slug, {attr: value that identifies the entry} or None for every entry, {attr: new value}, new file or None)
 SPEC_OVERRIDES = [
     ('poly-bags', None, {'pack-size': '1,000/Case'}, None),
+    # pallet counts from the 2026 catalog
+    ('poly-bags', {'bag-size': '8" x 4" x 18"'}, {'ti-x-hi': '8 x 11', 'cases-pallets': '88'}, None),
     ('stretch-film', None, {}, '18-x1000x80g-spec-sheet.pdf'),
     # napkin pallet counts from the 2026 catalog
     ('beverage-napkins', {'color': 'White'}, {'ti-x-hi': '13 x 8', 'cases-pallets': '104'}, None),
@@ -471,6 +495,9 @@ SPEC_TEXT_FIXES = {
         (r'(?<![\d,.])100(\\?/Case)', r'1,000\1'),
         (r'variable-item-100-case', 'variable-item-1000-case'),
         (r'(?<![\d,.])100( bags)? per case', r'1,000\1 per case'),
+        # 8x4x18 pallet: 8 x 11 = 88 (2026 catalog)
+        (_Q + '9 x 10' + _E, '8 x 11'), (_Q + '90' + _E, '88'),
+        (r'variable-item-9-x-10\b', 'variable-item-8-x-11'), (r'variable-item-90\b', 'variable-item-88'),
     ],
     '/product/beverage-napkins/': [
         (_Q + '108' + _E, '104'), (_Q + '12 x 9' + _E, '13 x 8'), (r'variable-item-12-x-9\b', 'variable-item-13-x-8'),
@@ -488,7 +515,16 @@ SPEC_TEXT_FIXES = {
         (r'variable-item-7-x-7\b', 'variable-item-8-x-6'), (r'variable-item-49\b', 'variable-item-48'),
     ],
     # round plates are molded fiber (bagasse), not clear plastic
+    # visible breadcrumb: round plates and school trays are food service items (see seo2.CAT_OVERRIDE)
+    '/product/school-trays/': [
+        (r'(Material</th>\s*<td class="spec-details">)Plastic(?=</td>)', r'\1Molded Fiber (Bagasse)'),
+        (r'(&quot;Material&quot;,&quot;details&quot;:&quot;)Plastic(?=&quot;)', r'\1Molded Fiber (Bagasse)'),
+        (r'(<nav class="woocommerce-breadcrumb".*?)product_cat-miscellaneous/index\.html">Miscellaneous<',
+         r'\1product_cat-food-service-supplies/index.html">Food Service Supplies<'),
+    ],
     '/product/round-plates/': [
+        (r'(<nav class="woocommerce-breadcrumb".*?)product_cat-aluminum-products/index\.html">Aluminum Products<',
+         r'\1product_cat-food-service-supplies/index.html">Food Service Supplies<'),
         (r'(Material</th>\s*<td class="spec-details">)Plastic(?=</td>)', r'\1Molded Fiber (Bagasse)'),
         (r'<tr>\s*<th class="spec-feature">Color</th>\s*<td class="spec-details">Clear</td>\s*</tr>', ''),
         (r'(&quot;Material&quot;,&quot;details&quot;:&quot;)Plastic(?=&quot;)', r'\1Molded Fiber (Bagasse)'),
@@ -1368,7 +1404,14 @@ def main():
                 linked += 1
                 continue
             j += len('</table>')
-            ps = ps[:j] + '<p class="cpp-guide-link">Compare every size: <a href="%s">%s chart</a></p>' % (gurl, html.escape(gname)) + ps[j:]
+            grp = guides.GROUPS.get(gurl.strip('/').split('/')[-1], guides.CHART_GROUP)
+            if grp == guides.CHART_GROUP:
+                line = 'Compare every size: <a href="%s">%s chart</a>' % (gurl, html.escape(gname))
+            elif grp == 'Product buying guides':
+                line = 'Compare every size: <a href="%s">%s guide</a>' % (gurl, html.escape(gname))
+            else:
+                line = 'Buying guide: <a href="%s">%s</a>' % (gurl, html.escape(gname))
+            ps = ps[:j] + '<p class="cpp-guide-link">%s</p>' % line + ps[j:]
             open(pp, 'w', encoding='utf-8').write(ps)
             linked += 1
         print('guides + industries: %d pages, %d product pages linked to a size chart' % (len(made), linked))
