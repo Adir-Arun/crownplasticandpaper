@@ -377,9 +377,9 @@ BUYER = [
      'related': ['paper-bags', 'poly-bags', 'black-containers', 'disposable-cutlery-kits']},
 
     {'slug': 'microwave-safe-takeout-containers', 'group': 'Buying for restaurants and events', 'short': 'Microwave-safe containers',
-     'title': 'Which Takeout Containers Are Microwave Safe?',
-     'desc': 'Microwave-safe vs not: black plastic containers, bagasse, deli containers, PET hinged containers and foil pans, and what to tell customers about reheating.',
-     'h1': 'Which takeout containers are microwave safe?',
+     'title': 'Are Takeout Containers Microwave Safe? | Crown Plastic & Paper',
+     'desc': 'Are takeout containers microwave safe? Black-base and bagasse: yes. Foil pans and clear PET: no. A quick chart by container type, plus reheating tips.',
+     'h1': 'Are takeout containers microwave safe?',
      'answer': 'Black-base plastic takeout containers and bagasse containers are made for microwave reheating. Foil pans must never go in a microwave. Clear PET hinged containers are for cold food and should not be microwaved. For deli containers, check the item spec sheet.',
      'facts': [('Yes', 'black-base containers'), ('Yes', 'bagasse'), ('No', 'foil pans'), ('No', 'clear PET')],
      'sections': [('Quick reference', ('table', 'Microwave and oven use', ['Container', 'Microwave', 'Oven'], [
@@ -389,7 +389,9 @@ BUYER = [
          'Print "microwave safe, remove lid or vent before heating" on a sticker or menu if customers reheat at home. Vent or remove lids, heat in short intervals and stir.'])],
      'faq': [('Can black takeout containers go in the microwave?', 'Yes, our black-base containers are microwavable; vent or remove the lid.'),
              ('Can foil pans go in the microwave?', 'No.'),
-             ('Are bagasse containers microwave safe?', 'Yes, for reheating.')],
+             ('Are bagasse containers microwave safe?', 'Yes, for reheating.'),
+             ('Are to-go boxes microwave safe?', 'It depends on the material, not the shape. Black-base plastic and bagasse to-go boxes can be reheated; foil pans and clear PET clamshells cannot. If a box has a metal handle or foil lining, keep it out of the microwave.'),
+             ('Are deli containers microwave safe?', 'Our heavy duty deli containers are listed as microwave safe for reheating. Vent or remove the lid, heat in short intervals and check the spec sheet for the item you order.')],
      'related': ['black-containers', 'round-black-containers', 'bagasse-hinged-containers', 'deli-containers']},
 
     {'slug': 'foil-pans-oven-grill-air-fryer', 'group': 'Buying for restaurants and events', 'short': 'Foil pans: oven, grill, air fryer',
