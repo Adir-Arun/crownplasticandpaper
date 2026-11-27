@@ -42,6 +42,10 @@ SITE = sys.argv[1] if len(sys.argv) > 1 else 'site'
 HERE = os.path.dirname(os.path.abspath(__file__))
 ASSETS = os.path.join(HERE, 'assets')
 MARK = 'data-cpp-upgrade'
+WRONG_INSTAGRAM_RE = re.compile(
+    r'[ \t]*<span class="elementor-grid-item" role="listitem">\s*'
+    r'<a [^>]*href="https?://(?:www\.)?instagram\.com/lunchtraysolutions/?"[^>]*>.*?</a>\s*</span>[ \t]*\n?',
+    re.I | re.S)
 # Brand palette refresh (chosen Oct 2026): the pale blue-grey and grey-teal become a warm
 # stone and a deep blue that sit better with the navy and cream. Set to {} to switch off.
 PALETTE = {'EEF5F8': 'F3F1EC', '1F4959': '163A5C', '64748B': '566275', 'F7FAFC': 'F9F8F5'}  # 64748B failed 4.5:1 on stone
@@ -831,6 +835,9 @@ def upgrade_html(path, snippets, search_items, sitemap):
     # the footer's LinkedIn icon pointed at the sister company; Crown has its own page
     s = re.sub(r'https?://(?:www\.)?linkedin\.com/company/ar-unlimited-supply/?', CROWN_LINKEDIN, s)
     s = re.sub(r'https?://(?:www\.)?facebook\.com/Lunchtraysolutions/?', CROWN_FACEBOOK, s)
+    # the footer's Instagram icon pointed at another brand and Crown has no confirmed account yet:
+    # drop the whole icon item (re-add it here once Crown has a confirmed Instagram)
+    s = WRONG_INSTAGRAM_RE.sub('', s)
     s = geo.faq_rewrite(s)
     s = re.sub(r'(<li class="menu-item[^"]*menu-item-5750"><a href="[^"]*" class="elementor-item"[^>]*>Latest Insights</a></li>)',
                r'\1<li class="menu-item cpp-menu-locations"><a href="/locations/" class="elementor-item">Service Areas</a></li>'
