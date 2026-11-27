@@ -110,7 +110,7 @@ def rule(slug, a):
 SINGLE = {'bakery-tissue': ['6-x-10-75-bakery-tissue-t-6p'], 'c-fold-towel': ['c-fold-towel-cftw-2400'], 'cushion-foil-wrap': ['10-5-x-14-cushion-foil-wrap-fsw66u'],
           'dinner-napkins': ['2-ply-dinner-napkins-dn2p3000'], 'individual-wrapped-bath-tissue': ['individual-wrapped-bath-tissue'], 'menu-tissue-paper': ['12-x-12-menu-tissue-paper-ft12mu'],
           'patty-wax-paper': ['5-5-x-5-5-patty-wax-paper-p-55'], 'round-plates': ['9-round-plates-9mfrp-500'], 'school-trays': ['school-trays-mft-500'],
-          'stretch-film': ['18-x1500x80g'], 'tall-fold-napkins': ['tall-fold-napkins-tfn-10000'],
+          'stretch-film': ['18-x1000x80g'], 'tall-fold-napkins': ['tall-fold-napkins-tfn-10000'],
           'round-foil-pan-lids': ['board-lids-for-7-round-pans-rfpl7-500', 'board-lids-for-9-round-pans-rfpl9-500', 'round-dome-lid-7', 'round-dome-lid-9']}
 SINGLE_LABEL = {'board-lids-for-7-round-pans-rfpl7-500': '7" board lid', 'board-lids-for-9-round-pans-rfpl9-500': '9" board lid', 'round-dome-lid-7': '7" dome lid', 'round-dome-lid-9': '9" dome lid'}
 SKIP_ATTRS = ('cases-pallets', 'ti-x-hi', 'pack-size', 'pack-configuration', 'weight', 'gauge')
