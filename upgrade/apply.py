@@ -471,6 +471,18 @@ SPEC_OVERRIDES = [
     ('poly-bags', {'bag-size': '8" x 4" x 18"'}, {'ti-x-hi': '8 x 11', 'cases-pallets': '88'}, None),
     ('paper-boat-trays', {'tray-size-capacity': '5 lb'}, {'ti-x-hi': '8 x 5', 'cases-pallets': '40'}, None),
     ('deep-steam-table-pans', {'pan-size': 'Full Size'}, {'ti-x-hi': '6 x 5', 'cases-pallets': '30'}, None),
+    # 11 more items from the 2026 catalog (food film: the catalog gives no Ti x Hi)
+    ('black-hinged-containers', {'size': '8" x 8"', 'compartments': '3-Compartment'}, {'ti-x-hi': '12 x 4', 'cases-pallets': '48'}, None),
+    ('black-hinged-containers', {'size': '9" x 9"', 'compartments': '1-Compartment'}, {'ti-x-hi': '10 x 4', 'cases-pallets': '40'}, None),
+    ('deli-containers', {'size': '16oz'}, {'ti-x-hi': '9 x 6', 'cases-pallets': '54'}, None),
+    ('deli-containers', {'size': '12oz'}, {'ti-x-hi': '9 x 6', 'cases-pallets': '54'}, None),
+    ('deli-containers', {'size': '8oz'}, {'ti-x-hi': '9 x 6', 'cases-pallets': '54'}, None),
+    ('deli-containers', {'size': '24oz'}, {'ti-x-hi': '9 x 5', 'cases-pallets': '45'}, None),
+    ('food-film', {'size': '18" x 2000\''}, {'ti-x-hi': 'N/A', 'cases-pallets': '252'}, None),
+    ('pet-cups', {'size': '32oz'}, {'ti-x-hi': '9 x 3', 'cases-pallets': '27'}, None),
+    ('portion-cups', {'size-oz': '1oz', 'color': 'Clear'}, {'ti-x-hi': '15 x 7', 'cases-pallets': '105'}, None),
+    ('portion-cups-lids', {'size': '1oz'}, {'ti-x-hi': '15 x 7', 'cases-pallets': '105'}, None),
+    ('register-roll-paper', {'roll-size': '3 1/8" x 273\''}, {'ti-x-hi': '8 x 10', 'cases-pallets': '80'}, None),
     ('stretch-film', None, {}, '18-x1000x80g-spec-sheet.pdf'),
     # napkin pallet counts from the 2026 catalog
     ('beverage-napkins', {'color': 'White'}, {'ti-x-hi': '13 x 8', 'cases-pallets': '104'}, None),
@@ -542,6 +554,17 @@ SPEC_TEXT_FIXES = {
 VARIANT_FIXES = [
     ('/product/paper-boat-trays/', {'tray-size-capacity': '5 lb'}, {'ti-x-hi': '8 x 5', 'cases-pallets': '40'}, '5 lb'),
     ('/product/deep-steam-table-pans/', {'pan-size': 'Full Size'}, {'ti-x-hi': '6 x 5', 'cases-pallets': '30'}, 'Full Size'),
+    ('/product/black-hinged-containers/', {'size': '8" x 8"', 'compartments': '3-Compartment'}, {'ti-x-hi': '12 x 4', 'cases-pallets': '48'}, '8" x 8"'),
+    ('/product/black-hinged-containers/', {'size': '9" x 9"', 'compartments': '1-Compartment'}, {'ti-x-hi': '10 x 4', 'cases-pallets': '40'}, '9" x 9"'),
+    ('/product/deli-containers/', {'size': '16oz'}, {'ti-x-hi': '9 x 6', 'cases-pallets': '54'}, '16oz'),
+    ('/product/deli-containers/', {'size': '12oz'}, {'ti-x-hi': '9 x 6', 'cases-pallets': '54'}, '12oz'),
+    ('/product/deli-containers/', {'size': '8oz'}, {'ti-x-hi': '9 x 6', 'cases-pallets': '54'}, '8oz'),
+    ('/product/deli-containers/', {'size': '24oz'}, {'ti-x-hi': '9 x 5', 'cases-pallets': '45'}, '24oz'),
+    ('/product/food-film/', {'size': '18" x 2000\''}, {'ti-x-hi': 'N/A', 'cases-pallets': '252'}, '18&quot;x2000&#039;'),
+    ('/product/pet-cups/', {'size': '32oz'}, {'ti-x-hi': '9 x 3', 'cases-pallets': '27'}, '32oz'),
+    ('/product/portion-cups/', {'size-oz': '1oz', 'color': 'Clear'}, {'ti-x-hi': '15 x 7', 'cases-pallets': '105'}, '1oz'),
+    ('/product/portion-cups-lids/', {'size': '1oz'}, {'ti-x-hi': '15 x 7', 'cases-pallets': '105'}, '1oz'),
+    ('/product/register-roll-paper/', {'roll-size': '3 1/8" x 273\''}, {'ti-x-hi': '8 x 10', 'cases-pallets': '80'}, '3 1/8&quot; x273&#039;'),
 ]
 _SPEC_FEATURE = {'ti-x-hi': ('Ti x Hi', 'Ti X Hi'), 'cases-pallets': ('Cases/Pallets', 'Cases / Pallets')}
 
@@ -560,6 +583,7 @@ def fix_variant(s, when, changes, size_label):
             if all(a.get('attribute_' + k) == val for k, val in when.items()):
                 for k, new in changes.items():
                     olds[k] = a.get('attribute_' + k)
+                    olds[k + ':had'] = any(w is not v and w.get('attributes', {}).get('attribute_' + k) == new for w in vs)
                     a['attribute_' + k] = new
                     for sp in v.get('specifications') or []:
                         if sp.get('feature') in _SPEC_FEATURE.get(k, ()):
@@ -574,9 +598,12 @@ def fix_variant(s, when, changes, size_label):
         if not old or old == new:
             continue
         keep = olds.get(k + ':kept')
+        had = olds.get(k + ':had')   # a sibling variation already offers the new value
         an = 'attribute_' + k
 
-        def swap(el, keep=keep, old=old, new=new):
+        def swap(el, keep=keep, had=had, old=old, new=new):
+            if had:
+                return el if keep else ''
             el2 = el.replace('variable-item-%s ' % _opt_slug(old), 'variable-item-%s ' % _opt_slug(new))
             el2 = re.sub(r'(?<=[>"\'])%s(?=[<"\'])' % re.escape(old), new, el2)
             return el + el2 if keep else el2
@@ -587,7 +614,10 @@ def fix_variant(s, when, changes, size_label):
 
         def values(m):
             vals = json.loads(html.unescape(m.group(2)))
-            vals = (vals + [new]) if keep else [new if x == old else x for x in vals]
+            if had:
+                vals = vals if keep else [x for x in vals if x != old]
+            else:
+                vals = (vals + [new]) if keep else [new if x == old else x for x in vals]
             return m.group(1) + html.escape(json.dumps(vals).replace('/', '\\/'), quote=True) + m.group(3)
         s = re.sub(r'(data-attribute_name="%s" data-attribute_values=")([^"]*)(")' % an, values, s)
         s = re.sub(r'<li [^>]*data-attribute_name="%s"[^>]*data-value="%s".*?</li>' % (an, re.escape(old)),
