@@ -99,6 +99,222 @@
       "permanent": true
     },
     {
+      "source": "/",
+      "has": [
+        {
+          "type": "query",
+          "key": "p",
+          "value": "11285"
+        }
+      ],
+      "destination": "/why-bulk-purchasing-saves-money-for-food-businesses/",
+      "statusCode": 301
+    },
+    {
+      "source": "/",
+      "has": [
+        {
+          "type": "query",
+          "key": "p",
+          "value": "11287"
+        }
+      ],
+      "destination": "/choosing-the-right-food-packaging-for-your-business/",
+      "statusCode": 301
+    },
+    {
+      "source": "/",
+      "has": [
+        {
+          "type": "query",
+          "key": "p",
+          "value": "12260"
+        }
+      ],
+      "destination": "/ways-high-quality-packaging-can-improve-customer-retention-for-restaurants/",
+      "statusCode": 301
+    },
+    {
+      "source": "/",
+      "has": [
+        {
+          "type": "query",
+          "key": "p",
+          "value": "12273"
+        }
+      ],
+      "destination": "/choosing-the-right-register-rolls-for-retail-and-hospitality-businesses/",
+      "statusCode": 301
+    },
+    {
+      "source": "/",
+      "has": [
+        {
+          "type": "query",
+          "key": "p",
+          "value": "12282"
+        }
+      ],
+      "destination": "/expanding-your-business-through-strategic-international-sourcing/",
+      "statusCode": 301
+    },
+    {
+      "source": "/",
+      "has": [
+        {
+          "type": "query",
+          "key": "p",
+          "value": "12290"
+        }
+      ],
+      "destination": "/the-future-of-wholesale-distribution-in-a-competitive-marketplace/",
+      "statusCode": 301
+    },
+    {
+      "source": "/",
+      "has": [
+        {
+          "type": "query",
+          "key": "p",
+          "value": "12321"
+        }
+      ],
+      "destination": "/best-practices-for-selecting-products-for-wholesale-distribution/",
+      "statusCode": 301
+    },
+    {
+      "source": "/",
+      "has": [
+        {
+          "type": "query",
+          "key": "p",
+          "value": "12328"
+        }
+      ],
+      "destination": "/cost-effective-dinner-napkin-solutions-for-restaurants-and-catering-businesses/",
+      "statusCode": 301
+    },
+    {
+      "source": "/",
+      "has": [
+        {
+          "type": "query",
+          "key": "p",
+          "value": "12329"
+        }
+      ],
+      "destination": "/cost-effective-dinner-napkin-solutions-for-restaurants-and-catering-businesses/",
+      "statusCode": 301
+    },
+    {
+      "source": "/",
+      "has": [
+        {
+          "type": "query",
+          "key": "p",
+          "value": "12330"
+        }
+      ],
+      "destination": "/cost-effective-dinner-napkin-solutions-for-restaurants-and-catering-businesses/",
+      "statusCode": 301
+    },
+    {
+      "source": "/",
+      "has": [
+        {
+          "type": "query",
+          "key": "p",
+          "value": "12331"
+        }
+      ],
+      "destination": "/how-wholesale-food-packaging-helps-restaurants-reduce-operating-costs/",
+      "statusCode": 301
+    },
+    {
+      "source": "/",
+      "has": [
+        {
+          "type": "query",
+          "key": "p",
+          "value": "12332"
+        }
+      ],
+      "destination": "/how-wholesale-food-packaging-helps-restaurants-reduce-operating-costs/",
+      "statusCode": 301
+    },
+    {
+      "source": "/",
+      "has": [
+        {
+          "type": "query",
+          "key": "p",
+          "value": "12339"
+        }
+      ],
+      "destination": "/a-complete-guide-to-choosing-the-right-takeout-bags-for-food-businesses/",
+      "statusCode": 301
+    },
+    {
+      "source": "/",
+      "has": [
+        {
+          "type": "query",
+          "key": "p",
+          "value": "12345"
+        }
+      ],
+      "destination": "/how-to-keep-hot-and-cold-foods-at-the-right-temperature-during-delivery/",
+      "statusCode": 301
+    },
+    {
+      "source": "/",
+      "has": [
+        {
+          "type": "query",
+          "key": "p",
+          "value": "12346"
+        }
+      ],
+      "destination": "/how-to-choose-the-right-portion-cups-for-sauces-dressings-and-condiments/",
+      "statusCode": 301
+    },
+    {
+      "source": "/",
+      "has": [
+        {
+          "type": "query",
+          "key": "p",
+          "value": "12347"
+        }
+      ],
+      "destination": "/the-ultimate-guide-to-disposable-tableware-for-catering-companies/",
+      "statusCode": 301
+    },
+    {
+      "source": "/",
+      "has": [
+        {
+          "type": "query",
+          "key": "p",
+          "value": "12351"
+        }
+      ],
+      "destination": "/how-to-select-the-right-food-storage-bags-for-commercial-kitchens/",
+      "statusCode": 301
+    },
+    {
+      "source": "/",
+      "has": [
+        {
+          "type": "query",
+          "key": "p",
+          "value": "12352"
+        }
+      ],
+      "destination": "/why-tamper-evident-packaging-matters-for-restaurant-delivery-orders/",
+      "statusCode": 301
+    },
+    {
       "source": "/2026/03/31/",
       "destination": "/blog/",
       "statusCode": 301

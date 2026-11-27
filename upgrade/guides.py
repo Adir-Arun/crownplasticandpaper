@@ -228,7 +228,7 @@ def g_foil(spec, products):
               [['Full size', '12" × 20"', '1'], ['Half size', '12" × 10"', '2']],
               'Nominal sizes of the standard hotel-pan grid. Foil pans run slightly larger at the rim so they rest on the frame.'),
         table('Foil pan and lid cases (from our spec sheets)', ['Item', 'Item #', 'Case pack', 'Case dimensions', 'Case weight', 'Cases / pallet'],
-              [['Full-size deep steam table pan', 'FSDFP-50', '50', '21.1" × 13.5" × 13.6"', '14.99 lb', '28'],
+              [['Full-size deep steam table pan', 'FSDFP-50', '50', '21.1" × 13.5" × 13.6"', '14.99 lb', '30'],
                ['Half-size deep steam table pan', 'HSDFP-100', '100', '19.5" × 13" × 10.5"', '10.14 lb', '42'],
                ['Foil lid, full-size pan', 'FSAL-50', '50', '21.85" × 5.08" × 13.98"', '7.72 lb', '50'],
                ['Foil lid, half-size pan', 'HSAL-100', '100', '13.58" × 11.61" × 7.87"', '5.29 lb', '50'],

@@ -32,6 +32,11 @@ FIXES = {
     'interfold-napkins-kraft-ifk6000-spec-sheet.pdf': (None, [('Cases / Pallet', '72', '45')]),
     'multifold-napkins-white-spec-sheet.pdf': (None, [('Ti x Hi', '7 x 7', '8 x 6'), ('Cases / Pallet', '49', '48')]),
     'multifold-napkins-kraft-spec-sheet.pdf': (None, [('Ti x Hi', '7 x 7', '8 x 6'), ('Cases / Pallet', '49', '48')]),
+    # pallet counts from the 2026 catalog
+    '5-lb-red-plaid-spec-sheet.pdf': (None, [('Ti x Hi', '9 x 7', '8 x 5'), ('Cases / Pallet', '63', '40')]),
+    'full-size-deep-steam-pans-fsdfp-50-spec-sheet.pdf': (None, [('Ti x Hi', '7 x 4', '6 x 5'), ('Cases / Pallet', '28', '30')]),
+    'round-dome-lid-7-spec-sheet.pdf': (None, [('Ti x Hi', '20 x 10', '10 x 5'), ('Cases / Pallet', '200', '50')]),
+    'round-dome-lid-9-spec-sheet.pdf': (None, [('Ti x Hi', '20 x 10', '10 x 5'), ('Cases / Pallet', '200', '50')]),
 }
 
 
