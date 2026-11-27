@@ -300,7 +300,9 @@ BUYER = [
          ['Napkins', '3', '150', '300', '600'], ['Half size foil pans + lids', 'menu-based', '4–6', '6–10', '12–18']],
          'Planning estimates; adjust for menu, service style and event length.')),
          ('Pans by dish', [
-         'A half size deep pan holds roughly 12 to 20 servings of a main or side; a full size pan about twice that. Order matching lids and a few spare pans for refills and leftovers.'])],
+         'A half size deep pan holds roughly 12 to 20 servings of a main or side; a full size pan about twice that. Order matching lids and a few spare pans for refills and leftovers.']),
+         ('Which napkins', [
+         'Beverage napkins for the bar and dessert table, lunch or dinner napkins for the meal: compare sizes, ply and case counts in the <a href="/guides/napkin-sizes/">napkin sizes chart</a>.'])],
      'faq': [('How many servings does a half size foil pan hold?', 'Roughly 12 to 20, depending on the dish and portion.'),
              ('How many napkins per guest?', 'About three for a buffet, more for messy food.'),
              ('Do you sell foil pans by the case?', 'Yes: half size deep pans 100 per case and full size 50 per case.')],
@@ -318,7 +320,9 @@ BUYER = [
          ['Clear PET hinged', 'Shows the food, good for cold items and salads', 'Not for hot food'],
          ['Foil pans with lids', 'Oven-safe, good for catering', 'Not microwavable']])),
          ('Where foam is restricted', [
-         'California, Oregon and New York restrict foam food service containers statewide; Colorado\'s ban took effect January 1, 2024, and Virginia\'s statewide ban for all food vendors takes effect July 1, 2026. Many cities have their own rules. Texas has no statewide ban.'])],
+         'California, Oregon and New York restrict foam food service containers statewide; Colorado\'s ban took effect January 1, 2024, and Virginia\'s statewide ban for all food vendors takes effect July 1, 2026. Many cities have their own rules. Texas has no statewide ban.']),
+         ('Bagasse sizes and uses', [
+         'Bagasse clamshell, plate and tray sizes, microwave use and composting are covered in <a href="/guides/bagasse-plates-and-containers/">bagasse plates and containers</a>.'])],
      'faq': [('What is the best replacement for foam clamshells?', 'Bagasse hinged containers for hot food; black plastic containers for saucy, microwave-reheated meals.'),
              ('Are bagasse containers PFAS-free?', 'Our bagasse hinged containers are PFAS-free.'),
              ('Which states ban foam containers?', 'Several, including California, Oregon, New York, Colorado and Virginia. Check current state and city rules.')],
@@ -337,7 +341,9 @@ BUYER = [
          '- A written statement that the item has no intentionally added PFAS.',
          '- The material and coating for each fiber item.',
          '- Spec sheets with item numbers so records match invoices.']),
-         ('Bagasse containers we stock', ('spec', 'bagasse-hinged-containers', 'Bagasse hinged containers'))],
+         ('Bagasse containers we stock', ('spec', 'bagasse-hinged-containers', 'Bagasse hinged containers')),
+         ('More on bagasse', [
+         'What bagasse is, which size fits which dish, and microwave and composting questions: see <a href="/guides/bagasse-plates-and-containers/">bagasse plates and containers</a>.'])],
      'faq': [('Which packaging contains PFAS?', 'Mostly grease-resistant paper and molded fiber, such as some bowls, clamshells and wraps.'),
              ('Are plastic containers affected by PFAS bans?', 'The bans focus on intentionally added PFAS; check each state\'s definition.'),
              ('Are your bagasse containers PFAS-free?', 'Yes.')],
@@ -370,7 +376,9 @@ BUYER = [
      'answer': 'Paper bags stand up for packing, look clean for branding and are accepted where plastic carryout bags are restricted. Poly bags resist moisture and handle heavy, wet orders. Most restaurants use flat-bottom paper bags in two or three sizes for takeout and keep poly bags for large or catering orders.',
      'facts': [('#2–#12', 'paper bag sizes'), ('Kraft / white', 'paper colors'), ('Poly', 'for heavy, wet orders'), ('500', 'paper bags per case')],
      'sections': [('Paper bag sizes we stock', ('spec', 'paper-bags', 'Paper bags')),
-                  ('Poly bags we stock', ('spec', 'poly-bags', 'Poly bags'))],
+                  ('Poly bags we stock', ('spec', 'poly-bags', 'Poly bags')),
+                  ('Poly bag sizes and thickness', [
+                      'How gusseted sizes read, what mil thickness means and LDPE vs HDPE: see the <a href="/guides/poly-bag-sizes/">poly bag sizes and thickness guide</a>.'])],
      'faq': [('What size paper bag for one takeout meal?', 'A #8 or #10 bag usually fits one container with sides; #12 for two meals.'),
              ('Are plastic bags banned for restaurants?', 'Some states and cities restrict plastic carryout bags; check local rules.'),
              ('How many paper bags are in a case?', '500.')],
@@ -448,7 +456,9 @@ BUYER = [
                   ('Matching width to the job', [
                       '- 12 inch: deli containers, sandwiches, small bowls.',
                       '- 18 inch: half and full hotel pans, prep containers.',
-                      '- 24 inch: full sheet pans, catering trays, bulk wrapping.'])],
+                      '- 24 inch: full sheet pans, catering trays, bulk wrapping.']),
+                  ('Wrapping pallets instead?', [
+                      'Food film is for food. To hold boxed loads together on a pallet you need stretch film; see the <a href="/guides/stretch-film-gauge-guide/">stretch film gauge and width guide</a>.'])],
      'faq': [('What width cling film for a full sheet pan?', '24 inch covers it in one pass.'),
              ('How long is a food service film roll?', 'Ours are 2,000 feet.'),
              ('Is food film the same as stretch film?', 'No. Food film is for food; stretch film is for wrapping pallets.')],
@@ -461,7 +471,9 @@ BUYER = [
      'answer': 'Busy restrooms run on jumbo roll tissue (750 or 1,000 ft rolls, fewer changes) or individually wrapped standard rolls, plus roll or folded hand towels and trash liners. Jumbo rolls and hand roll towels cut refill frequency and waste in high-traffic restrooms.',
      'facts': [('750 / 1,000 ft', 'jumbo rolls'), ('12', 'jumbo rolls per case'), ('350 / 800 ft', 'hand roll towels'), ('Fewer', 'refills with jumbo')],
      'sections': [('Jumbo roll tissue', ('spec', 'jumbo-roll-tissue', 'Jumbo roll tissue')),
-                  ('Hand and kitchen towels', ('spec', 'kraft-white-kitchen-roll-towels', 'Roll towels'))],
+                  ('Hand and kitchen towels', ('spec', 'kraft-white-kitchen-roll-towels', 'Roll towels')),
+                  ('Folded hand towels', [
+                      'Prefer folded towels to rolls? Compare sheet sizes, case counts and dispensers in <a href="/guides/c-fold-vs-multifold-towels/">C-fold vs multifold paper towels</a>.'])],
      'faq': [('Jumbo roll or standard rolls?', 'Jumbo rolls for high-traffic restrooms; standard wrapped rolls for low-traffic or single-user restrooms.'),
              ('Kraft or white towels?', 'Kraft costs less; white looks brighter in customer areas.'),
              ('Do I need specific dispensers?', 'Yes, match roll diameter and core size to your dispenser.')],
@@ -562,7 +574,228 @@ BUYER = [
              ('Sporks or full cutlery kits?', 'Sporks for younger students and simpler menus; kits for older students.'),
              ('Can schools get Net 30 terms?', 'Approved accounts get Net 30.')],
      'related': ['school-trays', 'disposable-cutlery-kits', 'beverage-napkins', 'trash-liners']},
+
+    # ================================================================ product buying guides (Search Console gap pages, Nov 27 2026)
+    {'slug': 'poly-bag-sizes', 'group': 'Product buying guides', 'short': 'Poly bag sizes and thickness',
+     'title': 'Poly Bag Sizes, Mil Thickness and LDPE vs HDPE Guide',
+     'desc': 'How to read gusseted poly bag sizes (W x G x L), what mil thickness means, LDPE vs HDPE, and which clear polyethylene bag fits produce, food and parts.',
+     'h1': "Poly bag sizes, thickness and materials: a buyer's guide",
+     'answer': 'Gusseted poly bags are sized width × gusset × length in inches: an 8" × 4" × 18" bag is 8 inches across the face, opens 4 inches deep at the side folds and is 18 inches long. Thickness is measured in mils (1 mil = 0.001 inch = 25.4 microns). LDPE is the soft, clear, stretchy film used for most food and produce bags; HDPE is thinner, crinkly and stiffer.',
+     'facts': [('W × G × L', 'how gusset sizes read'), ('1 mil', '= 0.001 in = 25.4 µm'), ('Clear', 'polyethylene'), ('Freezer', 'compatible')],
+     'sections': [
+         ('How to read a poly bag size', [
+             'Flat poly bags are listed as <b>width × length</b>. Gusseted bags add a third number in the middle: <b>width × gusset × length</b>. The gusset is the folded-in side panel that opens out when the bag is filled, so the bag stands up as a box shape instead of a flat pillow.',
+             '- <b>Width</b> is the face of the bag, measured across the opening.',
+             '- <b>Gusset</b> is the depth the bag opens to at the sides once filled.',
+             '- <b>Length</b> is the distance from the opening to the bottom seal.',
+             'A quick way to compare capacity: the filled footprint is roughly width × gusset (8" × 4" for an 8 × 4 × 18 bag), and the usable height is the length minus the few inches you need to twist, tie or fold the top closed.']),
+         ('Poly bag sizes we stock', ('spec', 'poly-bags', 'Clear gusseted poly bags (from our spec sheets)')),
+         ('Which size for which job', [
+             '- <b>8" × 4" × 18":</b> bread loaves, bagels and rolls, smaller produce portions, specialty food items and small parts.',
+             '- <b>12" × 6" × 24":</b> medium produce, bulk dry goods, folded garments and mid-size parts.',
+             '- <b>18" × 14" × 21":</b> a wide, shorter bag for grocery, retail and light industrial packing. Listed on our <a href="/product/poly-bags/">poly bags page</a>; ask for case and pallet counts on your quote.',
+             '- <b>23" × 17" × 34":</b> the largest size, for bulk produce, large retail items, bedding and box liners.',
+             'If an item is long and narrow (a baguette, a roll of parts), pick on width and length. If it is boxy (a tray of pastries, a stack of folded shirts), pick on width × gusset so the base sits flat.']),
+         ('Mil thickness explained', ('table', 'Poly bag thickness: general guidance (industry conversions)', ['Thickness', 'Microns', 'Typical use'], [
+             ['0.5 – 0.75 mil', '13 – 19 µm', 'Produce on the roll, light bakery items, single-use wraps'],
+             ['1 mil', '25 µm', 'Bread, light food packing, small parts, dust covers'],
+             ['1.5 – 2 mil', '38 – 51 µm', 'General purpose bags, frozen food, heavier retail items'],
+             ['3 – 4 mil', '76 – 102 µm', 'Heavy-duty: sharp or heavy parts, bulk storage, shipping']],
+             'Conversions are exact (1 mil = 25.4 microns); uses are general industry guidance. Ask us for the gauge of a specific bag on your quote.')),
+         ('LDPE vs HDPE vs LLDPE', [
+             '<b>LDPE (low-density polyethylene)</b> is the classic poly bag film: soft, clear, flexible and heat-sealable. It is the usual choice for food, produce and anything customers need to see through the bag.',
+             '<b>HDPE (high-density polyethylene)</b> is stiffer and crinkly, with a frosted look. It is strong for its thickness, so HDPE bags are often thinner. You see it in t-shirt carryout bags and clear can liners.',
+             '<b>LLDPE (linear low-density polyethylene)</b> stretches further before it tears and resists punctures, which is why it is used for heavy can liners and stretch film. Many poly bags are an LDPE/LLDPE blend.',
+             'Our poly bags are clear polyethylene, listed as food safe and freezer compatible, with an open top that you twist-tie, tape or heat seal.']),
+         ('Poly bags vs other bags we stock', [
+             '- For takeout orders, compare <a href="/guides/paper-vs-plastic-takeout-bags/">paper vs plastic takeout bags</a>.',
+             '- For trash, use <a href="/product/trash-liners/">trash can liners</a>, which are made in liner sizes and mil ratings for cans.',
+             '- For wrapping a whole pallet, use <a href="/guides/stretch-film-gauge-guide/">stretch film</a> rather than oversize bags.']),
+         ('Ordering poly bags wholesale', [
+             'Poly bags ship by the case and mix onto the same pallet as the rest of your order. Pricing is by the case and pallet in three tiers: %s. Approved accounts get Net 30, and orders typically leave our Houston warehouse in %s.' % (F['tiers'], F['ship']),
+             'Send your sizes and case counts through the quote form or call <a href="tel:+18449000084">%s</a> for wholesale pricing.' % F['phone']])],
+     'faq': [('How do you read a gusseted poly bag size?', 'Width × gusset × length, in inches. An 8 × 4 × 18 bag is 8 inches wide, opens 4 inches deep at the sides and is 18 inches long.'),
+             ('What does mil mean on a plastic bag?', 'Mil is thickness in thousandths of an inch. 1 mil is 0.001 inch, or 25.4 microns. A 2 mil bag is twice as thick as a 1 mil bag.'),
+             ('What is the difference between LDPE and HDPE bags?', 'LDPE is soft, clear and stretchy and is the usual film for food and produce bags. HDPE is stiffer, crinkly and frosted, and is strong for its thickness.'),
+             ('Are your poly bags food safe?', 'Yes. They are clear polyethylene listed as food safe for produce, frozen food and direct food contact, and they are freezer compatible.'),
+             ('What poly bag sizes do you carry?', '8 × 4 × 18, 12 × 6 × 24, 18 × 14 × 21 and 23 × 17 × 34 inches, all clear gusseted bags.'),
+             ('How many poly bags are in a case?', 'Our spec sheets list 100 per case for the 8 × 4 × 18, 12 × 6 × 24 and 23 × 17 × 34 bags. Your quote confirms the case count for each size.')],
+     'related': ['poly-bags', 'trash-liners', 'paper-bags', 'stretch-film'],
+     'primary': ['poly-bags']},
+
+    {'slug': 'stretch-film-gauge-guide', 'group': 'Product buying guides', 'short': 'Stretch film gauge and sizes',
+     'title': 'Stretch Film Guide: Gauge, Width and How to Wrap a Pallet',
+     'desc': 'Stretch film gauge chart (gauge to mil and microns), hand vs machine widths, cast vs blown film, pallet covers vs stretch wrap, and how to wrap a pallet.',
+     'h1': 'Stretch film guide: gauge, width and wrapping a pallet',
+     'answer': 'Stretch film thickness is sold in gauge: 100 gauge equals 1 mil (25.4 microns), so 80 gauge is 0.8 mil, about 20 microns. 80 gauge is the general-purpose weight for mixed-case pallets. Hand film usually comes in 12 to 20 inch widths, with 18 inch the most common; machine film is wider. Our stretch film is 18 inch, 80 gauge LLDPE, 4 rolls per case.',
+     'facts': [('80 gauge', '≈ 0.8 mil / 20 µm'), ('18"', 'hand film width'), ('LLDPE', 'high cling'), ('4', 'rolls per case')],
+     'sections': [
+         ('Stretch film gauge chart', ('table', 'Gauge, mil and microns (100 gauge = 1 mil)', ['Gauge', 'Mil', 'Microns', 'Typical use'], [
+             ['47 – 60', '0.47 – 0.6', '12 – 15', 'Pre-stretched film, light and even boxed loads'],
+             ['70', '0.7', '18', 'Light to medium boxed loads'],
+             ['80', '0.8', '20', 'General purpose: most mixed-case pallets'],
+             ['90', '0.9', '23', 'Heavier loads, more stacking or longer trips'],
+             ['120', '1.2', '30', 'Heavy, irregular or sharp-cornered loads']],
+             'Conversions are exact (1 gauge = 0.01 mil = 0.254 microns). Uses are general guidance; heavier loads can also be handled with more passes of a lighter film.')),
+         ('Our stretch film', ('table', 'Stretch film we stock (from our spec sheet)', ['Width', 'Gauge', 'Film', 'Rolls / case', 'Cases / pallet'], [
+             ['18"', '80', 'LLDPE, high cling, clear', '4', '66']],
+             'Ti × Hi 11 × 6. Roll length is confirmed on your quote.')),
+         ('Hand film vs machine film', [
+             '<b>Hand film</b> is wrapped by a person walking around the pallet, usually with a handle or dispenser. Widths of 12 to 20 inches are common, and 18 inch is the standard because it covers a pallet quickly without being too heavy to hold.',
+             '<b>Machine film</b> goes on a turntable or rotary arm wrapper. It comes on wider, heavier rolls, commonly 20 or 30 inches, and is pre-stretched by the machine. If you wrap fewer than a few dozen pallets a day, hand film is usually all you need.']),
+         ('Cast vs blown stretch film', [
+             '<b>Cast film</b> is clear, unwinds quietly and clings well, which makes it easy to scan labels through and easy to wrap by hand.',
+             '<b>Blown film</b> is tougher and more puncture resistant but hazier and noisier to unwind; it is often chosen for sharp corners and heavy, irregular loads.',
+             'Both are made from LLDPE. Ours is a high-cling LLDPE hand film that holds to itself without tape.']),
+         ('Stretch film vs pallet covers and cling film', [
+             '- <b>Stretch film</b> holds the load together and to the pallet. It is what most warehouses mean by pallet wrap.',
+             '- <b>Pallet covers and top sheets</b> are bags or sheets that go over the top of a load to keep dust and rain off. They do not hold the load together, so they are used with stretch film, not instead of it.',
+             '- <b>Food film (cling wrap)</b> is a thin PVC film for covering food in the kitchen. See our <a href="/guides/food-film-gauge-and-width/">food film widths guide</a>; it is not made for pallets.']),
+         ('How to wrap a pallet with hand film', [
+             '- Tuck the film tail between boxes on a bottom corner, or twist it around a corner post of the pallet, so the film anchors itself.',
+             '- Wrap the base first, letting the film catch the pallet deck, so the load is locked to the pallet and not just to itself.',
+             '- Walk up the load in a spiral, overlapping each pass by roughly half the film width.',
+             '- Pull the film snug as you walk; tension is what holds the load. Film that sags adds weight without adding hold.',
+             '- Add extra passes at the top and around any layer that sticks out, then press the tail flat; high-cling film holds without tape.',
+             'For heavy loads such as cases of drinks, add more passes at the base and top or step up in gauge, and use corner boards where cases have sharp edges.']),
+         ('Ordering stretch film wholesale', [
+             'Stretch film is sold by the case and can ride on a mixed pallet with your other supplies. Pricing tiers: %s. Approved accounts get Net 30; orders typically ship from Houston in %s.' % (F['tiers'], F['ship']),
+             'Ask for a quote through the form or call <a href="tel:+18449000084">%s</a>.' % F['phone']])],
+     'faq': [('What gauge stretch film should I use?', '80 gauge (0.8 mil, about 20 microns) is the general-purpose weight for most boxed, mixed-case pallets. Go heavier, or add passes, for heavy, irregular or sharp-cornered loads.'),
+             ('How many microns is 80 gauge stretch film?', 'About 20 microns. 100 gauge equals 1 mil, which is 25.4 microns, so 80 gauge is 0.8 mil or about 20.3 microns.'),
+             ('What is the most common stretch film width?', '18 inches for hand film. Machine film is wider, commonly 20 or 30 inches.'),
+             ('What is the difference between cast and blown stretch film?', 'Cast film is clearer, quieter and clings well. Blown film is tougher and more puncture resistant but hazier and noisier.'),
+             ('Is a pallet cover the same as stretch film?', 'No. A pallet cover or top sheet keeps dust and water off the top of the load. Stretch film holds the load together and to the pallet.'),
+             ('How many rolls of stretch film are in a case?', 'Four rolls per case of our 18 inch, 80 gauge film.')],
+     'related': ['stretch-film', 'poly-bags', 'food-film', 'trash-liners'],
+     'primary': ['stretch-film']},
+
+    {'slug': 'c-fold-vs-multifold-towels', 'group': 'Product buying guides', 'short': 'C-fold vs multifold towels',
+     'title': 'C-Fold vs Multifold Paper Towels: Sizes and Dimensions',
+     'desc': 'C-fold paper towel dimensions (10" x 12"), multifold (9" x 9") and single fold compared: sheets per case, cases per pallet and dispensers.',
+     'h1': 'C-fold vs multifold paper towels: sizes, counts and dispensers',
+     'answer': 'A C-fold paper towel is folded twice into a C shape and opens to a larger sheet: ours are 10" × 12", 2,400 per case (12 packs of 200). Multifold (also called tri-fold or interfolded) towels fold into a Z and link together so one pull presents the next; ours are 9" × 9", 4,000 per case. C-fold gives more paper per pull, multifold gives more towels per case.',
+     'facts': [('10" × 12"', 'C-fold sheet'), ('9" × 9"', 'multifold sheet'), ('2,400', 'C-fold per case'), ('4,000', 'multifold per case')],
+     'sections': [
+         ('Folded towel dimensions compared', ('table', 'Folded hand towels (from our spec sheets and product pages)', ['Towel', 'Sheet size', 'Per case', 'Cases / pallet'], [
+             ['C-fold', '10" × 12"', '2,400 (12 × 200)', '70'],
+             ['Multifold', '9" × 9"', '4,000', '49'],
+             ['Single fold', '10" × 9"', '4,000', '63']],
+             'Sheet sizes are unfolded. Multifold and single fold come in kraft or white.')),
+         ('What C-fold, multifold and single fold mean', [
+             '<b>C-fold</b> towels are folded twice so the edges meet in the middle and the towel looks like a letter C from the side. They stack in a dispenser and come out one at a time, though they do not link to each other.',
+             '<b>Multifold</b> towels, also called tri-fold or Z-fold, are folded into three panels and interfolded, so pulling one towel pulls the edge of the next towel into place. That makes them quick to dispense one-handed and is why they are the most common towel in commercial restrooms.',
+             '<b>Single fold</b> towels are folded once, giving a large sheet in a compact stack. They suit dispensers built for single fold and back-of-house hand sinks.']),
+         ('Which to choose', [
+             '- <b>C-fold</b> when you want a bigger sheet per pull: offices, healthcare, front-of-house restrooms where one towel should do the job.',
+             '- <b>Multifold</b> when you want the most towels per case and quick one-at-a-time dispensing: busy restaurant and school restrooms, kitchens and staff areas.',
+             '- <b>Roll towels</b> when you want the fewest refills: a single <a href="/product/kraft-white-kitchen-roll-towels/">hand roll towel</a> runs 350 to 800 feet. See <a href="/guides/restaurant-restroom-paper-supplies/">restroom paper supplies</a> for jumbo tissue and rolls.',
+             'Kraft and white towels absorb the same; kraft usually costs less, and white looks brighter in customer areas.']),
+         ('Dispensers', [
+             'Match the towel to the dispenser. C-fold towels fit standard C-fold dispensers and multifold towels fit standard multifold dispensers. Many folded-towel dispensers are adjustable or labeled for both C-fold and multifold, so check the label inside your dispenser before switching formats.']),
+         ('How many cases you need', [
+             'Estimate with three numbers: hand-dries per day, sheets per hand-dry and sheets per case.',
+             '- Example: 300 hand-dries a day × 2 sheets = 600 sheets a day.',
+             '- A 2,400-sheet case of C-fold lasts about 4 days at that rate; a 4,000-sheet case of multifold about 6 to 7 days.',
+             'Example numbers for illustration only. Track one week of your own usage, then set a reorder point; our <a href="/guides/reorder-point-formula/">reorder point guide</a> shows how.']),
+         ('Ordering paper towels wholesale', [
+             'Towels ship by the case and can share a pallet with napkins, tissue, liners and the rest of your order. Pricing tiers: %s. Approved accounts get Net 30; orders typically leave Houston in %s.' % (F['tiers'], F['ship']),
+             'Get wholesale pricing through the quote form or call <a href="tel:+18449000084">%s</a>.' % F['phone']])],
+     'faq': [('What are the dimensions of a C-fold paper towel?', 'Our C-fold towels are 10 × 12 inches unfolded, 2,400 per case in 12 packs of 200.'),
+             ('What is the difference between C-fold and multifold towels?', 'C-fold towels are folded twice into a C and give a larger sheet. Multifold towels are folded into a Z and interfolded so each pull presents the next towel. Ours: C-fold 10 × 12 inches, multifold 9 × 9 inches.'),
+             ('What is a C-fold paper towel?', 'A folded hand towel with both edges folded to the middle, so it looks like a C from the side. It is dispensed from a C-fold towel dispenser in restrooms and kitchens.'),
+             ('Can I put multifold towels in a C-fold dispenser?', 'Only if the dispenser is made for both. Many folded-towel dispensers are adjustable or labeled for C-fold and multifold; check yours before switching.'),
+             ('How many towels are in a case of multifold?', '4,000 per case for our multifold towels, in kraft or white.'),
+             ('Are multifold napkins the same as multifold towels?', 'Yes, the same format is sold under both names. Ours are 9 × 9 inches, 4,000 per case.')],
+     'related': ['c-fold-towel', 'single-multi-and-c-fold-napkins', 'single-fold-napkins', 'kraft-white-kitchen-roll-towels'],
+     'primary': ['c-fold-towel', 'single-multi-and-c-fold-napkins', 'single-fold-napkins']},
+
+    {'slug': 'napkin-sizes', 'group': 'Product buying guides', 'short': 'Napkin sizes and types',
+     'title': 'Napkin Sizes Chart: Beverage, Lunch, Dinner and Dispenser',
+     'desc': 'Napkin sizes compared: beverage 9" x 9", lunch 12" x 12", dinner 15" x 17", tall fold and interfold dispenser napkins, with ply and case counts.',
+     'h1': 'Napkin sizes chart: beverage, lunch, dinner and dispenser napkins',
+     'answer': 'Restaurant paper napkins come in four main types. Beverage (cocktail) napkins are 9" × 9", lunch napkins 12" × 12" and dinner napkins 15" × 17", all sheet sizes before folding. Dispenser napkins are smaller: tall fold napkins are 13" × 7" and interfold napkins 6.5" × 7.9", built to come out one at a time.',
+     'facts': [('9" × 9"', 'beverage'), ('12" × 12"', 'lunch'), ('15" × 17"', 'dinner'), ('10,000', 'tall fold per case')],
+     'sections': [
+         ('Napkin sizes we stock', ('table', 'Paper napkins: sheet size, ply and case counts (from our spec sheets and product pages)', ['Napkin', 'Sheet size', 'Ply / color', 'Per case', 'Cases / pallet'], [
+             ['Beverage', '9" × 9"', '1-ply white', '4,000', '108'],
+             ['Beverage', '9" × 9"', '2-ply black', '1,000', '200'],
+             ['Lunch', '12" × 12"', 'White', '6,000', '36'],
+             ['Dinner', '15" × 17"', '2-ply white', '3,000', '45'],
+             ['Tall fold (dispenser)', '13" × 7"', '1-ply white', '10,000', '50'],
+             ['Interfold (dispenser)', '6.5" × 7.9"', 'White or kraft', '6,000 (24 × 250)', '54 white / 72 kraft']],
+             'Sheet sizes are before folding. Pallet counts come from each item\'s spec sheet.')),
+         ('Which napkin for which service', [
+             '- <b>Beverage napkins (9" × 9"):</b> under drinks at the bar, with coffee and desserts, at receptions and with small plates. Black 2-ply looks upscale for cocktail service; white 1-ply is the everyday, lower-cost choice.',
+             '- <b>Lunch napkins (12" × 12"):</b> counter service, quick casual, delis, food trucks and catering drop-offs, wherever a beverage napkin is too small but a dinner napkin is more than you need.',
+             '- <b>Dinner napkins (15" × 17", 2-ply):</b> table service, banquets, weddings and catered dinners, where the napkin goes on the lap or is folded into a place setting.',
+             '- <b>Dispenser napkins (tall fold and interfold):</b> self-serve counters and tables. Guests pull one napkin at a time, which usually cuts napkin use compared with a stack of loose napkins.']),
+         ('Ply: 1-ply vs 2-ply', [
+             '1-ply napkins are a single layer and cost less per napkin, which suits self-serve stations and quick service. 2-ply napkins have two layers, so they feel softer, hold up better when wet and absorb more; they are the standard for dinner napkins and premium bar service.']),
+         ('Tall fold vs interfold dispenser napkins', [
+             'Both are made for countertop and tabletop dispensers, and the dispenser decides which you need. <b>Tall fold</b> napkins (13" × 7") fit tall-fold dispensers and pack 10,000 per case, the highest count in our napkin line, for high-volume fast food and cafeterias. <b>Interfold</b> napkins (6.5" × 7.9") fit interfold dispensers and pack 6,000 per case in kraft or white.']),
+         ('How many napkins to order', [
+             '- For events, a common planning figure is about three napkins per guest for a buffet, more for messy food; see <a href="/guides/catering-disposables-per-100-guests/">catering disposables per 100 guests</a>.',
+             '- For restaurants, count napkins used per order over a normal week, then reorder by the case. <a href="/guides/price-per-thousand-explained/">Price per thousand</a> makes napkins with different case counts easy to compare.',
+             'Folded hand towels for restrooms (C-fold, multifold and single fold) are covered in <a href="/guides/c-fold-vs-multifold-towels/">C-fold vs multifold towels</a>.']),
+         ('Ordering napkins wholesale', [
+             'Napkins mix onto one pallet with your cups, containers and other supplies. Pricing tiers: %s. Approved accounts get Net 30; orders typically leave Houston in %s.' % (F['tiers'], F['ship']),
+             'Send your list through the quote form or call <a href="tel:+18449000084">%s</a> for wholesale napkin pricing.' % F['phone']])],
+     'faq': [('What size is a beverage napkin?', '9 × 9 inches unfolded, the standard size for bars, coffee shops and receptions.'),
+             ('What size is a lunch napkin?', '12 × 12 inches unfolded. Ours pack 6,000 per case.'),
+             ('What size is a dinner napkin?', '15 × 17 inches unfolded for our 2-ply white dinner napkins, 3,000 per case.'),
+             ('What is the difference between a lunch napkin and a dinner napkin?', 'Size and ply. Lunch napkins are 12 × 12 inches for counter and casual service; dinner napkins are larger, 15 × 17 inches and 2-ply, for table service and events.'),
+             ('What napkins go in a napkin dispenser?', 'Dispenser napkins that match the dispenser: tall fold (13 × 7 inches) for tall-fold dispensers, or interfold (6.5 × 7.9 inches) for interfold dispensers.'),
+             ('How many beverage napkins are in a case?', '4,000 per case for white 1-ply and 1,000 per case for black 2-ply.')],
+     'related': ['beverage-napkins', 'lunch-napkins', 'dinner-napkins', 'tall-fold-napkins', 'interfold-napkins'],
+     'primary': ['beverage-napkins', 'lunch-napkins', 'dinner-napkins', 'tall-fold-napkins', 'interfold-napkins']},
+
+    {'slug': 'bagasse-plates-and-containers', 'group': 'Product buying guides', 'short': 'Bagasse plates and containers',
+     'title': 'Bagasse Plates & Containers: Sizes, Microwave, Compost',
+     'desc': 'What bagasse (sugarcane fiber) is, clamshell, plate and school tray sizes with case counts, microwave use, composting and PFAS-free sourcing.',
+     'h1': 'Bagasse plates and containers: sizes, uses and composting',
+     'answer': 'Bagasse is the sugarcane fiber left after the juice is pressed out, molded under heat and pressure into plates, clamshells and trays. It handles hot and greasy food, is microwave safe for reheating and is compostable where commercial composting accepts it. We stock PFAS-free bagasse hinged containers from 6" × 6" to 9" × 9", 9" round plates and 5-compartment school trays.',
+     'facts': [('Sugarcane', 'fiber, plant-based'), ('PFAS-free', 'hinged containers'), ('Microwave', 'safe for reheating'), ('6"–9"', 'clamshell sizes')],
+     'sections': [
+         ('Bagasse sizes we stock', ('table', 'Bagasse and molded fiber items (from our spec sheets)', ['Item', 'Size', 'Per case', 'Cases / pallet'], [
+             ['Hinged container, 1-compartment', '6" × 6"', '500', '36'],
+             ['Hinged container, 1-compartment', '9" × 6"', '250', '45'],
+             ['Hinged container, 3-compartment', '8" × 8"', '200', '40'],
+             ['Hinged container, 1-compartment', '9" × 9"', '200', '40'],
+             ['Hinged container, 3-compartment', '9" × 9"', '200', '40'],
+             ['Round plate', '9"', '500', '56'],
+             ['School tray, 5-compartment', '—', '500', '48']],
+             'Our 2026 catalog also lists 9" 3-compartment and 10" molded fiber plates; ask for availability on your quote.')),
+         ('What each size is for', [
+             '- <b>6" × 6" clamshell:</b> sides, desserts, sandwiches, burgers and small portions.',
+             '- <b>9" × 6" clamshell:</b> sandwiches, wraps, hoagies and a single entrée without sides.',
+             '- <b>8" × 8" 3-compartment:</b> a plate lunch with two sides at a smaller size.',
+             '- <b>9" × 9" 1-compartment:</b> full entrées, rice and noodle dishes, fried food, salads.',
+             '- <b>9" × 9" 3-compartment:</b> plate lunches, combo meals and catering boxes that keep sides apart.',
+             '- <b>9" round plate:</b> buffets, events, cafeterias and picnics.',
+             '- <b>5-compartment school tray:</b> school and institutional meals; see <a href="/guides/school-cafeteria-disposables/">school cafeteria disposables</a>.',
+             'Every container size with black plastic and clear options side by side is in the <a href="/guides/takeout-container-sizes/">takeout container sizes chart</a>.']),
+         ('Microwave, oven and freezer', [
+             'Bagasse is microwave safe for reheating, so customers can warm leftovers in the same container. Vent or open the lid and heat in short intervals. We do not list bagasse as ovenable; for the oven, use <a href="/guides/foil-pans-oven-grill-air-fryer/">foil pans</a>. For a container-by-container chart, see <a href="/guides/microwave-safe-takeout-containers/">which takeout containers are microwave safe</a>.']),
+         ('Hot, greasy and wet food', [
+             'Molded fiber holds hot entrées, fried food and sauced dishes without softening during normal takeout and delivery times. Very wet food held for a long time is where any fiber container is weakest, so for soups and brothy dishes use <a href="/product/deli-containers/">deli containers</a>, and for saucy meals that will be reheated, <a href="/product/black-containers/">black containers with clear lids</a> are a good fit.']),
+         ('Compostable, PFAS-free and foam bans', [
+             'Bagasse is plant-based and compostable in commercial composting facilities. Whether a given facility accepts it depends on the local program, so check with your hauler before you advertise composting to customers.',
+             'Some molded fiber packaging used to be treated with PFAS for grease resistance, and a growing number of states restrict PFAS in food packaging. Our bagasse hinged containers are PFAS-free; see <a href="/guides/pfas-free-takeout-containers/">PFAS-free takeout containers</a> for what to keep on file. Bagasse is also one of the main replacements where foam is restricted; see <a href="/guides/styrofoam-alternatives/">styrofoam container alternatives</a>.']),
+         ('Buying bagasse in bulk', [
+             'Bagasse ships by the case and mixes onto one pallet with cups, bags, napkins and the rest of your order. Pricing tiers: %s. Approved accounts get Net 30; orders typically leave Houston in %s.' % (F['tiers'], F['ship']),
+             'Request wholesale pricing through the quote form or call <a href="tel:+18449000084">%s</a>.' % F['phone']])],
+     'faq': [('What is bagasse?', 'The fiber left after sugarcane is crushed for its juice. It is pulped and molded under heat and pressure into plates, bowls, clamshells and trays.'),
+             ('Are bagasse containers microwave safe?', 'Yes, for reheating. Vent or open the lid and heat in short intervals.'),
+             ('Can bagasse go in the oven?', 'We do not list our bagasse items as ovenable. Use foil pans for the oven.'),
+             ('Is bagasse compostable?', 'Yes, in commercial composting facilities that accept it. Check with your local composting program or hauler.'),
+             ('Are your bagasse containers PFAS-free?', 'Yes. Our bagasse hinged containers are PFAS-free.'),
+             ('What sizes do bagasse clamshells come in?', 'We stock 6 × 6, 9 × 6 and 9 × 9 inch 1-compartment, and 8 × 8 and 9 × 9 inch 3-compartment hinged containers.')],
+     'related': ['bagasse-hinged-containers', 'round-plates', 'school-trays', 'black-containers'],
+     'primary': ['round-plates', 'school-trays']},
 ]
 
 GROUPS = {g['slug']: g['group'] for g in BUYER}
 ENTRIES = [(g['slug'], g['short'], _builder(g)) for g in BUYER]
+# product slug -> guide slug that should own the product page's guide link (overrides first-come order)
+PRIMARY = {p: g['slug'] for g in BUYER for p in g.get('primary', [])}

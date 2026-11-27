@@ -327,6 +327,7 @@ CHART_GROUP = 'Size charts'
 
 # product slug -> guide URL, for the "Size guide" link on product pages
 PRODUCT_GUIDE = {}
+PRIMARY = {}       # product slug -> guide slug that owns that link even if an earlier guide also lists it
 FAQS = []          # (question, answer) from every guide, for llms-full.txt
 
 
@@ -340,7 +341,10 @@ def render_guide(slug, short, fn, spec, products, origin):
         rel = ('<section class="cpp-loc-sec"><h2>Products in this guide</h2><ul class="cpp-loc-near">%s</ul></section>'
                % ''.join('<li><a href="%s">%s</a></li>' % (products[s][1], E(products[s][0])) for s in related if s in products))
         for s in related:
-            PRODUCT_GUIDE.setdefault(s, (url, short))
+            if PRIMARY.get(s) == slug:
+                PRODUCT_GUIDE[s] = (url, short)
+            else:
+                PRODUCT_GUIDE.setdefault(s, (url, short))
     grp = GROUPS.get(slug, CHART_GROUP)
     others = ''.join('<li><a href="/guides/%s/">%s</a></li>' % (s, E(n)) for s, n, _ in GUIDES
                      if s != slug and GROUPS.get(s, CHART_GROUP) == grp)
