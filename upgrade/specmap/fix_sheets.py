@@ -37,6 +37,16 @@ FIXES = {
     'full-size-deep-steam-pans-fsdfp-50-spec-sheet.pdf': (None, [('Ti x Hi', '7 x 4', '6 x 5'), ('Cases / Pallet', '28', '30')]),
     'round-dome-lid-7-spec-sheet.pdf': (None, [('Ti x Hi', '20 x 10', '10 x 5'), ('Cases / Pallet', '200', '50')]),
     'round-dome-lid-9-spec-sheet.pdf': (None, [('Ti x Hi', '20 x 10', '10 x 5'), ('Cases / Pallet', '200', '50')]),
+    '8-x-8-3-compartment-dchc8-3c-spec-sheet.pdf': (None, [('Ti x Hi', '10 x 4', '12 x 4'), ('Cases / Pallet', '40', '48')]),
+    '9-x-9-1-compartment-dchc9-1c-spec-sheet.pdf': (None, [('Ti x Hi', '12 x 4', '10 x 4'), ('Cases / Pallet', '48', '40')]),
+    'deli-containers-16oz-dc16-240-spec-sheet.pdf': (None, [('Ti x Hi', '8 x 6', '9 x 6'), ('Cases / Pallet', '56', '54')]),
+    'deli-containers-12oz-dc12-240-spec-sheet.pdf': (None, [('Ti x Hi', '8 x 6', '9 x 6'), ('Cases / Pallet', '48', '54')]),
+    'deli-containers-8oz-dc8-240-spec-sheet.pdf': (None, [('Ti x Hi', '9 x 7', '9 x 6'), ('Cases / Pallet', '63', '54')]),
+    'deli-containers-24oz-dc24-240-spec-sheet.pdf': (None, [('Ti x Hi', '—', '9 x 5'), ('Cases / Pallet', '56', '45')]),
+    '18-x2000-food-film-ff18-2000-spec-sheet.pdf': (None, [('Ti x Hi', '17 x 13', 'N/A'), ('Cases / Pallet', '221', '252')]),
+    '32oz-pet-cups-107mm-pet32-500-spec-sheet.pdf': (None, [('Ti x Hi', '8 x 4', '9 x 3'), ('Cases / Pallet', '32', '27')]),
+    '1oz-clear-portion-cups-pc1-2500-spec-sheet.pdf': (None, [('Ti x Hi', '12 x 5', '15 x 7')]),
+    '3-1-8-x273-thermal-roll-paper-trp318-273-spec-sheet.pdf': (None, [('Ti x Hi', '9 x 10', '8 x 10'), ('Cases / Pallet', '90', '80')]),
 }
 
 
