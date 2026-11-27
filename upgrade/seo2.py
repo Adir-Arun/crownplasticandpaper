@@ -121,6 +121,8 @@ def normalize_ld(s, url):
                 continue
             if is_product and t & {'FAQPage', 'BreadcrumbList'} and _foreign_cat_node(n, slug):
                 continue
+            if is_product and 'FAQPage' in t and slug in FOIL_FAQ:
+                continue      # copied/shared WordPress FAQ data; faqs() adds this page's own block
             if is_product and 'BreadcrumbList' in t and slug in PRODUCTS:
                 # WordPress pasted breadcrumbs from other pages (wrong product URLs, categories that do not
                 # exist); use the one the page shows: Home / category / product
@@ -236,9 +238,53 @@ def insert_before_footer(s, block):
     return s
 
 
+# Foil products: WordPress gave three of them FAQ data copied from a sibling (foil sheets had the foil
+# roll FAQ, deep pans the steam-table lid FAQ, round pans the round lid FAQ) and all six a shared
+# aluminum FAQ (with a wrong location). Those blocks are dropped; each page gets its own questions,
+# answered only from its spec sheets and the 2026 catalog (pallet counts follow the catalog).
+FOIL_FAQ = {
+    'foil-sheets': [
+        ('What sizes do your pop-up foil sheets come in?', 'Two sizes: 9" × 10.75" (item FS9-500) and 12" × 10.75" (item FS12-500).'),
+        ('How many foil sheets are in a case?', '3,000: 6 boxes of 500 sheets per case, in both sizes.'),
+        ('How many cases of foil sheets fit on a pallet?', '9" × 10.75": 72 cases (Ti × Hi 12 × 6). 12" × 10.75": 54 cases (Ti × Hi 9 × 6).'),
+        ('How big and heavy is a case of foil sheets?', 'FS9-500: 13.8" × 12.6" × 11.4", 18.5 lb. FS12-500: 12.4" × 10.8" × 11.4", 14.6 lb.'),
+        ('Is there a spec sheet for each foil sheet size?', 'Yes. Each size has its own PDF spec sheet with item number, case pack, Ti × Hi, case dimensions and case weight.')],
+    'deep-steam-table-pans': [
+        ('What sizes do your deep steam table pans come in?', 'Full size (item FSDFP-50) and half size (item HSDFP-100), both deep.'),
+        ('How many deep steam table pans are in a case?', 'Full size: 50 per case. Half size: 100 per case.'),
+        ('How many cases of steam table pans fit on a pallet?', 'Full size: 30 cases (Ti × Hi 6 × 5). Half size: 42 cases.'),
+        ('How big and heavy is a case of steam table pans?', 'Full size: 21.1" × 13.5" × 13.6", 14.99 lb. Half size: 19.5" × 13" × 10.5", 10.14 lb.'),
+        ('Do the pans come with lids?', 'Lids are sold separately: foil lids for full-size pans (FSAL-50, 50 per case) and for half-size pans (HSAL-100, 100 per case).')],
+    'round-foil-pans': [
+        ('What sizes do your round foil pans come in?', '7" (item RFP7-500) and 9" (item RFP9-500).'),
+        ('How many round foil pans are in a case?', '500 per case in both sizes.'),
+        ('How many cases of round foil pans fit on a pallet?', '7": 45 cases (Ti × Hi 5 × 9). 9": 24 cases (Ti × Hi 6 × 4).'),
+        ('How big and heavy is a case of round foil pans?', '7": 13.4" × 7.7" × 15", 9.04 lb. 9": 19" × 15.7" × 19", 16.76 lb.'),
+        ('What lids fit round foil pans?', 'Board lids (RFPL7-500, RFPL9-500) and dome lids (RD-7, RD-9) for the 7" and 9" pans, 500 per case, sold separately.')],
+    'foil-rolls': [
+        ('What foil roll sizes do you carry?', '12" × 1000\' standard (FRS12-1000); 18" × 500\' standard (FRS18-500) and heavy duty (FRHD18-500); 18" × 1000\' standard (FRS18-1000) and heavy duty (FRHD18-1000).'),
+        ('How many foil rolls are in a case?', 'One roll per case.'),
+        ('How many cases of foil rolls fit on a pallet?', '12" × 1000\': 290 (Ti × Hi 29 × 10). 18" × 500\': 220 (22 × 10). 18" × 1000\': 200 (20 × 10).'),
+        ('How much heavier is a heavy duty roll than a standard roll?', 'By case weight: 18" × 1000\' heavy duty is 12.72 lb against 9.92 lb standard, and 18" × 500\' heavy duty is 7.5 lb against 4.92 lb standard.')],
+    'foil-lids-for-steam-table-pans': [
+        ('Which pans do these foil lids fit?', 'Full-size and half-size steam table pans: FSAL-50 fits full size, HSAL-100 fits half size.'),
+        ('How many foil lids are in a case?', 'Full size: 50 per case. Half size: 100 per case.'),
+        ('How many cases of foil lids fit on a pallet?', '50 cases for both sizes (Ti × Hi 10 × 5).'),
+        ('How big and heavy is a case of foil lids?', 'FSAL-50: 21.85" × 5.08" × 13.98", 7.72 lb. HSAL-100: 13.58" × 11.61" × 7.87", 5.29 lb.')],
+    'round-foil-pan-lids': [
+        ('What lids do you carry for round foil pans?', 'Board lids for 7" and 9" pans (RFPL7-500, RFPL9-500) and dome lids for 7" and 9" pans (RD-7, RD-9).'),
+        ('How many round pan lids are in a case?', '500 per case for every board and dome lid.'),
+        ('How many cases of lids fit on a pallet?', 'Board lids: 200 cases (Ti × Hi 20 × 10). Dome lids: 50 cases (Ti × Hi 10 × 5).'),
+        ('How big and heavy is a case of board lids?', '7" (RFPL7-500): 7.48" × 7.48" × 9.06", 10.69 lb. 9" (RFPL9-500): 9.25" × 9.25" × 9.06", 16.42 lb.')],
+}
+
+
 def product_faq(slug, spec_map):
     p = PRODUCTS.get(slug, {'name': slug.replace('-', ' ')})
     name = p['name']
+    if slug in FOIL_FAQ:
+        return FOIL_FAQ[slug] + [('Can I mix %s with other products on one pallet?' % name, 'Yes. Mixed pallets are welcome.'),
+                                 ('How fast does it ship?', 'Orders typically leave our Houston warehouse in %s. Approved accounts get Net 30.' % F['ship'])]
     es = [e['match'] for e in spec_map.get(slug, []) if e.get('match')]
     qa = []
     sizes = geo.product_sizes(spec_map.get(slug, []))

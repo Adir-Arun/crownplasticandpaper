@@ -469,6 +469,8 @@ SPEC_OVERRIDES = [
     ('poly-bags', None, {'pack-size': '1,000/Case'}, None),
     # pallet counts from the 2026 catalog
     ('poly-bags', {'bag-size': '8" x 4" x 18"'}, {'ti-x-hi': '8 x 11', 'cases-pallets': '88'}, None),
+    ('paper-boat-trays', {'tray-size-capacity': '5 lb'}, {'ti-x-hi': '8 x 5', 'cases-pallets': '40'}, None),
+    ('deep-steam-table-pans', {'pan-size': 'Full Size'}, {'ti-x-hi': '6 x 5', 'cases-pallets': '30'}, None),
     ('stretch-film', None, {}, '18-x1000x80g-spec-sheet.pdf'),
     # napkin pallet counts from the 2026 catalog
     ('beverage-napkins', {'color': 'White'}, {'ti-x-hi': '13 x 8', 'cases-pallets': '104'}, None),
@@ -533,7 +535,91 @@ SPEC_TEXT_FIXES = {
 }
 
 
+# One variation of a WooCommerce product changes while its siblings keep the old value (the 5 lb boat
+# tray shares 9 x 7 / 63 with the 1-3 lb trays). Edit that variation's data, its per-variation spec
+# table, and the option lists: add the new value as an option, and drop the old one if nothing uses it.
+# (url, {attribute: value} picks the variation, {attribute: new value}, label shown in its spec table's Sizes row)
+VARIANT_FIXES = [
+    ('/product/paper-boat-trays/', {'tray-size-capacity': '5 lb'}, {'ti-x-hi': '8 x 5', 'cases-pallets': '40'}, '5 lb'),
+    ('/product/deep-steam-table-pans/', {'pan-size': 'Full Size'}, {'ti-x-hi': '6 x 5', 'cases-pallets': '30'}, 'Full Size'),
+]
+_SPEC_FEATURE = {'ti-x-hi': ('Ti x Hi', 'Ti X Hi'), 'cases-pallets': ('Cases/Pallets', 'Cases / Pallets')}
+
+
+def _opt_slug(v):
+    return re.sub(r'[^a-z0-9]+', '-', v.lower()).strip('-')
+
+
+def fix_variant(s, when, changes, size_label):
+    olds = {}
+
+    def fix_json(m):
+        vs = json.loads(html.unescape(m.group(1)))
+        for v in vs:
+            a = v.get('attributes', {})
+            if all(a.get('attribute_' + k) == val for k, val in when.items()):
+                for k, new in changes.items():
+                    olds[k] = a.get('attribute_' + k)
+                    a['attribute_' + k] = new
+                    for sp in v.get('specifications') or []:
+                        if sp.get('feature') in _SPEC_FEATURE.get(k, ()):
+                            sp['details'] = new
+        for k in changes:
+            olds.setdefault(k + ':kept', any(v.get('attributes', {}).get('attribute_' + k) == olds.get(k) for v in vs))
+        return 'data-product_variations="%s"' % html.escape(json.dumps(vs).replace('/', '\\/'), quote=True)
+    s = re.sub(r'data-product_variations="([^"]*)"', fix_json, s)
+
+    for k, new in changes.items():
+        old = olds.get(k)
+        if not old or old == new:
+            continue
+        keep = olds.get(k + ':kept')
+        an = 'attribute_' + k
+
+        def swap(el, keep=keep, old=old, new=new):
+            el2 = el.replace('variable-item-%s ' % _opt_slug(old), 'variable-item-%s ' % _opt_slug(new))
+            el2 = re.sub(r'(?<=[>"\'])%s(?=[<"\'])' % re.escape(old), new, el2)
+            return el + el2 if keep else el2
+
+        def in_select(m):
+            return re.sub(r'<option value="%s" >%s</option>' % (re.escape(old), re.escape(old)), lambda o: swap(o.group(0)), m.group(0))
+        s = re.sub(r'<select[^>]*name="%s".*?</select>' % an, in_select, s, flags=re.S)
+
+        def values(m):
+            vals = json.loads(html.unescape(m.group(2)))
+            vals = (vals + [new]) if keep else [new if x == old else x for x in vals]
+            return m.group(1) + html.escape(json.dumps(vals).replace('/', '\\/'), quote=True) + m.group(3)
+        s = re.sub(r'(data-attribute_name="%s" data-attribute_values=")([^"]*)(")' % an, values, s)
+        s = re.sub(r'<li [^>]*data-attribute_name="%s"[^>]*data-value="%s".*?</li>' % (an, re.escape(old)),
+                   lambda m: swap(m.group(0)), s, flags=re.S)
+
+        def in_cfvsw(m):
+            return re.sub(r"<div class='cfvsw-swatches-option[^']*' data-slug='%s'.*?</div></div>" % re.escape(old),
+                          lambda o: swap(o.group(0)), m.group(0), flags=re.S)
+        s = re.sub(r"<div class='cfvsw-swatches-container[^']*' swatches-attr='%s'>.*?</div></div></div>" % an, in_cfvsw, s, flags=re.S)
+
+    # the static spec table WordPress printed for this variation
+    def table(m):
+        t = m.group(0)
+        if not re.search(r'<td class="spec-details">%s</td>' % re.escape(size_label), t):
+            return t
+        for k, new in changes.items():
+            for feat in _SPEC_FEATURE.get(k, ()):
+                t = re.sub(r'(<th class="spec-feature">%s</th>\s*<td class="spec-details">)[^<]*(</td>)' % re.escape(feat), r'\g<1>%s\2' % new, t)
+        return t
+    s = re.sub(r'<table[^>]*>(?:(?!</table>).)*?spec-feature(?:(?!</table>).)*</table>', table, s, flags=re.S)
+    return s
+
+
 def fix_spec_text():
+    for url, when, changes, label in VARIANT_FIXES:
+        p = os.path.join(SITE, url.strip('/'), 'index.html')
+        if os.path.exists(p):
+            s = open(p, encoding='utf-8', errors='ignore').read()
+            s2 = fix_variant(s, when, changes, label)
+            open(p, 'w', encoding='utf-8').write(s2)
+            print('variant fix: %s %s' % (url, 'changed' if s2 != s else 'unchanged'))
+
     for url, rules in SPEC_TEXT_FIXES.items():
         p = os.path.join(SITE, url.strip('/'), 'index.html')
         if not os.path.exists(p):
