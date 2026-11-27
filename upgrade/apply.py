@@ -37,6 +37,7 @@ FOOTER_BAND = seo2.footer_band(
 import guides_buyer  # noqa: E402  (buying guides; added after the footer so the footer keeps the size charts only)
 guides.GUIDES += guides_buyer.ENTRIES
 guides.GROUPS.update(guides_buyer.GROUPS)
+guides.PRIMARY.update(guides_buyer.PRIMARY)
 
 SITE = sys.argv[1] if len(sys.argv) > 1 else 'site'
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -1255,6 +1256,14 @@ def main():
             i = ps.find('cpp-skus-table')
             j = ps.find('</table>', i) if i >= 0 else -1
             if j < 0:
+                # no size table on this page: put the guide first in the related-links line instead
+                k = ps.find('<p class="cpp-related-links">')
+                if k < 0:
+                    continue
+                k += len('<p class="cpp-related-links">')
+                ps = ps[:k] + '<a class="cpp-guide-link" href="%s">%s guide</a> · ' % (gurl, html.escape(gname)) + ps[k:]
+                open(pp, 'w', encoding='utf-8').write(ps)
+                linked += 1
                 continue
             j += len('</table>')
             ps = ps[:j] + '<p class="cpp-guide-link">Compare every size: <a href="%s">%s chart</a></p>' % (gurl, html.escape(gname)) + ps[j:]
